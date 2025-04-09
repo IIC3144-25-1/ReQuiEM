@@ -19,7 +19,7 @@ export default async function DashboardPage() {
                 <CardHeader>
                     <CardTitle className="text-2xl">Bienvenido {user?.name} 👋</CardTitle>
                     <CardDescription>
-                        Ya estas logeado
+                        Ya estas logeado y estas en una ruta protegida
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
