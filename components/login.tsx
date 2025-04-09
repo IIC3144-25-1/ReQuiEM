@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { loginWithGoogle } from "@/actions/user/login";
+import { loginWithGoogle } from "@/actions/auth/login";
 
 export function LoginForm({
   className,
@@ -18,8 +18,12 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || null;
+
+    const handleLogin = async () => {
+        await loginWithGoogle({ redirectTo: callbackUrl });
+    }
     return (
-        <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
         <Card>
             <CardHeader>
             <CardTitle className="text-2xl">Bienvenido 👋</CardTitle>
@@ -28,15 +32,15 @@ export function LoginForm({
             </CardDescription>
             </CardHeader>
             <CardContent>
-            <form>
+            <form action={handleLogin}>
                 <div className="flex flex-col gap-6">
-                <Button variant="outline" className="w-full" onClick={() => loginWithGoogle({ redirectTo: callbackUrl })}>
+                <Button type="submit" variant="outline" className="w-full">
                     Login with Google
                 </Button>
                 </div>
             </form>
             </CardContent>
         </Card>
-        </div>
+      </div>
   )
 }
