@@ -148,7 +148,7 @@ const Navbar1 = async ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
           {user ? (
                 <div className="text-md font-semibold">
                 Hola {user?.name}! 👋
