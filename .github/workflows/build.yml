@@ -1,0 +1,29 @@
+name: Build Next.js App
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🔧 Build Next.js app
+        run: npm run build
+
+      - name: ✅ Verifica que el build fue exitoso
+        run: echo "Build completado exitosamente"
