@@ -1,5 +1,5 @@
-import { LoginForm } from "@/components/login"
-// import { LoginForm } from "@/app/login/login"
+// import { LoginForm } from "@/components/login"
+import { LoginForm } from "@/app/login/login"
 import { Suspense } from "react"
 
 export default function Page() {
