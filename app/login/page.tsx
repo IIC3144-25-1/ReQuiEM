@@ -1,3 +1,4 @@
+// import { LoginForm } from "@/components/login"
 import { LoginForm } from "@/app/login/login"
 import { Suspense } from "react"
 
@@ -5,7 +6,7 @@ export default function Page() {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <Suspense>
+        <Suspense fallback={<div>Cargando...</div>}>
           <LoginForm />
         </Suspense>
       </div>
