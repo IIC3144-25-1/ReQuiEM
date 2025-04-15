@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { getCurrentUser } from "@/actions/user/getUser"
 import { logout } from "@/actions/auth/logout";
+import { SurgeryForm } from "./surgeryForm";
 
 export default async function DashboardPage() {
     const user = await getCurrentUser();
@@ -35,6 +36,7 @@ export default async function DashboardPage() {
                     </div>
                 </CardContent>
             </Card>
+            <SurgeryForm />
         </div>
   );
 }
