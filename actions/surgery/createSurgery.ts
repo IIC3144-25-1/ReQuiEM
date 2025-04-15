@@ -20,7 +20,7 @@ export async function createSurgery(data: z.infer<typeof surgerySchema>) {
             guideline: {
                 name: step.guideline.name,
                 description: step.guideline.description,
-                maxRating: step.guideline.maxRating,
+                maxRating: Number(step.guideline.maxRating),
             },
         })),
     })
