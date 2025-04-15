@@ -52,7 +52,7 @@ const Navbar1 = async ({
     title: "ReQuiEM",
   },
   menu = [
-    { title: "Home", url: "#" },
+    { title: "Dashboard", url: "/dashboard" },
     {
       title: "Products",
       url: "#",
