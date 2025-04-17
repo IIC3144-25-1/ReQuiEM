@@ -2,7 +2,7 @@
 
 import { Surgery } from "@/models/Surgery"
 import dbConnect from "@/lib/dbConnect"
-import { surgerySchema } from "@/app/(protected)/dashboard/surgeryForm"
+import { surgerySchema } from "@/app/(protected)/surgeryForm/surgeryForm"
 import { z } from "zod"
 
 

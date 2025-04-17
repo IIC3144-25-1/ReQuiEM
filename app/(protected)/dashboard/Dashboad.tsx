@@ -13,7 +13,7 @@ const Dashboard: FC = async () => {
   const user = await getCurrentUser();
   const sections: Section[] = [
     { name: "Alumnos", icon: <></>, path: "/" },
-    { name: "Pendientes", icon: <></>, path: "/plates" },
+    { name: "Ficha", icon: <></>, path: "/surgeryForm" },
     { name: "Fichas", icon: <></>, path: "/frequents" },
     { name: "Docentes", icon: <></>, path: "/accesses" },
   ];
