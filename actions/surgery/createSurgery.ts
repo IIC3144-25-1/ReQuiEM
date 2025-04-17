@@ -2,31 +2,55 @@
 
 import { Surgery } from "@/models/Surgery"
 import dbConnect from "@/lib/dbConnect"
-import { surgerySchema } from "@/app/(protected)/dashboard/surgeryForm"
-import { z } from "zod"
 
-
-export async function createSurgery(data: z.infer<typeof surgerySchema>) {
+export async function createSurgery(formData: FormData) {
     await dbConnect()
 
-    // Create a new surgery object
-    const newSurgery = new Surgery({
-        name: data.name,
-        description: data.description,
-        area: data.area,
-        steps: data.steps.map((step) => ({
-            name: step.name,
-            description: step.description,
-            guideline: {
-                name: step.guideline.name,
-                description: step.guideline.description,
-                maxRating: Number(step.guideline.maxRating),
-            },
-        })),
-    })
+    const name = formData.get("name")
+    const description = formData.get("description")
+    const area = formData.get("area")
 
-    // Save the surgery to the database
-    await newSurgery.save()
+    // Parse the steps and osats from the form data
+    // --- 2) Collect step‑indices, build `steps` array ---
+    const stepIdxs = new Set<number>()
+    for (const key of formData.keys()) {
+        const m = key.match(/^steps\.(\d+)\./)
+        if (m) stepIdxs.add(Number(m[1]))
+    }
+    const steps = Array.from(stepIdxs)
+        .sort((a, b) => a - b)
+        .map((i) => ({
+        name:        String(formData.get(`steps.${i}.name`) ?? ''),
+        description: String(formData.get(`steps.${i}.description`) ?? ''),
+        guideline: {
+            name:      String(formData.get(`steps.${i}.guideline.name`) ?? ''),
+            maxRating: formData.get(`steps.${i}.guideline.maxRating`)
+            ? Number(formData.get(`steps.${i}.guideline.maxRating`))
+            : undefined,
+        },
+        }))
 
-    return newSurgery
+    // --- 3) Collect osat‑indices, build `osats` array ---
+    const osatIdxs = new Set<number>()
+    for (const key of formData.keys()) {
+        const m = key.match(/^osats\.(\d+)\./)
+        if (m) osatIdxs.add(Number(m[1]))
+    }
+    const osats = Array.from(osatIdxs)
+        .sort((a, b) => a - b)
+        .map((i) => ({
+        name:      String(formData.get(`osats.${i}.name`) ?? ''),
+        description: String(formData.get(`osats.${i}.description`) ?? ''),
+        maxRating: formData.get(`osats.${i}.maxRating`)
+            ? Number(formData.get(`osats.${i}.maxRating`))
+            : undefined,
+        }))
+
+    // --- 4) Rehydrate into the shape your Zod schema expects ---
+    const raw = { name, description, area, steps, osats }
+
+    // --- 6) Persist & return a POJO ---
+    await dbConnect()
+    const doc = await Surgery.create(raw)
+    return JSON.parse(JSON.stringify(doc))
 }
