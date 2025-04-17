@@ -1,6 +1,7 @@
 import React, { FC, ReactNode } from "react";
 import { format } from "date-fns";
 import Link from "next/link";
+import { getCurrentUser } from "@/actions/user/getUser";
 
 interface Section {
   name: string;
@@ -8,7 +9,8 @@ interface Section {
   path: string;
 }
 
-const Dashboard: FC = () => {
+const Dashboard: FC = async () => {
+  const user = await getCurrentUser();
   const sections: Section[] = [
     { name: "Alumnos", icon: <></>, path: "/" },
     { name: "Pendientes", icon: <></>, path: "/plates" },
@@ -26,7 +28,7 @@ const Dashboard: FC = () => {
                 Docente Urología UC
               </p>
               <h1 className="text-xl font-bold text-gray-800 dark:text-white">
-                Hola Victor 👋
+                Hola {user?.name} 👋
               </h1>
             </div>
           </div>
