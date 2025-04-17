@@ -12,10 +12,10 @@ interface Section {
 const Dashboard: FC = async () => {
   const user = await getCurrentUser();
   const sections: Section[] = [
-    { name: "Alumnos", icon: <></>, path: "/" },
-    { name: "Ficha", icon: <></>, path: "/surgeryForm" },
-    { name: "Fichas", icon: <></>, path: "/frequents" },
-    { name: "Docentes", icon: <></>, path: "/accesses" },
+    { name: "Fichas", icon: <></>, path: "/surgeryForm" },
+    { name: "Protocolos", icon: <></>, path: "/" },
+    { name: "Residentes", icon: <></>, path: "/resident" },
+    { name: "Docentes", icon: <></>, path: "/" },
   ];
 
   return (
@@ -37,7 +37,7 @@ const Dashboard: FC = async () => {
           </div>
         </header>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 p-4">
           {sections.map((section) => (
             <Link href={section.path} key={section.name} passHref>
               <div
