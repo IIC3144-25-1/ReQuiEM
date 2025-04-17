@@ -10,12 +10,11 @@ import {
 import Link from "next/link";
 import { getCurrentUser } from "@/actions/user/getUser"
 import { logout } from "@/actions/auth/logout";
-import { SurgeryForm } from "./surgeryForm";
 
 export default async function DashboardPage() {
     const user = await getCurrentUser();
     return (
-        <div className={cn("flex flex-col gap-6 flex min-h-svh w-full items-center justify-center p-6 md:p-10")}>
+        <div className={cn("flex flex-col gap-6 min-h-svh w-full items-center justify-center p-6 md:p-10")}>
             <Card className="w-full max-w-sm">
                 <CardHeader>
                     <CardTitle className="text-2xl">Bienvenido {user?.name} 👋</CardTitle>
@@ -36,7 +35,6 @@ export default async function DashboardPage() {
                     </div>
                 </CardContent>
             </Card>
-            <SurgeryForm />
         </div>
   );
 }
