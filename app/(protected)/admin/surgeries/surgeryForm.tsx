@@ -19,7 +19,7 @@ import { createSurgery } from "@/actions/surgery/createSurgery"
 import { toast } from "sonner"
 import { Trash2Icon } from "lucide-react"
 import { ISurgery } from "@/models/Surgery"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { updateSurgery } from "@/actions/surgery/updateSurgery"
 
 export const surgerySchema = z.object({
@@ -46,6 +46,7 @@ export const surgerySchema = z.object({
 });
 
 export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
+    const router = useRouter()
     // 1. Define your form.
   const form = useForm<z.infer<typeof surgerySchema>>({
     resolver: zodResolver(surgerySchema),
@@ -140,7 +141,7 @@ export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
             await createSurgery(formData)
             toast.success("Cirugía creada correctamente")
         }
-        redirect("/admin/surgeries")
+        router.push("/admin/surgeries")
     } catch (error) {
         console.error("Error surgery:", error)
         toast.error("Error creando/editando la cirugía")

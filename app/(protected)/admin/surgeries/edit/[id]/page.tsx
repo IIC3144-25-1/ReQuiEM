@@ -2,7 +2,8 @@
 import { getSurgery } from "@/actions/surgery/getSugery";
 import { SurgeryForm } from "../../surgeryForm";
 
-export default async function Page({params} : {params: {id: string}}) {
+export default async function Page(props: {params: Promise<{id: string}>}) {
+    const params = await props.params;
     const surgery = await getSurgery(params.id);
 
     if (!surgery) {
