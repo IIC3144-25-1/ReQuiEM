@@ -2,8 +2,6 @@
 
 import { Surgery } from "@/models/Surgery"
 import dbConnect from "@/lib/dbConnect"
-import { surgerySchema } from "@/app/(protected)/surgeryForm/surgeryForm"
-import { z } from "zod"
 
 export async function createSurgery(formData: FormData) {
     await dbConnect()

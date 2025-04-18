@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,14 +18,17 @@ import { toast } from "sonner"
 import { Trash2Icon } from "lucide-react"
 import { IResident } from "@/models/Resident"
 import { createResident } from "@/actions/resident/create"
+import { updateResident } from "@/actions/resident/update"
 
-// Zod schema para validación
+// Sólo campos que el modelo acepta: user y teachers
 const residentFormSchema = z.object({
   user: z.string().min(1, "User ID is required"),
-  teachers: z.array(z.string().min(1, "Teacher ID is required")),
+  teachers: z.array(z.string().min(1, "Teacher ID is required")).min(1, "At least one teacher is required"),
 })
 
-type ResidentFormValues = z.infer<typeof residentFormSchema>
+type ResidentFormValues = z.infer<typeof residentFormSchema> & {
+  teachers: string[]; // Explicitly define the type for teachers
+}
 
 type ResidentFormProps = {
   resident?: Partial<IResident>
@@ -41,29 +43,30 @@ export function ResidentForm({ resident }: ResidentFormProps) {
       user: resident?.user?.toString() || "",
       teachers: resident?.teachers?.map(t => t.toString()) || [""],
     },
+    mode: "onChange", // Optional: Add mode for better validation handling
   })
 
-
+  const { fields, append, remove } = useFieldArray({
+    name: "teachers" as const,
+  })
 
   async function onSubmit(values: ResidentFormValues) {
     try {
       const formData = new FormData()
       formData.append("user", values.user)
-      ;(values.teachers || []).forEach((t, i) => formData.append(`teachers.${i}`, t))
+      values.teachers.forEach((t, i) => {
+        formData.append(`teachers.${i}`, t)
+      })
 
       if (resident?._id) {
         formData.append("_id", resident._id.toString())
-        // await updateResident(formData)
+        await updateResident(formData)
         toast.success("Residente actualizado correctamente")
       } else {
-        await createResident({
-          user: values.user,
-          teachers: values.teachers || []
-        })
+        await createResident(formData)
         toast.success("Residente creado correctamente")
       }
 
-      // Para refrescar o navegar después
       router.refresh()
     } catch (err) {
       console.error("Error en formulario residente: ", err)
@@ -85,7 +88,6 @@ export function ResidentForm({ resident }: ResidentFormProps) {
               <FormControl>
                 <Input placeholder="ObjectId del usuario" {...field} />
               </FormControl>
-              <FormDescription>ID del usuario asociado</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -115,7 +117,7 @@ export function ResidentForm({ resident }: ResidentFormProps) {
                   <FormItem>
                     <FormLabel>Teacher ID</FormLabel>
                     <FormControl>
-                      <Input placeholder="ObjectId del teacher" {...field} />
+                      <Input placeholder="ObjectId del Profesor" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -128,39 +130,9 @@ export function ResidentForm({ resident }: ResidentFormProps) {
             variant="secondary"
             onClick={() => append("")}
           >
-            Añadir Teacher
+            Añadir Profesor
           </Button>
         </div>
-
-        {/* Specialty */}
-        <FormField
-          control={form.control}
-          name="specialty"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Especialidad</FormLabel>
-              <FormControl>
-                <Input placeholder="Especialidad (opcional)" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Year */}
-        <FormField
-          control={form.control}
-          name="year"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Año</FormLabel>
-              <FormControl>
-                <Input type="number" placeholder="Año (opcional)" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <div className="flex justify-end">
           <Button type="submit">
