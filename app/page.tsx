@@ -1,12 +1,16 @@
 'use client';
 
-import React from 'react';
-import HomePage from './home/page';
+import React, { Suspense } from 'react';
+import { LoginForm } from './login/login';
 
 export default function Home() {
   return (
-    <>
-      <HomePage />
-    </>
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <Suspense fallback={<div>Cargando...</div>}>
+          <LoginForm />
+        </Suspense>
+      </div>
+    </div>
   );
 }
