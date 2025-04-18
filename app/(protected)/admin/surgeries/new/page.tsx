@@ -1,5 +1,5 @@
 
-import { SurgeryForm } from "./surgeryForm";
+import { SurgeryForm } from "../surgeryForm";
 
 export default function NewSurgeryPage() {
     return (
