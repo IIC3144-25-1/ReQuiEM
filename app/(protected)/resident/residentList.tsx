@@ -2,6 +2,7 @@
 
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ModalMessageAsEnum } from '@/utils/enums/ModalMessageAsEnum';
 import GenericCrudView from '@/components/forms/GenericCrudView';
 
@@ -12,6 +13,7 @@ import { deleteResident } from '@/actions/resident/delete';
 import DeleteModal from '@/components/modals/DeleteModal';
 
 const ResidentList: FC = () => {
+  const router = useRouter();
   const context = useResidentInfoContext();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -63,6 +65,15 @@ const ResidentList: FC = () => {
     }
   };
 
+  const handleOnCreate = () => {
+    router.push('/resident/new');
+  }
+  
+  const handleOnEdit = (id: string) => {
+    router.push(`/resident/edit/${id}`);
+  }
+
+
 
   const getItemKey = (resident: IResident) => resident._id.toString();
   // const getItemLabel = (resident: IResident) => {
@@ -89,6 +100,9 @@ const ResidentList: FC = () => {
           onDelete={handleDelete}
         />
       }
+
+      onCreate={handleOnCreate}
+      onEdit={handleOnEdit}
 
       items={context.displayResidents}
       currentItem={context.selectedResident}

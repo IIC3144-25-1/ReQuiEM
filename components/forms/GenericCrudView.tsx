@@ -1,3 +1,5 @@
+'use client'
+
 import React, { Dispatch, ReactNode, SetStateAction } from 'react';
 import { ModalMessageAsEnum } from '@/utils/enums/ModalMessageAsEnum';
 import StateMessage from './StateMessage';
@@ -16,6 +18,9 @@ export interface GenericCrudViewProps<T> {
   isDeleteModalOpen: boolean;
   onOpenDeleteModal: (item: T) => void;
   deleteModalComponent: ReactNode;
+
+  onCreate: () => void;
+  onEdit: (id: string) => void;
 
   items: T[];
   currentItem: T | null;
@@ -40,6 +45,8 @@ const GenericCrudView = <T,>({
   isDeleteModalOpen,
   onOpenDeleteModal,
   deleteModalComponent,
+  onCreate,
+  onEdit,
   items,
   currentItem,
   setCurrentItem,
@@ -50,11 +57,7 @@ const GenericCrudView = <T,>({
   setCurrentPage,
   isLoading = false,
 }: GenericCrudViewProps<T>) => {
-  
   if (isLoading) return <LoadingState />;
-
-  console.log('items', items);
-  console.log('currentItem', currentItem);
 
   return (
     <>
@@ -66,8 +69,7 @@ const GenericCrudView = <T,>({
 
       <DataList
         buttonText={buttonText}
-        // TODO
-        onSaveAdd={() => {}}
+        onCreate={onCreate}
       >
         {totalPages > 1 && (
           <SelectPagination
@@ -96,18 +98,15 @@ const GenericCrudView = <T,>({
               <DataItem
                 label={getItemLabel(item)}
                 id={getItemKey(item)}
-                // TODO
-                handleEdit={() => {}}
+                handleEdit={() => onEdit(getItemKey(item))}
                 handleDelete={() => onOpenDeleteModal(item)}
               />
             </div>
           </div>
         ))}
       </DataList>
-      
 
       {isDeleteModalOpen && currentItem && deleteModalComponent}
-
     </>
   );
 };
