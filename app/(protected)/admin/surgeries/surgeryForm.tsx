@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from "react"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useFieldArray } from "react-hook-form"
@@ -17,6 +18,9 @@ import { Input } from "@/components/ui/input"
 import { createSurgery } from "@/actions/surgery/createSurgery"
 import { toast } from "sonner"
 import { Trash2Icon } from "lucide-react"
+import { ISurgery } from "@/models/Surgery"
+import { redirect } from "next/navigation"
+import { updateSurgery } from "@/actions/surgery/updateSurgery"
 
 export const surgerySchema = z.object({
     name: z.string().min(1, "El nombre de la cirugía es requerido"),
@@ -41,7 +45,7 @@ export const surgerySchema = z.object({
     ).min(1, "Por lo menos un paso OSAT es requerido"),
 });
 
-export function SurgeryForm() {
+export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
     // 1. Define your form.
   const form = useForm<z.infer<typeof surgerySchema>>({
     resolver: zodResolver(surgerySchema),
@@ -68,6 +72,30 @@ export function SurgeryForm() {
         ],
       },
   })
+
+  useEffect(() => {
+    if (surgery) {
+        console.log("Surgery", surgery)
+      form.reset({
+        name: surgery.name,
+        description: surgery.description || '',
+        area: surgery.area,
+        steps: surgery.steps.map((step) => ({
+          name: step.name,
+          description: step.description || '',
+          guideline: {
+            name: step.guideline.name,
+            maxRating: String(step.guideline.maxRating),
+          },
+        })),
+        osats: surgery.osats.map((osat) => ({
+          name: osat.name,
+          description: osat.description || '',
+          maxRating: String(osat.maxRating),
+        })),
+      })
+    }
+  }, [surgery, form])
 
 
   // This in oly for the steps form, beacuse you can add more steps
@@ -104,12 +132,18 @@ export function SurgeryForm() {
             formData.append(`osats.${index}.maxRating`, osat.maxRating)
         })
 
-        await createSurgery(formData)
-        toast.success("Cirugía creada correctamente")
-        form.reset()
+        if (surgery) {
+            formData.append("surgeryId", surgery._id.toString())
+            await updateSurgery(formData)
+            toast.success("Cirugía actualizada correctamente")
+        } else {
+            await createSurgery(formData)
+            toast.success("Cirugía creada correctamente")
+        }
+        redirect("/admin/surgeries")
     } catch (error) {
-        console.error("Error creating surgery:", error)
-        toast.error("Error creando la cirugía")
+        console.error("Error surgery:", error)
+        toast.error("Error creando/editando la cirugía")
     }
   }
 

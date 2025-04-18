@@ -9,12 +9,24 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import { getSurgeries } from "@/actions/surgery/getSurgeries";
+import { deleteSurgery } from "@/actions/surgery/deleteSurgery";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Edit, Trash2Icon } from "lucide-react";
+import { revalidatePath } from "next/cache";
   
 export default async function Page() {
     const surgeries = await getSurgeries();
+
+    const handleDelete = async (data: FormData) => {
+        'use server'
+        const surgeryId = data.get("surgeryId") as string
+        await deleteSurgery(surgeryId);
+        // Revalidate the page to show the updated list of surgeries
+        // This is a workaround for the lack of revalidation in server actions
+
+        revalidatePath("/admin/surgeries");
+    }
 
     return (
         <>
@@ -32,7 +44,6 @@ export default async function Page() {
         <Table className="w-full">
             <TableHeader>
                 <TableRow>
-                    <TableHead>ID</TableHead>
                     <TableHead>Nombre</TableHead>
                     <TableHead>Descripcion</TableHead>
                     <TableHead>Area</TableHead>
@@ -42,18 +53,19 @@ export default async function Page() {
             <TableBody>
                 {surgeries.map((surgery) => (
                     <TableRow key={surgery._id.toString()}>
-                        <TableCell>{surgery._id.toString()}</TableCell>
                         <TableCell>{surgery.name}</TableCell>
                         <TableCell>{surgery.description}</TableCell>
                         <TableCell>{surgery.area}</TableCell>
-                        <TableCell>
-                            {/* Add your action buttons here */}
+                        <TableCell className="flex items-center">
                             <Button asChild size='icon' variant='outline' className="mr-2">
-                                <Link href={`/admin/surgeries/${surgery._id}`}><Edit /></Link>
+                                <Link href={`/admin/surgeries/edit/${surgery._id}`}><Edit /></Link>
                             </Button>
-                            <Button asChild size='icon' variant='outline' className="mr-2 hover:border-destructive">
-                                <Link href={`/admin/surgeries/${surgery._id}/delete`}><Trash2Icon /></Link>
-                            </Button>
+                            <form action={handleDelete}>
+                                <input name="surgeryId" className="hidden" value={surgery._id.toString()} readOnly/>
+                                <Button size='icon' variant='outline' className="mr-2 hover:border-destructive" type="submit">
+                                    <Trash2Icon />
+                                </Button>
+                            </form> 
                         </TableCell>
                     </TableRow>
                 ))

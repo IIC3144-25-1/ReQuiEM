@@ -37,6 +37,13 @@ const SurgerySchema = new Schema<ISurgery>(
           },
         },
       ],
+      osats: [
+        {
+          name: { type: String, required: true, trim: true },
+          description: { type: String, trim: true },
+          maxRating: { type: Number, required: true, min: 1, default: 5 },
+        },
+      ],
     },
     { timestamps: true }
 );
