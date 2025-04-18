@@ -10,9 +10,13 @@ export interface ISurgery extends Document {
         description?: string;
         guideline: {
           name: string;
-          description?: string;
           maxRating: number;
         }
+    }[];
+    osats: {
+        name: string;
+        description?: string;
+        maxRating: number;
     }[];
     createdAt: Date;
     updatedAt: Date;
@@ -29,9 +33,15 @@ const SurgerySchema = new Schema<ISurgery>(
           description: { type: String, trim: true },
           guideline: {
             name: { type: String, required: true, trim: true },
-            description: { type: String, trim: true },
             maxRating: { type: Number, required: true, min: 1, default: 5 },
           },
+        },
+      ],
+      osats: [
+        {
+          name: { type: String, required: true, trim: true },
+          description: { type: String, trim: true },
+          maxRating: { type: Number, required: true, min: 1, default: 5 },
         },
       ],
     },

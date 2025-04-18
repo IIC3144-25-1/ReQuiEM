@@ -2,15 +2,18 @@
 
 import { Surgery } from "@/models/Surgery"
 import dbConnect from "@/lib/dbConnect"
-import { surgerySchema } from "@/app/(protected)/surgeryForm/surgeryForm"
-import { z } from "zod"
 
-export async function createSurgery(formData: FormData) {
+export async function updateSurgery(formData: FormData) {
     await dbConnect()
 
     const name = formData.get("name")
     const description = formData.get("description")
     const area = formData.get("area")
+    const surgeryId = formData.get("surgeryId")?.toString()
+
+    if (!surgeryId) {
+        throw new Error("Surgery ID is required")
+    }
 
     // Parse the steps and osats from the form data
     // --- 2) Collect step‑indices, build `steps` array ---
@@ -52,9 +55,11 @@ export async function createSurgery(formData: FormData) {
     const raw = { name, description, area, steps, osats }
 
     // --- 6) Persist & return a POJO ---
-    await dbConnect()
-    const doc = await Surgery.create(raw)
+    const doc = await Surgery.findByIdAndUpdate(
+        surgeryId, 
+        raw
+    )
 
-    console.log("Created surgery", doc)
+    console.log("Updated surgery surgery", doc)
     return JSON.parse(JSON.stringify(doc))
 }
