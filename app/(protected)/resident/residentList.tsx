@@ -1,20 +1,19 @@
+'use client'
+
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useEffect, useState } from 'react';
-import EditPlateModal from '../form/EditPlateModal';
-import DeleteModal from '@/app/components/modals/DeleteModal';
-import { CreatePlateData, PlateData, UpdateVehicleData } from '@/interfaces/plates/PlateData';
-import { usePlateContext } from '../../contexts/PlateInfoContext';
-import { createVehicle, deleteVehicle, getVehiclesBySite, updateVehicle } from '@/api/Vehicle/vehicleMethods';
 import { ModalMessageAsEnum } from '@/utils/enums/ModalMessageAsEnum';
-import { useSiteContext } from '@/app/sites/context/SitesContext';
-import StatusTag from '@/app/components/Message/StatusTag';
-import GenericCrudView from '@/app/components/forms/GenericCrudView';
+import GenericCrudView from '@/components/forms/GenericCrudView';
 
-const PlateList: FC = () => {
-  const context = usePlateContext();
-  const siteContext = useSiteContext();
+import { getAllResident } from '@/actions/resident/getAll';
+import { useResidentInfoContext } from './context/ResidentInfoContext';
+import { IResident } from '@/models/Resident';
+import { deleteResident } from '@/actions/resident/delete';
+import DeleteModal from '@/components/modals/DeleteModal';
 
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+const ResidentList: FC = () => {
+  const context = useResidentInfoContext();
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [stateMessage, setStateMessage] = useState<string>('');
   const [typeStateMessage, setTypeStateMessage] = useState<ModalMessageAsEnum | null>(null);
@@ -23,180 +22,81 @@ const PlateList: FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 5;
 
-  const loadPlates = async () => {
-    if (!siteContext.currentSite) return;
-    const response = await getVehiclesBySite(siteContext.currentSite.id);
-    context.setPlates(response);
+  const loadResidents = async () => {
+    const response = await getAllResident();
+    console.log('response', response);
+    context.setResidents(response);
     setTotalPages(Math.ceil(response.length / itemsPerPage));
-    context.setDisplayPlates(response.slice(0, itemsPerPage));
+    context.setDisplayResidents(response.slice(0, itemsPerPage));
   };
 
   useEffect(() => {
-    loadPlates();
-  }, [siteContext.currentSite]);
+    loadResidents();
+  }, []);
 
   useEffect(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    const paginatedItems = context.plates.slice(start, start + itemsPerPage);
-    context.setDisplayPlates(paginatedItems);
-  }, [currentPage, context.plates]);
+    const paginatedItems = context.residents.slice(start, start + itemsPerPage);
+    context.setDisplayResidents(paginatedItems);
+  }, [currentPage, context.residents]);
 
-  const handleOpenCreateModal = () => {
-    context.setSelectedPlate(null);
 
-    context.setPlateToAdd('');
-    context.setBrandToAdd('');
-    context.setModelToAdd('');
-    context.setOwnerToAdd('');
-    context.setColorToAdd('');
-    context.setIsActive(true);
-
-    setIsAddModalOpen(true);
-  };
-
-  const handleOpenEditModal = (plateData: PlateData) => {
-    context.setSelectedPlate(plateData);
-
-    context.setPlateToAdd(plateData.plate);
-    context.setBrandToAdd(plateData.brand);
-    context.setModelToAdd(plateData.model);
-    context.setOwnerToAdd(plateData.owner);
-    context.setColorToAdd(plateData.color);
-    context.setIsActive(plateData.is_active);
-
-    setIsEditModalOpen(true);
-  };
-
-  const handleOpenDeleteModal = (plateData: PlateData) => {
-    context.setSelectedPlate(plateData);
+  const handleOpenDeleteModal = (residentData: IResident) => {
+    context.setSelectedResident(residentData);
     setIsDeleteModalOpen(true);
   };
 
-  const handleCreate = async () => {
-    if (!siteContext.currentSite) {
-      setTypeStateMessage(ModalMessageAsEnum.Warning);
-      setStateMessage('Seleccione un sitio');
-      return;
-    }
-
-    const createData: CreatePlateData = {
-      plate: context.plateToAdd.toUpperCase(),
-      brand: context.brandToAdd,
-      model: context.modelToAdd,
-      owner: context.ownerToAdd,
-      color: context.colorToAdd,
-      is_active: context.isActive,
-      site_id: siteContext.currentSite.id,
-    };
-
-    try {
-      const response = await createVehicle(createData);
-      context.setPlates([...context.plates, response]);
-      setTypeStateMessage(ModalMessageAsEnum.Success);
-      setStateMessage('Vehiculo agregado con exito');
-    } catch (error) {
-      console.error('Error al guardar el vehículo:', error);
-    }
-  };
 
   const handleDelete = async () => {
-    if (!context.selectedPlate || !siteContext.currentSite) return;
-    const id = context.selectedPlate.id;
+    if (!context.selectedResident) return;
+    const id = context.selectedResident._id;
     setIsDeleteModalOpen(false);
 
     try {
-      await deleteVehicle(id);
-      context.setPlates(context.plates.filter((plate) => plate.id !== id));
+      await deleteResident(id.toString());
+      context.setResidents(context.residents.filter((resident) => resident._id !== id));
       setTypeStateMessage(ModalMessageAsEnum.Success);
-      setStateMessage('Vehiculo eliminado con exito');
+      setStateMessage('Residente eliminado con exito');
     } catch {
       setTypeStateMessage(ModalMessageAsEnum.Error);
-      setStateMessage('Error al eliminar el vehiculo');
+      setStateMessage('Error al eliminar el Residente');
     }
   };
 
-  const handleEdit = async () => {
-    if (!context.selectedPlate || !siteContext.currentSite) return;
 
-    const updatedData: UpdateVehicleData = {
-      id: context.selectedPlate.id,
-      plate: context.plateToAdd,
-      brand: context.brandToAdd,
-      model: context.modelToAdd,
-      owner: context.ownerToAdd,
-      color: context.colorToAdd,
-      is_active: context.isActive,
-      site_id: siteContext.currentSite.id,
-    };
-
-    try {
-      const response = await updateVehicle(updatedData);
-      context.setPlates(
-        context.plates.map((plate) =>
-          plate.id === response.id ? response : plate
-        )
-      );
-      setTypeStateMessage(ModalMessageAsEnum.Success);
-      setStateMessage('Vehiculo actualizado con exito');
-    } catch {
-      setTypeStateMessage(ModalMessageAsEnum.Error);
-      setStateMessage('Error al actualizar el vehiculo');
-    }
-  };
-
-  const handleOnChangeSite = () => {
-    context.setSelectedPlate(null);
-    context.setPlatesEntries([]);
-  };
-
-  const getItemKey = (plate: PlateData) => plate.id;
-  const getItemLabel = (plate: PlateData) => plate.plate;
-  const renderItemTag = (plate: PlateData) => <StatusTag isActive={plate.is_active} />;
-  const getCreatedAt = (plate: PlateData) => plate.created_at;
-  const getUpdatedAt = (plate: PlateData) => plate.updated_at;
+  const getItemKey = (resident: IResident) => parseInt(resident._id.toString(), 10);
+  // const getItemLabel = (resident: IResident) => {
+  //   if (typeof resident.user !== 'object' || !('name' in resident.user)) {
+  //     return 'Sin nombre';
+  //   }
+  //   return resident.user.name || 'Sin nombre';
+  // };
+  const getItemLabel = (resident: IResident) => resident._id.toString()
 
   return (
-    <GenericCrudView<PlateData>
+    <GenericCrudView<IResident>
       stateMessage={stateMessage}
       typeStateMessage={typeStateMessage}
       setTypeStateMessage={setTypeStateMessage}
-      currentSite={siteContext.currentSite}
-      onChangeSite={handleOnChangeSite}
-      buttonText="Agregar Patente"
-      isAddModalOpen={isAddModalOpen}
-      onOpenCreateModal={handleOpenCreateModal}
-      addModalComponent={
-        <EditPlateModal
-          onClose={() => setIsAddModalOpen(false)}
-          onSave={handleCreate}
-        />
-      }
-      isEditModalOpen={isEditModalOpen}
-      onOpenEditModal={handleOpenEditModal}
-      editModalComponent={
-        <EditPlateModal
-          onClose={() => setIsEditModalOpen(false)}
-          onSave={handleEdit}
-        />
-      }
+      buttonText="Agregar Residente"
       isDeleteModalOpen={isDeleteModalOpen}
       onOpenDeleteModal={handleOpenDeleteModal}
       deleteModalComponent={
         <DeleteModal
-          value={context.selectedPlate ? context.selectedPlate.plate : ''}
+          value={context.selectedResident ? String(context.selectedResident.user) : ''}
           label="Patente"
           onClose={() => setIsDeleteModalOpen(false)}
           onDelete={handleDelete}
         />
       }
-      items={context.displayPlates}
-      currentItem={context.selectedPlate}
-      setCurrentItem={context.setSelectedPlate}
+
+      items={context.displayResidents}
+      currentItem={context.selectedResident}
+      setCurrentItem={context.setSelectedResident}
+      
       getItemKey={getItemKey}
       getItemLabel={getItemLabel}
-      renderItemTag={renderItemTag}
-      getCreatedAt={getCreatedAt}
-      getUpdatedAt={getUpdatedAt}
+
       currentPage={currentPage}
       totalPages={totalPages}
       setCurrentPage={setCurrentPage}
@@ -204,4 +104,4 @@ const PlateList: FC = () => {
   );
 };
 
-export default PlateList;
+export default ResidentList;

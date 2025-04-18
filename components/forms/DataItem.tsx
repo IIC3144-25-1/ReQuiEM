@@ -1,12 +1,11 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC } from "react";
 import { Edit2Icon, Trash2 } from "lucide-react";
 
 type DataItemProps = {
   label: string;
   id: number;
-  handleEdit: (id: number) => void;
+  handleEdit: () => void;
   handleDelete: (id: number) => void;
-  tag?: ReactNode;
 }
 
 const DataItem: FC<DataItemProps> = (props) => {
@@ -18,7 +17,6 @@ const DataItem: FC<DataItemProps> = (props) => {
                  dark:hover:bg-slate-700 dark:focus:bg-slate-700 dark:active:bg-slate-700"
     >
       {props.label}
-      {props.tag}
       <div className="ml-auto flex items-center space-x-2">
         <button
           className="rounded-md border border-transparent p-0.5 text-center text-sm transition-all 
@@ -26,7 +24,7 @@ const DataItem: FC<DataItemProps> = (props) => {
                      dark:text-gray-400 dark:hover:bg-slate-800 dark:focus:bg-slate-800 dark:active:bg-slate-800 
                      disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
           type="button"
-          onClick={() => props.handleEdit(props.id)}
+          onClick={() => props.handleEdit()}
         >
           <Edit2Icon className="w-5 h-5" />
         </button>

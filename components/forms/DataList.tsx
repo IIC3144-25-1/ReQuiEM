@@ -4,8 +4,7 @@ import AddButton from "./Add";
 type DataListProps = {
   children: ReactNode;
   buttonText: string;
-  onSaveAddModal: () => void;
-  modal: ReactNode;
+  onSaveAdd: () => void;
 };
 
 const DataList: FC<DataListProps> = (props) => {
@@ -15,10 +14,9 @@ const DataList: FC<DataListProps> = (props) => {
                       dark:bg-slate-900 dark:border-slate-700 dark:text-white transition-all max-w-md w-full">
         <nav className="flex flex-col gap-1 p-1.5">
           {props.children}
-          <AddButton textToShow={props.buttonText} onClick={props.onSaveAddModal} />
+          <AddButton textToShow={props.buttonText} onClick={props.onSaveAdd} />
         </nav>
       </div>
-      {props.modal}
     </div>
   );
 };
