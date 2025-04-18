@@ -64,7 +64,7 @@ const ResidentList: FC = () => {
   };
 
 
-  const getItemKey = (resident: IResident) => parseInt(resident._id.toString(), 10);
+  const getItemKey = (resident: IResident) => resident._id.toString();
   // const getItemLabel = (resident: IResident) => {
   //   if (typeof resident.user !== 'object' || !('name' in resident.user)) {
   //     return 'Sin nombre';
@@ -84,7 +84,7 @@ const ResidentList: FC = () => {
       deleteModalComponent={
         <DeleteModal
           value={context.selectedResident ? String(context.selectedResident.user) : ''}
-          label="Patente"
+          label="Residente"
           onClose={() => setIsDeleteModalOpen(false)}
           onDelete={handleDelete}
         />

@@ -8,9 +8,8 @@ export default async function Page() {
   const handleCreateDummyResident = async () => {
     "use server"
     console.log("Creating dummy residents...");
-    const re = await seedDummyTeachers();
-    const result = await seedDummyResident();
-    console.log("Dummy residents created:", result);
+    await seedDummyTeachers();
+    await seedDummyResident();
   }
 
   return (

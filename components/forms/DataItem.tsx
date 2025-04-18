@@ -3,9 +3,9 @@ import { Edit2Icon, Trash2 } from "lucide-react";
 
 type DataItemProps = {
   label: string;
-  id: number;
+  id: string;
   handleEdit: () => void;
-  handleDelete: (id: number) => void;
+  handleDelete: (id: string) => void;
 }
 
 const DataItem: FC<DataItemProps> = (props) => {

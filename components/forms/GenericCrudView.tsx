@@ -21,7 +21,7 @@ export interface GenericCrudViewProps<T> {
   currentItem: T | null;
   setCurrentItem: (item: T) => void;
 
-  getItemKey: (item: T) => number;
+  getItemKey: (item: T) => string;
   getItemLabel: (item: T) => string;
   
   currentPage: number;
@@ -53,6 +53,9 @@ const GenericCrudView = <T,>({
   
   if (isLoading) return <LoadingState />;
 
+  console.log('items', items);
+  console.log('currentItem', currentItem);
+
   return (
     <>
       <StateMessage
@@ -77,6 +80,7 @@ const GenericCrudView = <T,>({
           <div key={index}>
             <div
               key={getItemKey(item)}
+              id={getItemKey(item).toString()}
               className={`rounded-md cursor-pointer p-2 transition-all 
                 ${
                   currentItem && getItemKey(currentItem) === getItemKey(item)
