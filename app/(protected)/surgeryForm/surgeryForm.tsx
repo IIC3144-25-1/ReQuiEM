@@ -67,7 +67,20 @@ export function SurgeryForm() {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof surgerySchema>) {
     try {
-        await createSurgery(values)
+        const formData = new FormData();
+        formData.append("name", values.name);
+        formData.append("description", values.description || "");
+        formData.append("area", values.area);
+
+        values.steps.forEach((step, index) => {
+            formData.append(`steps.${index}.name`, step.name);
+            formData.append(`steps.${index}.description`, step.description || "");
+            formData.append(`steps.${index}.guideline.name`, step.guideline.name);
+            formData.append(`steps.${index}.guideline.description`, step.guideline.description || "");
+            formData.append(`steps.${index}.guideline.maxRating`, step.guideline.maxRating);
+        });
+
+        await createSurgery(formData);
         toast.success("Surgery created successfully")
     } catch (error) {
         console.error("Error creating surgery:", error)
