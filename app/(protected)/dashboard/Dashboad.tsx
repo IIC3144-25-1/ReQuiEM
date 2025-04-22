@@ -1,6 +1,7 @@
 import React, { FC, ReactNode } from "react";
 import { format } from "date-fns";
 import Link from "next/link";
+import { getCurrentUser } from "@/actions/user/getUser";
 
 interface Section {
   name: string;
@@ -8,12 +9,13 @@ interface Section {
   path: string;
 }
 
-const Dashboard: FC = () => {
+const Dashboard: FC = async () => {
+  const user = await getCurrentUser();
   const sections: Section[] = [
-    { name: "Alumnos", icon: <></>, path: "/" },
-    { name: "Pendientes", icon: <></>, path: "/plates" },
-    { name: "Fichas", icon: <></>, path: "/frequents" },
-    { name: "Docentes", icon: <></>, path: "/accesses" },
+    { name: "Fichas", icon: <></>, path: "/surgeryForm" },
+    { name: "Protocolos", icon: <></>, path: "/" },
+    { name: "Residentes", icon: <></>, path: "/resident" },
+    { name: "Docentes", icon: <></>, path: "/" },
   ];
 
   return (
@@ -26,7 +28,7 @@ const Dashboard: FC = () => {
                 Docente Urología UC
               </p>
               <h1 className="text-xl font-bold text-gray-800 dark:text-white">
-                Hola Victor 👋
+                Hola {user?.name} 👋
               </h1>
             </div>
           </div>
@@ -35,7 +37,7 @@ const Dashboard: FC = () => {
           </div>
         </header>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 p-4">
           {sections.map((section) => (
             <Link href={section.path} key={section.name} passHref>
               <div

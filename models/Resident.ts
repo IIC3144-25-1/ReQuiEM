@@ -4,8 +4,8 @@ import {ITeacher} from "./Teacher";
 
 export interface IResident extends Document {
     _id: mongoose.Types.ObjectId;
-    user: IUser | mongoose.Types.ObjectId;
-    teachers: ITeacher[] | mongoose.Types.ObjectId[];
+    user: IUser;
+    teachers: ITeacher[];
     createdAt: Date;
     updatedAt: Date;
 }
