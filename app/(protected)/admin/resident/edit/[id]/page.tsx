@@ -1,5 +1,5 @@
 import { getResidentByID } from '@/actions/resident/getByID';
-import { ResidentForm } from '../../form/create';
+import { ResidentForm } from '../../residentForm';
 
 
 export default async function Page(props: {params: Promise<{id: string}>}) {

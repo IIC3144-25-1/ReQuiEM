@@ -48,7 +48,7 @@ export function ResidentForm({ resident }: ResidentFormProps) {
 
   const { fields, append, remove } = useFieldArray({
     name: "teachers" as const,
-  })
+  });
 
   async function onSubmit(values: ResidentFormValues) {
     try {
