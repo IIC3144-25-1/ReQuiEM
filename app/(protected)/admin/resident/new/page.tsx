@@ -1,4 +1,4 @@
-import { ResidentForm } from "../form/create";
+import { ResidentForm } from "../residentForm";
 
 export default function NewResidentPage() {
   return (

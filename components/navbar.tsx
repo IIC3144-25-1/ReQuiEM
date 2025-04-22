@@ -61,7 +61,7 @@ const Navbar1 = async ({
           title: "Residentes",
           description: "Maneja los residentes",
           icon: <Book className="size-5 shrink-0" />,
-          url: "#",
+          url: "/admin/resident",
         },
         {
           title: "Profesores",
