@@ -1,3 +1,5 @@
+'use server'
+
 import { Book, Menu, Sunset, Trees, Zap, Ambulance } from "lucide-react";
 
 import {
@@ -53,7 +55,20 @@ const Navbar1 = async ({
   },
   menu = [
     { title: "Dashboard", url: "/dashboard" },
-    { title: "Registros", url: "/teacher/records" }, // Se podría verificar si el usuario es profesor o residente y llevarlo a su propio records
+    { 
+      title: "Registros", 
+      url: "#",
+      items: [
+        {
+          title: "Residente",
+          url: "/resident/records",
+        },
+        {
+          title: "Profesor",
+          url: "/teacher/records",
+        },
+      ]
+    }, // Se podría verificar si el usuario es profesor o residente y llevarlo a su propio records
     {
       title: "Administrador",
       url: "#",

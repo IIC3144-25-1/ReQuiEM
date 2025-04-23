@@ -1,34 +1,35 @@
 "use client";
 // import { FaBars, FaCog } from "react-icons/fa";
+import RecordCard from "@/components/cards/record-card";
 
 const registros = [
   {
-    titulo: "Ureterorrenoscopía",
-    fecha: "04/08/2024",
-    alumno: "Ricardo Pérez",
-    estado: "Pendiente",
-    hora: "15:00",
+    surgery: "Ureterorrenoscopía",
+    date: "04/08/2024",
+    professor: "Ricardo Pérez",
+    status: "Pendiente",
+    time: "15:00",
   },
   {
-    titulo: "Cistoscopía",
-    fecha: "06/08/2024",
-    alumno: "Ricardo Pérez",
-    estado: "Pendiente",
-    hora: "16:45",
+    surgery: "Cistoscopía",
+    date: "06/08/2024",
+    professor: "Ricardo Pérez",
+    status: "Pendiente",
+    time: "16:45",
   },
   {
-    titulo: "Ureteroscopía Flex",
-    fecha: "01/08/2024",
-    alumno: "Ricardo Pérez",
-    estado: "Revisado",
-    hora: "13:30",
+    surgery: "Ureteroscopía Flex",
+    date: "01/08/2024",
+    professor: "Ricardo Pérez",
+    status: "Revisado",
+    time: "13:30",
   },
   {
-    titulo: "Cistoscopía",
-    fecha: "10/08/2024",
-    alumno: "Nicolás Pérez",
-    estado: "Revisado",
-    hora: "9:00",
+    surgery: "Cistoscopía",
+    date: "10/08/2024",
+    professor: "Nicolás Pérez",
+    status: "Revisado",
+    time: "9:00",
   },
 ];
 
@@ -43,34 +44,15 @@ export default function Registros() {
       {/* Lista de registros */}
       <div className="p-4 flex-1 space-y-4">
         {registros.map((reg, idx) => (
-          <div
+          <RecordCard
             key={idx}
-            className="bg-gray-200 border border-black shadow-md rounded-xl p-4 relative transition-transform duration-150 ease-in-out active:scale-95 cursor-pointer"
-            onClick={() => {
-              console.log(`Click en registro: ${reg.titulo}`);
-            }}
-          >
-            <div className="flex justify-between items-start">
-              <h2 className="text-lg font-semibold">{reg.titulo}</h2>
-              <div className="text-sm text-gray-500 text-right">
-                <div>{reg.fecha}</div>
-                <div>{reg.hora}</div>
-              </div>
-            </div>
-            <div className="mt-2 text-sm text-gray-700">
-              <p><strong>Alumno:</strong> {reg.alumno}</p>
-              <p><strong>Estado:</strong> {reg.estado}</p>
-            </div>
-            <div
-              className={`absolute bottom-0 left-0 w-full h-[14px] ${
-                reg.estado === 'Revisado'
-                  ? 'bg-green-600'
-                  : reg.estado === 'Pendiente'
-                  ? 'bg-yellow-500'
-                  : 'bg-purple-800'
-              } rounded-b-xl`}
-            />
-          </div>
+            surgery={reg.surgery}
+            date={reg.date}
+            time={reg.time}
+            counterpartRole="Residente"
+            counterpart={reg.professor}
+            status={reg.status}
+          />
         ))}
       </div>
 
