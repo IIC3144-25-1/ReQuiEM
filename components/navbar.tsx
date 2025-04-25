@@ -53,7 +53,6 @@ const Navbar1 = async ({
   },
   menu = [
     { title: "Dashboard", url: "/dashboard" },
-    { title: "Registros", url: "/teacher/records" }, // Se podría verificar si el usuario es profesor o residente y llevarlo a su propio records
     {
       title: "Administrador",
       url: "#",
@@ -79,14 +78,14 @@ const Navbar1 = async ({
       ],
     },
     {
-      title: "Resources",
+      title: "Residente",
       url: "#",
       items: [
         {
-          title: "Help Center",
-          description: "Get all the answers you need right here",
+          title: "Registros",
+          description: "Registros de los residentes y profesores",
           icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
+          url: "/teacher/records",
         },
         {
           title: "Contact Us",
@@ -107,14 +106,6 @@ const Navbar1 = async ({
           url: "#",
         },
       ],
-    },
-    {
-      title: "Pricing",
-      url: "#",
-    },
-    {
-      title: "Blog",
-      url: "#",
     },
   ],
   auth = {
