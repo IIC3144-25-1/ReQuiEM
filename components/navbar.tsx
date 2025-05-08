@@ -1,4 +1,4 @@
-import { Book, Menu, Sunset, Trees, Zap, Ambulance } from "lucide-react";
+import { Book, Menu, Sunset, Trees, Zap, Ambulance, Stethoscope } from "lucide-react";
 
 import {
   Accordion,
@@ -59,13 +59,13 @@ const Navbar1 = async ({
       items: [
         {
           title: "Residentes",
-          description: "Maneja los residentes",
+          description: "Administra los residentes",
           icon: <Book className="size-5 shrink-0" />,
           url: "/admin/resident",
         },
         {
           title: "Profesores",
-          description: "Maneja los profesores",
+          description: "Administra los profesores",
           icon: <Trees className="size-5 shrink-0" />,
           url: "#",
         },
@@ -73,6 +73,12 @@ const Navbar1 = async ({
           title: "Cirugias",
           description: "Maneja las cirugias",
           icon: <Ambulance className="size-5 shrink-0" />,
+          url: "/admin/surgeries",
+        },
+        {
+          title: "Areas",
+          description: "Administra las areas quirurgicas",
+          icon: <Stethoscope className="size-5 shrink-0" />,
           url: "/admin/surgeries",
         },
       ],
