@@ -7,28 +7,28 @@ const registros = [
     surgery: "Ureterorrenoscopía",
     date: "04/08/2024",
     professor: "Ricardo Pérez",
-    status: "Pendiente",
+    status: "corrected",
     time: "15:00",
   },
   {
     surgery: "Cistoscopía",
     date: "06/08/2024",
     professor: "Ricardo Pérez",
-    status: "Pendiente",
+    status: "corrected",
     time: "16:45",
   },
   {
     surgery: "Ureteroscopía Flex",
     date: "01/08/2024",
     professor: "Ricardo Pérez",
-    status: "Revisado",
+    status: "reviewed",
     time: "13:30",
   },
   {
     surgery: "Cistoscopía",
     date: "10/08/2024",
     professor: "Nicolás Pérez",
-    status: "Revisado",
+    status: "reviewed",
     time: "9:00",
   },
 ];
@@ -43,7 +43,7 @@ export default function Registros() {
         </div> */}
 
         {/* Lista de registros */}
-        <div className="p-4 flex-1 space-y-4">
+        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {registros.map((reg, idx) => (
                 <RecordCard
                     key={idx}
@@ -52,7 +52,7 @@ export default function Registros() {
                     time={reg.time}
                     counterpartRole="Profesor"
                     counterpart={reg.professor}
-                    status={reg.status}
+                    dot={reg.status === "corrected"}
                 />
             ))}
         </div>
