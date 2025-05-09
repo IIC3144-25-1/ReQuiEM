@@ -1,57 +1,32 @@
-"use client";
+"use server";
 // import { FaBars, FaCog } from "react-icons/fa";
 import RecordCard from "@/components/cards/record-card";
+import { format } from "date-fns";
+import { isIResident, isISurgery, isIUser } from "@/utils/validation";
+import { getRecordsByCurrentUser } from "@/actions/record/getByUser";
 
-const registros = [
-  {
-    surgery: "Ureterorrenoscopía",
-    date: "04/08/2024",
-    professor: "Ricardo Pérez",
-    status: "pending",
-    time: "15:00",
-  },
-  {
-    surgery: "Cistoscopía",
-    date: "06/08/2024",
-    professor: "Ricardo Pérez",
-    status: "pending",
-    time: "16:45",
-  },
-  {
-    surgery: "Ureteroscopía Flex",
-    date: "01/08/2024",
-    professor: "Ricardo Pérez",
-    status: "corrected",
-    time: "13:30",
-  },
-  {
-    surgery: "Cistoscopía",
-    date: "10/08/2024",
-    professor: "Nicolás Pérez",
-    status: "corrected",
-    time: "9:00",
-  },
-];
 
-export default function Registros() {
+export default async function Records() {
+  const records = await getRecordsByCurrentUser("teacher");
+  
+  if (!records || records.length === 0) {
+    return <div className="leading-none text-center pt-10">No tienes registros todavía</div>;
+  }
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      {/* Header */}
-      {/* <div className="bg-purple-800 text-white px-4 py-5 flex justify-between items-center shadow-md">
-        <h1 className="text-xl font-semibold">Registros</h1>
-      </div> */}
 
-      {/* Lista de registros */}
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {registros.map((reg, idx) => (
+        {records.map((r) => (
           <RecordCard
-            key={idx}
-            surgery={reg.surgery}
-            date={reg.date}
-            time={reg.time}
+            key={r._id.toString()}
+            // key={idx}
+            surgery={isISurgery(r.surgery) ? r.surgery.name : r.surgery.toString()}
+            date={format(new Date(r.date), 'dd/MM/yy')}
+            time={format(new Date(r.date), 'HH:mm')}
             counterpartRole="Residente"
-            counterpart={reg.professor}
-            dot={reg.status === "pending"}
+            counterpart={isIResident(r.resident) && isIUser(r.resident.user) ? (r.resident.user.name || "") : r.resident.toString()}
+            dot={r.status === "corrected"}
           />
         ))}
       </div>
@@ -59,3 +34,54 @@ export default function Registros() {
     </div>
   );
 }
+
+        // const registros = [
+        //     {
+        //       surgery: {
+        //         name: "Ureterorrenoscopía"
+        //       },
+        //       date: Date.now(),
+        //       resident: {
+        //         user: {
+        //           name: "Ricardo Pérez",
+        //         },
+        //       },
+        //       status: "corrected",
+        //     },
+        //     {
+        //       surgery: {
+        //         name: "Cistoscopía"
+        //       },
+        //       date: Date.now(),
+        //       resident: {
+        //         user: {
+        //           name: "Ricardo Pérez",
+        //         },
+        //       },
+        //       status: "corrected",
+        //     },
+        //     {
+        //       surgery: {
+        //         name: "Cistoscopía"
+        //       },
+        //       date: Date.now(),
+        //       resident: {
+        //         user: {
+        //           name: "Ricardo Pérez",
+        //         },
+        //       },
+        //       status: "reviewed"
+        //     },
+        //     {
+        //       surgery: {
+        //         name: "Cistoscopía"
+        //       },
+        //       date: Date.now(),
+        //       resident: {
+        //         user: {
+        //           name: "Ricardo Pérez",
+        //         },
+        //       },
+        //       status: "reviewed",
+        //     }
+        // ];
