@@ -1,4 +1,7 @@
+'use server'
+
 import { Book, Menu, Sunset, Trees, Zap, Ambulance, Stethoscope } from "lucide-react";
+
 
 import {
   Accordion,
@@ -53,6 +56,21 @@ const Navbar1 = async ({
   },
   menu = [
     { title: "Dashboard", url: "/dashboard" },
+    { 
+      title: "Registros", 
+      url: "#",
+      items: [
+        {
+          title: "Residente",
+          url: "/resident/records",
+        },
+        {
+          title: "Profesor",
+          url: "/teacher/records",
+        },
+      ]
+    }, // Se podría verificar si el usuario es profesor o residente y llevarlo a su propio records
+
     {
       title: "Administrador",
       url: "#",

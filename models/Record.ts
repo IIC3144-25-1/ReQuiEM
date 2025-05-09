@@ -17,7 +17,7 @@ export interface IRecord extends Document {
         feedback?: string;
         rating?: number;
     }[]
-    status: 'pending' | 'completed' | 'canceled';
+    status: 'pending' | 'corrected' | 'reviewed' | 'canceled';  // 'pending' | 'corrected' | 'reviewed' | 'canceled'
     comment: string;
     feedback: string;
     createdAt: Date;
