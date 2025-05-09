@@ -26,9 +26,7 @@ const residentFormSchema = z.object({
   teachers: z.array(z.string().min(1, "Teacher ID is required")).min(1, "At least one teacher is required"),
 })
 
-type ResidentFormValues = z.infer<typeof residentFormSchema> & {
-  teachers: string[]; // Explicitly define the type for teachers
-}
+type ResidentFormValues = z.infer<typeof residentFormSchema>
 
 type ResidentFormProps = {
   resident?: Partial<IResident>
@@ -37,17 +35,17 @@ type ResidentFormProps = {
 export function ResidentForm({ resident }: ResidentFormProps) {
   const router = useRouter()
 
-  const form = useForm<ResidentFormValues>({
+  const form = useForm<z.infer<typeof residentFormSchema>>({
     resolver: zodResolver(residentFormSchema),
     defaultValues: {
       user: resident?.user?.toString() || "",
-      teachers: resident?.teachers?.map(t => t.toString()) || [""],
-    },
-    mode: "onChange", // Optional: Add mode for better validation handling
+      teachers: resident?.teachers?.map(t => t.toString()) ?? ["Id"],
+    }, // Optional: Add mode for better validation handling
   })
 
   const { fields, append, remove } = useFieldArray({
-    name: "teachers" as const,
+    control: form.control,
+    name: "teachers" as never,
   });
 
   async function onSubmit(values: ResidentFormValues) {

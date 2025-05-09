@@ -50,7 +50,7 @@ export default function Page() {
         <div className="space-x-2">
           <Button onClick={handleCreateDummy}>Crear Residente Dummy</Button>
           <Button asChild>
-            <Link href="admin/resident/new">Crear Residente</Link>
+            <Link href="/admin/resident/new">Crear Residente</Link>
           </Button>
         </div>
       </div>
