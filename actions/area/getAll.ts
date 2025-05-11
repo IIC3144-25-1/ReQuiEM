@@ -1,12 +1,16 @@
 'use server'
 
 import dbConnect from "@/lib/dbConnect"
-import { Area, IArea } from "@/models/Area"
+import { Area } from "@/models/Area"
 
-export async function getAreas(){
-    await dbConnect()
+export async function getAllAreas() {
+  await dbConnect()
 
-    const areas = await Area.find().populate('teachers').populate('residents').lean<IArea[]>().exec()
+  const areas = await Area.find()
+    .populate('teachers')
+    .populate('residents')
+    .lean()
+    .exec()
 
-    return areas
+  return JSON.parse(JSON.stringify(areas))
 }
