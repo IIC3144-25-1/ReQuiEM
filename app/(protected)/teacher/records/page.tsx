@@ -4,7 +4,7 @@ import RecordCard from "@/components/cards/record-card";
 import { Input } from "@/components/ui/input"; // Componente Input de shadcn
 import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select"; // Componente Select de shadcn
 
-const registros = [
+const records = [
   {
     surgery: "Ureterorrenoscopía",
     date: "04/08/2024",
@@ -40,10 +40,10 @@ export default function Registros() {
   const [searchResident, setSearchResident] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const filteredRecords = registros.filter((reg) => {
-    const matchesSearch = reg.surgery.toLowerCase().includes(searchSurgery.toLowerCase());
-    const matchesAlumno = reg.professor.toLowerCase().includes(searchResident.toLowerCase());
-    const matchesStatus = statusFilter === "all" || !statusFilter ? true : reg.status === statusFilter;
+  const filteredRecords = records.filter((rec) => {
+    const matchesSearch = rec.surgery.toLowerCase().includes(searchSurgery.toLowerCase());
+    const matchesAlumno = rec.professor.toLowerCase().includes(searchResident.toLowerCase());
+    const matchesStatus = statusFilter === "all" || !statusFilter ? true : rec.status === statusFilter;
     return matchesSearch && matchesStatus && matchesAlumno;
   });
 
