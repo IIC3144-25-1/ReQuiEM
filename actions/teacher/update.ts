@@ -1,46 +1,49 @@
 'use server'
 
 import { Teacher } from '@/models/Teacher'
+import { User } from '@/models/User'
 import dbConnect from '@/lib/dbConnect'
 import { z } from 'zod'
 
-// 1) Esquema Zod para validar los datos
+// Esquema Zod para validación de entrada
 const updateTeacherSchema = z.object({
   _id: z.string().min(1, 'Teacher ID is required'),
   user: z.string().min(1, 'User ID is required'),
+  email: z.string().email('Email inválido'),
+  area: z.string().min(1, 'Área es requerida'),
 })
 
-// 2) Server Action para actualizar un profesor
+// Función para actualizar un profesor y su usuario
 export async function updateTeacher(formData: FormData) {
-  // 2.1) Conexión a BD
   await dbConnect()
 
-  // 2.2) Extraer datos
-  const teacherId = formData.get('_id')
-  const userId = formData.get('user')
-
-  if (!teacherId || typeof teacherId !== 'string') {
-    throw new Error('Teacher ID (_id) is required')
-  }
-  if (!userId || typeof userId !== 'string') {
-    throw new Error('User ID is required')
+  // Extraer y validar datos
+  const raw = {
+    _id: formData.get('_id')?.toString() || '',
+    user: formData.get('user')?.toString() || '',
+    email: formData.get('email')?.toString() || '',
+    area: formData.get('area')?.toString() || '',
   }
 
-  // 2.3) Rehidratar y validar
-  const raw = { _id: teacherId, user: userId }
   const data = updateTeacherSchema.parse(raw)
 
-  // 2.4) Actualizar
-  const updated = await Teacher.findByIdAndUpdate(
+  // Actualizar el email del usuario
+  await User.findByIdAndUpdate(data.user, { email: data.email })
+
+  // Actualizar el Teacher (user y área)
+  const updatedTeacher = await Teacher.findByIdAndUpdate(
     data._id,
-    { user: data.user },
+    {
+      user: data.user,
+      area: data.area,
+    },
     { new: true }
   )
 
-  if (!updated) {
-    throw new Error(`Teacher with id=${data._id} not found`)
+  if (!updatedTeacher) {
+    throw new Error(`No se encontró el profesor con ID: ${data._id}`)
   }
 
-  console.log('Updated teacher', updated)
-  return JSON.parse(JSON.stringify(updated))
+  console.log('Profesor actualizado:', updatedTeacher)
+  return JSON.parse(JSON.stringify(updatedTeacher))
 }
