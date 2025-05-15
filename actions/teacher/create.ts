@@ -1,54 +1,43 @@
 'use server'
 
-import { Teacher } from '@/models/Teacher'
 import dbConnect from '@/lib/dbConnect'
-import { z } from 'zod'
+import { Teacher } from '@/models/Teacher'
+import { User } from '@/models/User'
 import { createUser } from '../user/create'
 
-// 1) Esquema Zod para validar los campos de usuario (reutilizado)
-const teacherUserSchema = z.object({
-  name: z.string().optional(),
-  email: z.string().email('Debe ser un email válido'),
-  image: z.string().optional(),
-  emailVerified: z.string().optional(),
-  rut: z.string().optional(),
-  phone: z.string().optional(),
-  birthdate: z.string().optional(),
-  area: z.string().optional(),
-  admin: z.boolean().optional(),
-})
-
-// 2) Server Action para crear un profesor
+// Acción para crear un profesor y asociarlo a un área
 export async function createTeacher(formData: FormData) {
-  // 2.1) Conectar a la base de datos
   await dbConnect()
 
-  // 2.2) Construir el objeto raw para el usuario
-  const raw = {
-    name: formData.get('name')?.toString() || undefined,
-    email: formData.get('email')?.toString() || '',
-    image: formData.get('image')?.toString() || undefined,
-    emailVerified: formData.get('emailVerified')?.toString() || undefined,
-    rut: formData.get('rut')?.toString() || undefined,
-    phone: formData.get('phone')?.toString() || undefined,
-    birthdate: formData.get('birthdate')?.toString() || undefined,
-    area: formData.get('area')?.toString() || undefined,
-    admin: formData.get('admin') === 'true',
+  const email = formData.get('email')?.toString() || ''
+  const areaId = formData.get('area')?.toString()
+
+  if (!email || !areaId) {
+    throw new Error('Email y área son obligatorios')
   }
 
-  // 2.3) Validar los datos del usuario
-  // const userData = teacherUserSchema.parse(raw)
+  // 1. Buscar si el usuario ya existe
+  let user = await User.findOne({ email })
 
-  // 2.4) Crear usuario con la acción correspondiente
-  const createdUser = await createUser(formData)
-  const userId = createdUser._id
+  if (!user) {
+    // 2. Crear nuevo usuario si no existe
+    user = await createUser(formData)
+    if (!user || !user._id) {
+      throw new Error('No se pudo crear el usuario')
+    }
+  }
 
-  if (!userId) throw new Error('No se pudo obtener el ID del usuario creado')
+  // 3. Verificar si ya existe un Teacher para ese usuario
+  const existingTeacher = await Teacher.findOne({ user: user._id })
+  if (existingTeacher) {
+    throw new Error('Este usuario ya está registrado como profesor')
+  }
 
-  // 2.5) Crear profesor con referencia al usuario
-  const teacher = await Teacher.create({ user: userId })
-  console.log('Created teacher', teacher)
+  // 4. Crear el nuevo Teacher con el área asociada
+  const teacher = await Teacher.create({
+    user: user._id,
+    area: areaId,
+  })
 
-  // 2.6) Retornar objeto serializable
   return JSON.parse(JSON.stringify(teacher))
 }

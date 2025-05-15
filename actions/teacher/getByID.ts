@@ -16,11 +16,9 @@ export async function getTeacherByID(id: string): Promise<ITeacher | null> {
   // Buscar y retornar el profesor con el user populado
   const teacher = await Teacher.findById(id)
     .populate('user')
+    .populate('area')
     .lean()
     .exec()
-
-  console.log('TEACHEE')
-  console.log(teacher)
 
   return teacher ? JSON.parse(JSON.stringify(teacher)) : null
 }

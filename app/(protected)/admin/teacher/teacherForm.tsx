@@ -34,7 +34,7 @@ const teacherFormSchema = z.object({
   rut: z.string().optional(),
   phone: z.string().optional(),
   birthdate: z.string().optional(),
-  area: z.string().optional(),
+  area: z.string().optional(),  // aquí seguirá siendo string, pero contendrá el _id
   admin: z.boolean().optional(),
 })
 
@@ -56,7 +56,7 @@ export function TeacherForm({ id }: Props) {
     defaultValues: {
       name: '',
       email: '',
-      area: '',
+      area: '',    // iniciamos vacío
       admin: false,
     },
   })
@@ -72,12 +72,17 @@ export function TeacherForm({ id }: Props) {
           form.reset({
             name: t?.user?.name || '',
             email: t?.user?.email || '',
-            area: t?.area._id.toString() || '',
+            area: t?.area?._id?.toString() || '',
             admin: t?.user?.admin ?? false,
           })
         }
         const allAreas = await getAllAreas()
-        setAreas(allAreas.map((a: IArea) => ({ _id: a._id.toString(), name: a.name })))
+        setAreas(
+          allAreas.map((a: IArea) => ({
+            _id: a._id.toString(),
+            name: a.name,
+          }))
+        )
       } catch (err) {
         console.error('Error al cargar datos:', err)
         toast.error('Error al cargar datos')
@@ -93,12 +98,19 @@ export function TeacherForm({ id }: Props) {
       const formData = new FormData()
       formData.append('name', values.name || '')
       formData.append('email', values.email)
-      if (values.area) formData.append('area', values.area)
+      if (values.area) {
+        formData.append('area', values.area)
+      }
       formData.append('admin', String(values.admin))
 
       if (teacher?.user?._id) {
         formData.append('user', teacher.user._id.toString())
       }
+
+      // console.log('FormData:', formData)
+      // console.log('Teacher:', teacher)
+      // console.log('Values:', values)
+      // return
 
       if (teacher?._id) {
         formData.append('_id', teacher._id.toString())
@@ -170,7 +182,7 @@ export function TeacherForm({ id }: Props) {
                 >
                   <option value="">Selecciona un área</option>
                   {areas.map((area) => (
-                    <option key={area._id} value={area.name}>
+                    <option key={area._id} value={area._id}>
                       {area.name}
                     </option>
                   ))}
