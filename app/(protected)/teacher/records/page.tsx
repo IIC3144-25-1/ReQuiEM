@@ -1,8 +1,7 @@
 "use client";
 import { useState } from "react";
 import RecordCard from "@/components/cards/record-card";
-import { Input } from "@/components/ui/input"; // Componente Input de shadcn
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select"; // Componente Select de shadcn
+import { RecordsFilters } from "@/components/filters/RecordsFilters";
 
 const records = [
   {
@@ -40,63 +39,44 @@ export default function Registros() {
   const [searchResident, setSearchResident] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const filteredRecords = records.filter((rec) => {
-    const matchesSearch = rec.surgery.toLowerCase().includes(searchSurgery.toLowerCase());
-    const matchesAlumno = rec.professor.toLowerCase().includes(searchResident.toLowerCase());
-    const matchesStatus = statusFilter === "all" || !statusFilter ? true : rec.status === statusFilter;
-    return matchesSearch && matchesStatus && matchesAlumno;
-  });
-
-  const statusLabels: { [key: string]: string } = {
+  const statusLabels = {
     all: "Todos",
     pending: "Pendiente",
     corrected: "Corregido",
   };
+  const statusOptions = ["all", "pending", "corrected"];
+
+  const filteredRecords = records.filter((rec) => {
+    const matchesSearch = rec.surgery.toLowerCase().includes(searchSurgery.toLowerCase());
+    const matchesResident = rec.professor.toLowerCase().includes(searchResident.toLowerCase());
+    const matchesStatus = statusFilter === "all" || !statusFilter ? true : rec.status === statusFilter;
+    return matchesSearch && matchesStatus && matchesResident;
+  });
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      {/* Filtros */}
-      <div className="p-4 flex flex-col md:flex-row gap-4">
-        {/* Buscador por cirugía*/}
-        <Input
-          placeholder="Buscar por cirugía..."
-          value={searchSurgery}
-          onChange={(e) => setSearchSurgery(e.target.value)}
-          className="w-full md:w-1/2"
-        />
-
-        {/* Buscador por residente*/}
-        <Input
-          placeholder="Buscar por residente..."
-          value={searchResident}
-          onChange={(e) => setSearchResident(e.target.value)}
-          className="w-full md:w-1/2"
-        />
-
-        {/* Filtro por estado */}
-        <Select onValueChange={(value) => setStatusFilter(value)} value={statusFilter}>
-          <SelectTrigger className="w-full md:w-1/4">
-            <span>{statusLabels[statusFilter] || "Filtrar por estado"}</span>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos</SelectItem>
-            <SelectItem value="pending">Pendiente</SelectItem>
-            <SelectItem value="corrected">Corregido</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Lista de registros */}
+      <RecordsFilters
+        search1={searchSurgery}
+        setSearch1={setSearchSurgery}
+        search1Placeholder="Buscar por cirugía..."
+        search2={searchResident}
+        setSearch2={setSearchResident}
+        search2Placeholder="Buscar por residente..."
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        statusLabels={statusLabels}
+        statusOptions={statusOptions}
+      />
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredRecords.map((reg, idx) => (
+        {filteredRecords.map((rec, idx) => (
           <RecordCard
             key={idx}
-            surgery={reg.surgery}
-            date={reg.date}
-            time={reg.time}
+            surgery={rec.surgery}
+            date={rec.date}
+            time={rec.time}
             counterpartRole="Residente"
-            counterpart={reg.professor}
-            dot={reg.status === "pending"}
+            counterpart={rec.professor}
+            dot={rec.status === "pending"}
           />
         ))}
       </div>

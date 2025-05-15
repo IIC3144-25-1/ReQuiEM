@@ -1,8 +1,7 @@
 "use client";
 import { useState } from "react";
 import RecordCard from "@/components/cards/record-card";
-import { Input } from "@/components/ui/input"; // Componente Input de shadcn
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select"; // Componente Select de shadcn
+import { RecordsFilters } from "@/components/filters/RecordsFilters";
 
 const records = [
   {
@@ -40,67 +39,47 @@ export default function Registros() {
   const [searchTeacher, setSearchTeacher] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const filteredRecords = records.filter((rec) => {
-    const matchesSearch = rec.surgery.toLowerCase().includes(searchSurgery.toLowerCase());
-    const matchesAlumno = rec.professor.toLowerCase().includes(searchTeacher.toLowerCase());
-    const matchesStatus = statusFilter === "all" || !statusFilter ? true : rec.status === statusFilter;
-    return matchesSearch && matchesStatus && matchesAlumno;
-  });
-
-  const statusLabels: { [key: string]: string } = {
+  const statusLabels = {
     all: "Todos",
     reviewed: "Revisado",
     corrected: "Corregido",
   };
+  const statusOptions = ["all", "reviewed", "corrected"];
 
-    return (
-        <div className="min-h-screen bg-white flex flex-col">
-          {/* Filtros */}
-          <div className="p-4 flex flex-col md:flex-row gap-4">
-          {/* Buscador por cirugía*/}
-          <Input
-            placeholder="Buscar por cirugía..."
-            value={searchSurgery}
-            onChange={(e) => setSearchSurgery(e.target.value)}
-            className="w-full md:w-1/2"
+  const filteredRecords = records.filter((rec) => {
+    const matchesSearch = rec.surgery.toLowerCase().includes(searchSurgery.toLowerCase());
+    const matchesTeacher = rec.professor.toLowerCase().includes(searchTeacher.toLowerCase());
+    const matchesStatus = statusFilter === "all" || !statusFilter ? true : rec.status === statusFilter;
+    return matchesSearch && matchesStatus && matchesTeacher;
+  });
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col">
+      <RecordsFilters
+        search1={searchSurgery}
+        setSearch1={setSearchSurgery}
+        search1Placeholder="Buscar por cirugía..."
+        search2={searchTeacher}
+        setSearch2={setSearchTeacher}
+        search2Placeholder="Buscar por profesor..."
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        statusLabels={statusLabels}
+        statusOptions={statusOptions}
+      />
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredRecords.map((rec, idx) => (
+          <RecordCard
+            key={idx}
+            surgery={rec.surgery}
+            date={rec.date}
+            time={rec.time}
+            counterpartRole="Profesor"
+            counterpart={rec.professor}
+            dot={rec.status === "corrected"}
           />
-
-          {/* Buscador por profesor*/}
-          <Input
-            placeholder="Buscar por profesor.."
-            value={searchTeacher}
-            onChange={(e) => setSearchTeacher(e.target.value)}
-            className="w-full md:w-1/2"
-          />
-
-          {/* Filtro por estado */}
-          <Select onValueChange={(value) => setStatusFilter(value)} value={statusFilter}>
-            <SelectTrigger className="w-full md:w-1/4">
-              <span>{statusLabels[statusFilter] || "Filtrar por estado"}</span>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="reviewed">Revisado</SelectItem>
-              <SelectItem value="corrected">Corregido</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Lista de registros */}
-        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredRecords.map((rec, idx) => (
-                <RecordCard
-                    key={idx}
-                    surgery={rec.surgery}
-                    date={rec.date}
-                    time={rec.time}
-                    counterpartRole="Profesor"
-                    counterpart={rec.professor}
-                    dot={rec.status === "corrected"}
-                />
-            ))}
-        </div>
-
-        </div>
-    );
+        ))}
+      </div>
+    </div>
+  );
 }
