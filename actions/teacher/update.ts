@@ -1,6 +1,6 @@
 'use server'
 
-import { Teacher } from '@/models/Teacher'
+import { ITeacher, Teacher } from '@/models/Teacher'
 import { User } from '@/models/User'
 import dbConnect from '@/lib/dbConnect'
 import { z } from 'zod'
@@ -14,7 +14,7 @@ const updateTeacherSchema = z.object({
 })
 
 // Función para actualizar un profesor y su usuario
-export async function updateTeacher(formData: FormData) {
+export async function updateTeacher(formData: FormData): Promise<ITeacher> {
   await dbConnect()
 
   // Extraer y validar datos

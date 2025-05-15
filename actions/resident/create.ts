@@ -1,7 +1,7 @@
 'use server'
 
 import dbConnect from '@/lib/dbConnect'
-import { Resident } from '@/models/Resident'
+import { IResident, Resident } from '@/models/Resident'
 import { User } from '@/models/User'
 import { createUser } from '../user/create'
 import { z } from 'zod'
@@ -17,7 +17,7 @@ const residentSchema = z.object({
 type ResidentRaw = z.infer<typeof residentSchema>
 
 // 2) Server Action
-export async function createResident(formData: FormData) {
+export async function createResident(formData: FormData): Promise<IResident> {
   // 2.1) Conexión a BD
   await dbConnect()
 
