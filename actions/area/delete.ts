@@ -4,7 +4,7 @@ import { Area } from "@/models/Area"
 import dbConnect from "@/lib/dbConnect"
 import { revalidatePath } from "next/cache"
 
-export async function deleteArea(areaId: string) {
+export async function deleteArea(areaId: string): Promise<void> {
     await dbConnect()
 
     await Area.findByIdAndDelete(areaId)

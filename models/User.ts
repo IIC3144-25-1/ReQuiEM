@@ -9,7 +9,6 @@ export interface IUser extends Document {
     rut?: string;
     phone?: string;
     birthdate?: Date;
-    area?: string;
     admin: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -24,7 +23,6 @@ const UserSchema = new Schema<IUser>(
       rut: { type: String, trim: true },
       phone: { type: String, trim: true },
       birthdate: { type: Date },
-      area: { type: String, trim: true },
       admin: { type: Boolean, default: false },
     },
     { timestamps: true }

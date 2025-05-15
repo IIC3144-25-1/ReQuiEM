@@ -1,9 +1,9 @@
 'use server'
 
-import { Surgery } from "@/models/Surgery"
+import { ISurgery, Surgery } from "@/models/Surgery"
 import dbConnect from "@/lib/dbConnect"
 
-export async function updateSurgery(formData: FormData) {
+export async function updateSurgery(formData: FormData): Promise<ISurgery> {
     await dbConnect()
 
     const name = formData.get("name")

@@ -5,7 +5,7 @@ import dbConnect from "@/lib/dbConnect";
 import { getCurrentUser } from "../user/getUser";
 
 
-export async function getUserResident() {
+export async function getUserResident(): Promise<IResident | null> {
     await dbConnect();
 
     const user = await getCurrentUser();

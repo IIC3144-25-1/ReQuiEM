@@ -1,10 +1,11 @@
 'use client'
 
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, useFieldArray } from "react-hook-form"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from 'react'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -12,129 +13,148 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
-import { Trash2Icon } from "lucide-react"
-import { IResident } from "@/models/Resident"
-import { createResident } from "@/actions/resident/create"
-import { updateResident } from "@/actions/resident/update"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ITeacher } from '@/models/Teacher'
+import { createResident } from '@/actions/resident/create'
+import { updateResident } from '@/actions/resident/update'
+import { getAllTeachers } from '@/actions/teacher/getAll'
+import { getResidentByID } from '@/actions/resident/getByID'
 
-// Sólo campos que el modelo acepta: user y teachers
+// Esquema Zod para validar email y lista de profesores
 const residentFormSchema = z.object({
-  user: z.string().min(1, "User ID is required"),
-  teachers: z.array(z.string().min(1, "Teacher ID is required")).min(1, "At least one teacher is required"),
+  email: z.string().email('Email inválido'),
+  teachers: z.array(z.string().min(1, 'Seleccione al menos un profesor')).min(1, 'Requiere al menos un profesor'),
 })
 
 type ResidentFormValues = z.infer<typeof residentFormSchema>
 
-type ResidentFormProps = {
-  resident?: Partial<IResident>
-}
+type Props = { id?: string }
 
-export function ResidentForm({ resident }: ResidentFormProps) {
+export function ResidentForm({ id }: Props) {
   const router = useRouter()
+  const [allTeachers, setAllTeachers] = useState<ITeacher[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const form = useForm<z.infer<typeof residentFormSchema>>({
+  const form = useForm<ResidentFormValues>({
     resolver: zodResolver(residentFormSchema),
-    defaultValues: {
-      user: resident?.user?.toString() || "",
-      teachers: resident?.teachers?.map(t => t.toString()) ?? ["Id"],
-    }, // Optional: Add mode for better validation handling
+    defaultValues: { email: '', teachers: [] },
   })
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "teachers" as never,
-  });
+  // Cargar datos iniciales: lista de profesores y, si hay ID, datos del residente
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+      try {
+        const teachers = await getAllTeachers()
+        setAllTeachers(teachers)
 
+        if (id && id !== 'new') {
+          const resident = await getResidentByID(id)
+          form.reset({
+            email: resident?.user.email || '',
+            teachers: resident?.teachers.map(t => t._id.toString()),
+          })
+        }
+      } catch (error) {
+        console.error('Error al cargar datos:', error)
+        toast.error('Error al cargar datos')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [id, form])
+
+  // Enviar formulario
   async function onSubmit(values: ResidentFormValues) {
     try {
       const formData = new FormData()
-      formData.append("user", values.user)
-      values.teachers.forEach((t, i) => {
-        formData.append(`teachers.${i}`, t)
-      })
+      formData.append('email', values.email)
+      values.teachers.forEach((t, i) => formData.append(`teachers.${i}`, t))
 
-      if (resident?._id) {
-        formData.append("_id", resident._id.toString())
+      if (id && id !== 'new') {
+        formData.append('_id', id)
         await updateResident(formData)
-        toast.success("Residente actualizado correctamente")
+        toast.success('Residente actualizado correctamente')
       } else {
         await createResident(formData)
-        toast.success("Residente creado correctamente")
+        toast.success('Residente creado correctamente')
       }
 
       router.refresh()
+      router.push('/admin/resident')
     } catch (err) {
-      console.error("Error en formulario residente: ", err)
-      toast.error("Ocurrió un error al guardar")
+      console.error('Error en formulario residente:', err)
+      toast.error('Ocurrió un error al guardar')
     }
-    form.reset()
+  }
+
+  if (loading) {
+    return <Skeleton className="h-96 w-full max-w-lg" />
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg">
-        {/* User ID */}
+        {/* Email del residente */}
         <FormField
           control={form.control}
-          name="user"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>User ID</FormLabel>
+              <FormLabel>Email Residente</FormLabel>
               <FormControl>
-                <Input placeholder="ObjectId del usuario" {...field} />
+                <Input placeholder="email@dominio.com" type="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Teachers dinámicos */}
-        <div className="space-y-4">
-          <FormLabel>Teachers</FormLabel>
-          {fields.map((field, index) => (
-            <div key={field.id} className="relative border rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium">Teacher {index + 1}</h3>
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="outline"
-                  onClick={() => remove(index)}
-                >
-                  <Trash2Icon className="h-4 w-4" />
-                </Button>
-              </div>
-
-              <FormField
-                control={form.control}
-                name={`teachers.${index}` as const}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Teacher ID</FormLabel>
-                    <FormControl>
-                      <Input placeholder="ObjectId del Profesor" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          ))}
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => append("")}
-          >
-            Añadir Profesor
-          </Button>
-        </div>
+        {/* Checkboxes para seleccionar profesores */}
+        <FormField
+          control={form.control}
+          name="teachers"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Profesores</FormLabel>
+              <FormControl>
+                <div className="space-y-2">
+                  {allTeachers.map((t) => {
+                    const idStr = t._id.toString()
+                    const checked = field.value.includes(idStr)
+                    return (
+                      <label key={idStr} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          value={idStr}
+                          checked={checked}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              field.onChange([...field.value, idStr])
+                            } else {
+                              field.onChange(field.value.filter((v) => v !== idStr))
+                            }
+                          }}
+                          className="h-4 w-4 border-gray-300 rounded"
+                        />
+                        <span>{t.user.email}</span>
+                      </label>
+                    )
+                  })}
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="flex justify-end">
           <Button type="submit">
-            {resident?._id ? "Actualizar Residente" : "Crear Residente"}
+            {id && id !== 'new' ? 'Actualizar Residente' : 'Crear Residente'}
           </Button>
         </div>
       </form>

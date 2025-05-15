@@ -58,20 +58,16 @@ export default function Page() {
       <Table className="w-full">
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
             <TableHead>Usuario</TableHead>
+            <TableHead>Mail</TableHead>
             <TableHead>Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {residents.map((resident) => (
             <TableRow key={resident._id.toString()}>
-              <TableCell>{resident._id.toString()}</TableCell>
-              <TableCell>
-                {resident?.user && typeof resident.user === "object" && "name" in resident.user
-                  ? resident.user.name
-                  : "Sin nombre"}
-              </TableCell>
+              <TableCell>{resident.user?.name || "Sin nombre"}</TableCell>
+              <TableCell>{resident.user?.email || "Sin email"}</TableCell>
               <TableCell className="flex items-center">
                 <Button asChild size="icon" variant="outline" className="mr-2">
                   <Link href={`resident/edit/${resident._id}`}>

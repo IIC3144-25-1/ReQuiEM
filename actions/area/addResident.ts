@@ -4,7 +4,7 @@ import { Area } from "@/models/Area"
 import dbConnect from "@/lib/dbConnect"
 import { Resident } from "@/models/Resident"
 
-export async function addResidentToArea(areaId: string, residentId: string) {
+export async function addResidentToArea(areaId: string, residentId: string): Promise<void> {
     await dbConnect()
 
     const area = await Area.findById(areaId);

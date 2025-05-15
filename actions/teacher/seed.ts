@@ -12,7 +12,9 @@ export async function seedDummyTeachers() {
   const results = [];
 
   for (const data of dummyTeacherData) {
-    const teacher = await createTeacher(data);
+    const formData = new FormData();
+    formData.append('user', data.user);
+    const teacher = await createTeacher(formData);
     results.push(teacher);
   }
 

@@ -85,7 +85,7 @@ const Navbar1 = async ({
           title: "Profesores",
           description: "Administra los profesores",
           icon: <Trees className="size-5 shrink-0" />,
-          url: "#",
+          url: "/admin/teacher",
         },
         {
           title: "Cirugias",
@@ -97,7 +97,7 @@ const Navbar1 = async ({
           title: "Areas",
           description: "Administra las areas quirurgicas",
           icon: <Stethoscope className="size-5 shrink-0" />,
-          url: "/admin/surgeries",
+          url: "/admin/areas",
         },
       ],
     },

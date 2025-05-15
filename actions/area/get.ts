@@ -3,10 +3,14 @@
 import dbConnect from "@/lib/dbConnect"
 import { Area, IArea } from "@/models/Area"
 
-export async function getArea(id: string) {
-    await dbConnect()
+export async function getArea(id: string): Promise<IArea | null> {
+    await dbConnect();
 
-    const areas = await Area.findById(id).lean<IArea>().exec()
+    const area = await Area.findById(id)
+        .populate("residents")
+        .populate("teachers")
+        .lean<IArea>()
+        .exec();
 
-    return areas
+    return area;
 }
