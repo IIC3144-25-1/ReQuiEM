@@ -5,13 +5,13 @@ import { ISurgery } from "./Surgery";
 
 export interface IRecord extends Document {
     _id: mongoose.Types.ObjectId;
-    resident: IResident | mongoose.Types.ObjectId;
-    teacher: ITeacher | mongoose.Types.ObjectId;
     patientId: string;      // RUT del paciente
     date: Date;
-    surgery: ISurgery | mongoose.Types.ObjectId;
     status: 'pending' | 'corrected' | 'reviewed' | 'canceled';
     residentsYear: number;
+    resident: IResident;
+    teacher: ITeacher;
+    surgery: ISurgery;
     steps: {
         name: string;
         residentDone: boolean;

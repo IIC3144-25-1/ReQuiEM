@@ -24,6 +24,7 @@ import { useEffect, useState } from 'react'
 import { getAllAreas } from '@/actions/area/getAll'
 import { getTeacherByID } from '@/actions/teacher/getByID'
 import { Skeleton } from '@/components/ui/skeleton'
+import { IArea } from '@/models/Area'
 
 const teacherFormSchema = z.object({
   name: z.string().optional(),
@@ -40,7 +41,7 @@ const teacherFormSchema = z.object({
 type TeacherFormValues = z.infer<typeof teacherFormSchema>
 
 type Props = {
-  id: string
+  id?: string
 }
 
 export function TeacherForm({ id }: Props) {
@@ -55,11 +56,6 @@ export function TeacherForm({ id }: Props) {
     defaultValues: {
       name: '',
       email: '',
-      image: '',
-      emailVerified: '',
-      rut: '',
-      phone: '',
-      birthdate: '',
       area: '',
       admin: false,
     },
@@ -76,21 +72,12 @@ export function TeacherForm({ id }: Props) {
           form.reset({
             name: t?.user?.name || '',
             email: t?.user?.email || '',
-            image: t?.user?.image || '',
-            emailVerified: t?.user?.emailVerified
-              ? new Date(t.user.emailVerified).toISOString().slice(0, 16)
-              : '',
-            rut: t?.user?.rut || '',
-            phone: t?.user?.phone || '',
-            birthdate: t?.user?.birthdate
-              ? new Date(t.user.birthdate).toISOString().slice(0, 10)
-              : '',
-            area: t?.user?.area || '',
+            area: t?.area._id.toString() || '',
             admin: t?.user?.admin ?? false,
           })
         }
         const allAreas = await getAllAreas()
-        setAreas(allAreas.map(a => ({ _id: a._id.toString(), name: a.name })))
+        setAreas(allAreas.map((a: IArea) => ({ _id: a._id.toString(), name: a.name })))
       } catch (err) {
         console.error('Error al cargar datos:', err)
         toast.error('Error al cargar datos')
@@ -106,11 +93,6 @@ export function TeacherForm({ id }: Props) {
       const formData = new FormData()
       formData.append('name', values.name || '')
       formData.append('email', values.email)
-      if (values.image) formData.append('image', values.image)
-      if (values.emailVerified) formData.append('emailVerified', values.emailVerified)
-      if (values.rut) formData.append('rut', values.rut)
-      if (values.phone) formData.append('phone', values.phone)
-      if (values.birthdate) formData.append('birthdate', values.birthdate)
       if (values.area) formData.append('area', values.area)
       formData.append('admin', String(values.admin))
 
@@ -169,76 +151,6 @@ export function TeacherForm({ id }: Props) {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input placeholder="email@dominio.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="image"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>URL de Imagen</FormLabel>
-              <FormControl>
-                <Input placeholder="https://..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="emailVerified"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Verificado (fecha y hora)</FormLabel>
-              <FormControl>
-                <Input type="datetime-local" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="rut"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>RUT</FormLabel>
-              <FormControl>
-                <Input placeholder="12345678-K" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Teléfono</FormLabel>
-              <FormControl>
-                <Input placeholder="+56 9 1234 5678" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="birthdate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de Nacimiento</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -43,7 +43,6 @@ export default async function Page() {
       <Table className="w-full">
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
             <TableHead>Nombre</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Área</TableHead>
@@ -54,7 +53,6 @@ export default async function Page() {
           {teachers.map((teacher) => (
             console.log(teacher),
             <TableRow key={teacher._id.toString()}>
-              <TableCell>{teacher._id.toString()}</TableCell>
               <TableCell>{teacher.user?.name || "Sin nombre"}</TableCell>
               <TableCell>{teacher.user?.email || "Sin email"}</TableCell>
               <TableCell>{teacher.user?.area || "Sin área"}</TableCell>

@@ -9,6 +9,7 @@ export async function getTeachers(): Promise<ITeacher[]> {
 
   const teachers = await Teacher.find()
     .populate('user')
+    .populate('area')
     .lean<ITeacher[]>()
     .exec()
 
