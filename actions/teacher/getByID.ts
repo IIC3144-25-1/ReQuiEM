@@ -19,5 +19,8 @@ export async function getTeacherByID(id: string): Promise<ITeacher | null> {
     .lean()
     .exec()
 
+  console.log('TEACHEE')
+  console.log(teacher)
+
   return teacher ? JSON.parse(JSON.stringify(teacher)) : null
 }
