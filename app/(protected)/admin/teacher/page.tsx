@@ -55,7 +55,7 @@ export default async function Page() {
             <TableRow key={teacher._id.toString()}>
               <TableCell>{teacher.user?.name || "Sin nombre"}</TableCell>
               <TableCell>{teacher.user?.email || "Sin email"}</TableCell>
-              <TableCell>{teacher.user?.area || "Sin área"}</TableCell>
+              <TableCell>{teacher.area?.name || "Sin área"}</TableCell>
               <TableCell className="flex items-center">
                 <Button asChild size="icon" variant="outline" className="mr-2">
                   <Link href={`/admin/teacher/edit/${teacher._id}`}><Edit /></Link>
