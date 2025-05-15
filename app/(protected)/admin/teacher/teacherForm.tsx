@@ -34,7 +34,7 @@ const teacherFormSchema = z.object({
   rut: z.string().optional(),
   phone: z.string().optional(),
   birthdate: z.string().optional(),
-  area: z.string().optional(),  // aquí seguirá siendo string, pero contendrá el _id
+  area: z.string().optional(),
   admin: z.boolean().optional(),
 })
 
@@ -56,7 +56,7 @@ export function TeacherForm({ id }: Props) {
     defaultValues: {
       name: '',
       email: '',
-      area: '',    // iniciamos vacío
+      area: '',
       admin: false,
     },
   })
@@ -106,11 +106,6 @@ export function TeacherForm({ id }: Props) {
       if (teacher?.user?._id) {
         formData.append('user', teacher.user._id.toString())
       }
-
-      // console.log('FormData:', formData)
-      // console.log('Teacher:', teacher)
-      // console.log('Values:', values)
-      // return
 
       if (teacher?._id) {
         formData.append('_id', teacher._id.toString())
