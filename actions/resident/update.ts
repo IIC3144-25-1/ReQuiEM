@@ -2,7 +2,7 @@
 'use server'
 
 import dbConnect from '@/lib/dbConnect'
-import { Resident } from '@/models/Resident'
+import { IResident, Resident } from '@/models/Resident'
 import { User } from '@/models/User'
 import { z } from 'zod'
 
@@ -15,7 +15,7 @@ const updateResidentSchema = z.object({
   //   .min(1, 'Se requiere al menos un profesor'),
 })
 
-export async function updateResident(formData: FormData) {
+export async function updateResident(formData: FormData): Promise<IResident> {
   // 2) Conectar a la base de datos
   await dbConnect()
 

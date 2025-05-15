@@ -3,7 +3,7 @@
 import { ISurgery, Surgery } from "@/models/Surgery"
 import dbConnect from "@/lib/dbConnect"
 
-export async function getSurgeries() {
+export async function getSurgeries(): Promise<ISurgery[]> {
     await dbConnect()
 
     // Fetch all surgeries from the database

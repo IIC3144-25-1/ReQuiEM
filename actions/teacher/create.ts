@@ -1,12 +1,12 @@
 'use server'
 
 import dbConnect from '@/lib/dbConnect'
-import { Teacher } from '@/models/Teacher'
+import { ITeacher, Teacher } from '@/models/Teacher'
 import { User } from '@/models/User'
 import { createUser } from '../user/create'
 
 // Acción para crear un profesor y asociarlo a un área
-export async function createTeacher(formData: FormData) {
+export async function createTeacher(formData: FormData): Promise<ITeacher> {
   await dbConnect()
 
   const email = formData.get('email')?.toString() || ''
