@@ -1,8 +1,10 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getRecordByID } from "@/actions/record/getByID";
+//import { getRecordByID } from "@/actions/record/getByID";
 
-export default async function Page(props: { params: { id: string } }) {
+export default async function Page(props: {params: Promise<{id: string}>}) {
+  const { id } = await props.params;
+  console.log("ID de la cirugía:", id); // Eliminar cuando se remplaze la linea de abajo
   const record = recordPopulated; // TODO: Reemplaza por: await getRecordByID(props.params.id)
 
   if (!record) {
