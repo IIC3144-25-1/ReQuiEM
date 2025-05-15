@@ -12,11 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Edit, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
-import { getTeachers } from "@/actions/teacher/getAll";
+import { getAllTeachers } from "@/actions/teacher/getAll";
 import { deleteTeacher } from "@/actions/teacher/delete";
 
 export default async function Page() {
-  const teachers = await getTeachers();
+  const teachers = await getAllTeachers();
   console.log(teachers);
 
   const handleDelete = async (data: FormData) => {
