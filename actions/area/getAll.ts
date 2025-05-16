@@ -6,7 +6,7 @@ import { Area, IArea } from "@/models/Area"
 export async function getAreas(){
     await dbConnect()
 
-    const areas = await Area.find().populate('teachers').populate('residents').lean<IArea[]>().exec()
+    const areas = await Area.find().lean<IArea[]>().exec()
 
     return areas
 }
