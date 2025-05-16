@@ -1,10 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { IArea } from "./Area";
 
 export interface ISurgery extends Document {
     _id: mongoose.Types.ObjectId;
     name: string;
     description?: string;
-    area: string;
+    area: IArea;
     steps: string[];
     osats: {
         item: string;

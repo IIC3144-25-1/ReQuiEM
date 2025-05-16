@@ -13,6 +13,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
+  
 import { Input } from "@/components/ui/input"
 import { createSurgery } from "@/actions/surgery/createSurgery"
 import { toast } from "sonner"
@@ -20,58 +28,63 @@ import { Trash2Icon } from "lucide-react"
 import { ISurgery } from "@/models/Surgery"
 import { useRouter } from "next/navigation"
 import { updateSurgery } from "@/actions/surgery/updateSurgery"
+import { IArea } from "@/models/Area"
 
 export const surgerySchema = z.object({
     name: z.string().min(1, "El nombre de la cirugía es requerido"),
     description: z.string().optional(),
     area: z.string().min(1, "El área es requerida"),
-    steps: z.array(
-      z.object({
-        name: z.string().min(1, "El nombre del paso es requerido"),
-        description: z.string().optional(),
-        guideline: z.object({
-                name: z.string().min(1, "El nombre de la pauta del paso es requerido"),
-                maxRating: z.string().min(1, "Calificacion tiene que ser por lo menos 1").max(10, "Calificacion tiene que ser como maximo 10"),
-            }),
-      })
-    ).min(1, "Por lo menos un paso es requerido"),
+    steps: z.array(z.object({
+        name: z.string().min(1, "El nombre del paso no puede estar vacío"),
+      })).min(1, "Por lo menos un paso es requerido"),
     osats: z.array(
       z.object({
-        name: z.string().min(1, "Nombre del paso OSAT es requerido"),
-        description: z.string().optional(),
-        maxRating: z.string().min(1, "Calificacion tiene que ser por lo menos 1").max(5, "Calificacion tiene que ser como maximo 5"),
+        item: z.string().min(1, "El nombre de la evaluación es requerido"),
+        maxPunctuation: z.string().min(1, "La puntuación máxima es requerida"),
       })
     ).min(1, "Por lo menos un paso OSAT es requerido"),
 });
 
-export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
+export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[]}) {
     const router = useRouter()
     // 1. Define your form.
     const form = useForm<z.infer<typeof surgerySchema>>({
-    resolver: zodResolver(surgerySchema),
-    defaultValues: {
-        name: "",
-        description: "",
-        area: "",
-        steps: [
-          {
+        resolver: zodResolver(surgerySchema),
+        defaultValues: {
             name: "",
             description: "",
-            guideline: {
-              name: "",
-              maxRating: '5',
+            area: "",
+            steps: [
+                {
+                    name: "",
+                },
+            ],
+            osats: [
+            {
+                item: "",
+                maxPunctuation: "",
             },
-          },
-        ],
-        osats: [
-          {
-            name: "",
-            description: "",
-            maxRating: '5',
-          },
-        ],
-      },
+            ],
+        },
     })
+
+  useEffect(() => {
+    if (surgery) {
+        console.log("Surgery", surgery)
+        form.reset({
+            name: surgery.name,
+            description: surgery.description || '',
+            area: surgery.area._id.toString(),
+            steps: surgery.steps.map((step) => ({
+                name: step,
+            })),
+            osats: surgery.osats.map((osat) => ({
+                item: osat.item,
+                maxPunctuation: osat.maxPunctuation.toString(),
+            })),
+        })
+        }
+  }, [surgery, form])
 
 
   // This in oly for the steps form, beacuse you can add more steps
@@ -89,23 +102,20 @@ export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof surgerySchema>) {
     try {
+        console.log("Values", values)
         const formData = new FormData()
 
         formData.append("name", values.name)
         formData.append("description", values.description || "")
-        formData.append("area", values.area)
+        formData.append("areaId", values.area)
 
         values.steps.forEach((step, index) => {
-            formData.append(`steps.${index}.name`, step.name)
-            formData.append(`steps.${index}.description`, step.description || "")
-            formData.append(`steps.${index}.guideline.name`, step.guideline.name)
-            formData.append(`steps.${index}.guideline.maxRating`, step.guideline.maxRating)
+            formData.append(`steps.${index}`, step.name)
         })
 
         values.osats.forEach((osat, index) => {
-            formData.append(`osats.${index}.name`, osat.name)
-            formData.append(`osats.${index}.description`, osat.description || "")
-            formData.append(`osats.${index}.maxRating`, osat.maxRating)
+            formData.append(`osats.${index}.item`, osat.item)
+            formData.append(`osats.${index}.maxPunctuation`, osat.maxPunctuation)
         })
 
         if (surgery) {
@@ -165,9 +175,20 @@ export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
             render={({ field }) => (
                 <FormItem>
                 <FormLabel>Área de la cirugía</FormLabel>
-                <FormControl>
-                    <Input placeholder="Área quirúrgica" {...field} />
-                </FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Selecciona el área" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                    {areas.map((area) => (
+                        <SelectItem key={area._id.toString()} value={area._id.toString()}>
+                        {area.name}
+                        </SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
                 <FormDescription>Área quirúrgica de la cirugía</FormDescription>
                 <FormMessage />
                 </FormItem>
@@ -208,55 +229,8 @@ export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
                     </FormItem>
                     )}
                 />
-
-                {/* Description */}
-                <FormField
-                    control={form.control}
-                    name={`steps.${index}.description`}
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>¿Que se hace en el paso?</FormLabel>
-                        <FormControl>
-                        <Input placeholder="En este paso se..." {...field} />
-                        </FormControl>
-                        <FormDescription>Describe el paso de la cirugía</FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-
-                {/* Guideline group */}
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-1">
-                    <FormField
-                    control={form.control}
-                    name={`steps.${index}.guideline.name`}
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>¿Que se evalua en este paso?</FormLabel>
-                        <FormControl>
-                            <Input placeholder="Se realiza correctamente ..." {...field} />
-                        </FormControl>
-                        <FormDescription>Describe que se evalua en este paso</FormDescription>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name={`steps.${index}.guideline.maxRating`}
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Calificación Máxima del paso</FormLabel>
-                        <FormControl>
-                            <Input type="number" placeholder="5" {...field} />
-                        </FormControl>
-                        <FormDescription>Este numero luego se utilizara para generar una escala del 1 - n</FormDescription>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
                 </div>
-                </div>
+
             ))}
             </div>
             <Button
@@ -264,13 +238,7 @@ export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
                 variant="secondary"
                 onClick={() =>
                 append({
-                    name: "",
-                    description: "",
-                    guideline: {
-                    name: "",
-                    maxRating: '5',
-                    },
-                })
+                    name: "",})
                 }
             >
                 Añadir Paso
@@ -300,7 +268,7 @@ export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
                 {/* Step name */}
                 <FormField
                     control={form.control}
-                    name={`osats.${index}.name`}
+                    name={`osats.${index}.item`}
                     render={({ field }) => (
                     <FormItem>
                         <FormLabel>Nombre de la Evaluación</FormLabel>
@@ -316,36 +284,18 @@ export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
                 {/* Description */}
                 <FormField
                     control={form.control}
-                    name={`osats.${index}.description`}
+                    name={`osats.${index}.maxPunctuation`}
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Descripción de la evaluación</FormLabel>
+                        <FormLabel>Puntación maxima</FormLabel>
                         <FormControl>
-                        <Input placeholder="En este paso se evalua..." {...field} />
+                        <Input placeholder="Calificación maxima" {...field} />
                         </FormControl>
-                        <FormDescription>Describe la evaluación</FormDescription>
                         <FormMessage />
                     </FormItem>
                     )}
                 />
 
-                {/* Guideline group */}
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-1">
-                    <FormField
-                    control={form.control}
-                    name={`osats.${index}.maxRating`}
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Calificación Máxima</FormLabel>
-                        <FormControl>
-                            <Input type="number" placeholder="1-5" {...field} />
-                        </FormControl>
-                        <FormDescription>Este numero luego se utilizara para generar una escala del 1 - n</FormDescription>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                </div>
                 </div>
             ))}
             </div>
@@ -354,9 +304,8 @@ export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
                 variant="secondary"
                 onClick={() =>
                 osatAppend({
-                    name: "",
-                    description: "",
-                    maxRating: '5',
+                    item: "",
+                    maxPunctuation: "",
                 })
                 }
             >

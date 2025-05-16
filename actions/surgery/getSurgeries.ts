@@ -7,7 +7,7 @@ export async function getSurgeries(): Promise<ISurgery[]> {
     await dbConnect()
 
     // Fetch all surgeries from the database
-    const surgeries = await Surgery.find({}).sort({ createdAt: -1 }).lean<ISurgery[]>().exec()
+    const surgeries = await Surgery.find({}).sort({ createdAt: -1 }).populate('area').lean<ISurgery[]>().exec()
 
-    return surgeries
+    return JSON.parse(JSON.stringify(surgeries))
 }
