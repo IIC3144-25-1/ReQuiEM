@@ -17,7 +17,7 @@ export interface IRecord extends Document {
         feedback?: string;
         rating?: number;
     }[]
-    status: 'pending' | 'corrected' | 'reviewed' | 'canceled';  // 'pending' | 'corrected' | 'reviewed' | 'canceled'
+    status: 'pending' | 'corrected' | 'reviewed' | 'canceled';
     comment: string;
     feedback: string;
     createdAt: Date;
@@ -40,7 +40,7 @@ const RecordSchema = new Schema<IRecord>(
           rating: { type: Number, min: 1, max: 5 },
         },
       ],
-      status: { type: String, enum: ['pending', 'completed', 'canceled'], default:'pending' },
+      status: { type: String, enum: ['pending', 'corrected', 'reviewed', 'canceled'], default:'pending' },
       comment:{type:String},
       feedback:{type:String}
     },
