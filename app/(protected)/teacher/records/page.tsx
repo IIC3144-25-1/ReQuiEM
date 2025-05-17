@@ -1,14 +1,14 @@
 "use server";
 
 import { getRecordsByCurrentUser } from "@/actions/record/getByUser";
-import RecordsClient from "@/components/records/TeacherClient";
+import TeacherRecordsClient from "@/components/records/TeacherClient";
 
 export default async function RecordsPage() {
   const records = await getRecordsByCurrentUser("teacher");
 
   const serializableRecords = JSON.parse(JSON.stringify(records || []));
 
-  return <RecordsClient records={serializableRecords} />;
+  return <TeacherRecordsClient records={serializableRecords} />;
 }
 
 

@@ -1,15 +1,14 @@
 "use server";
 
 import { getRecordsByCurrentUser } from "@/actions/record/getByUser";
-import RecordsClient from "@/components/records/ResidentClient";
+import ResidentRecordsClient from "@/components/records/ResidentClient";
 
 export default async function RecordsPage() {
   const records = await getRecordsByCurrentUser("resident");
-  console.log(records);
 
   const serializableRecords = JSON.parse(JSON.stringify(records || []));
 
-  return <RecordsClient records={serializableRecords} />;
+  return <ResidentRecordsClient records={serializableRecords} />;
 }
 
   // const registros = [

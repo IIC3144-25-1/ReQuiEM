@@ -6,15 +6,22 @@ import { RecordsFilters } from "@/components/filters/RecordsFilters";
 import { format } from "date-fns";
 import { isIResident, isISurgery, isIUser } from "@/utils/validation";
 
-export default function RecordsClient({ records }: { records: any[] }) {
+interface RecordType {
+  _id: string;
+  surgery: { name: string };
+  resident: { user: { name: string } };
+  date: string | Date;
+  status: string;
+}
+
+export default function TeacherRecordsClient({ records }: { records: RecordType[] }) {
+  const [searchSurgery, setSearchSurgery] = useState("");
+  const [searchResident, setSearchResident] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   if (!records || records.length === 0) {
     return <div className="leading-none text-center pt-10">No tienes registros todavía</div>;
   }
-
-  const [searchSurgery, setSearchSurgery] = useState("");
-  const [searchResident, setSearchResident] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
 
   const statusLabels = {
     all: "Todos",
