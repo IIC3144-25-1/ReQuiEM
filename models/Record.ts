@@ -40,7 +40,7 @@ const RecordSchema = new Schema<IRecord>(
           rating: { type: Number, min: 1, max: 5 },
         },
       ],
-      status: { type: String, enum: ['pending', 'completed', 'canceled'], default:'pending' },
+      status: { type: String, enum: ['pending', 'corrected', 'reviewed', 'canceled'], default:'pending' },
       comment:{type:String},
       feedback:{type:String}
     },
