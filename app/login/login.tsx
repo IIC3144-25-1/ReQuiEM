@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { loginWithGoogle } from "@/actions/auth/login";
+import { loginWithGoogle, loginWithMicrosoft } from "@/actions/auth/login";
 
 export function LoginForm({
   className,
@@ -19,8 +19,11 @@ export function LoginForm({
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || null;
 
-    const handleLogin = async () => {
+    const handleLoginWithGoogle = async () => {
         await loginWithGoogle({ redirectTo: callbackUrl });
+    }
+    const handleLoginWithMicrosoft = async () => {
+        await loginWithMicrosoft({ redirectTo: callbackUrl });
     }
     return (
       <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -32,10 +35,17 @@ export function LoginForm({
             </CardDescription>
             </CardHeader>
             <CardContent>
-            <form action={handleLogin}>
+            <form action={handleLoginWithGoogle}>
                 <div className="flex flex-col gap-6">
                 <Button type="submit" variant="outline" className="w-full">
                     Login with Google
+                </Button>
+                </div>
+            </form>
+            <form action={handleLoginWithMicrosoft}>
+                <div className="flex flex-col gap-6">
+                <Button type="submit" variant="outline" className="w-full">
+                    Login with Microsoft
                 </Button>
                 </div>
             </form>
