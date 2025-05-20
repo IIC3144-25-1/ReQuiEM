@@ -1,4 +1,7 @@
-import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
+'use server'
+
+import { Book, Menu, Sunset, Trees, Zap, Ambulance, Stethoscope } from "lucide-react";
+
 
 import {
   Accordion,
@@ -52,47 +55,61 @@ const Navbar1 = async ({
     title: "ReQuiEM",
   },
   menu = [
-    { title: "Home", url: "#" },
-    {
-      title: "Products",
+    { title: "Dashboard", url: "/dashboard" },
+    { 
+      title: "Registros", 
       url: "#",
       items: [
         {
-          title: "Blog",
-          description: "The latest industry news, updates, and info",
-          icon: <Book className="size-5 shrink-0" />,
-          url: "#",
+          title: "Residente",
+          url: "/resident/records",
         },
         {
-          title: "Company",
-          description: "Our mission is to innovate and empower the world",
+          title: "Profesor",
+          url: "/teacher/records",
+        },
+      ]
+    }, // Se podría verificar si el usuario es profesor o residente y llevarlo a su propio records
+
+    {
+      title: "Administrador",
+      url: "#",
+      items: [
+        {
+          title: "Residentes",
+          description: "Administra los residentes",
+          icon: <Book className="size-5 shrink-0" />,
+          url: "/admin/resident",
+        },
+        {
+          title: "Profesores",
+          description: "Administra los profesores",
           icon: <Trees className="size-5 shrink-0" />,
           url: "#",
         },
         {
-          title: "Careers",
-          description: "Browse job listing and discover our workspace",
-          icon: <Sunset className="size-5 shrink-0" />,
-          url: "#",
+          title: "Cirugias",
+          description: "Maneja las cirugias",
+          icon: <Ambulance className="size-5 shrink-0" />,
+          url: "/admin/surgeries",
         },
         {
-          title: "Support",
-          description:
-            "Get in touch with our support team or visit our community forums",
-          icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
+          title: "Areas",
+          description: "Administra las areas quirurgicas",
+          icon: <Stethoscope className="size-5 shrink-0" />,
+          url: "/admin/surgeries",
         },
       ],
     },
     {
-      title: "Resources",
+      title: "Residente",
       url: "#",
       items: [
         {
-          title: "Help Center",
-          description: "Get all the answers you need right here",
+          title: "Registros",
+          description: "Registros de los residentes y profesores",
           icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
+          url: "/teacher/records",
         },
         {
           title: "Contact Us",
@@ -113,14 +130,6 @@ const Navbar1 = async ({
           url: "#",
         },
       ],
-    },
-    {
-      title: "Pricing",
-      url: "#",
-    },
-    {
-      title: "Blog",
-      url: "#",
     },
   ],
   auth = {

@@ -1,6 +1,5 @@
-// import { LoginForm } from "@/components/login"
-import { LoginForm } from "@/app/login/login"
-import { Suspense } from "react"
+import React, { Suspense } from 'react';
+import { LoginForm } from './login';
 
 export default function Page() {
   return (
@@ -11,5 +10,5 @@ export default function Page() {
         </Suspense>
       </div>
     </div>
-  )
+  );
 }
