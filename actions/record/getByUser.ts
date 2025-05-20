@@ -7,6 +7,7 @@ import { IUser } from '@/models/User'
 import { ISurgery } from '@/models/Surgery'
 import dbConnect from '@/lib/dbConnect'
 import { getCurrentUser } from '../user/getUser'
+import '@/models/Surgery'
 
 /**
  * Obtiene los registros de un residente por su ID.
