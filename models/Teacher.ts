@@ -10,7 +10,7 @@ export interface ITeacher extends Document {
 
 const TeacherSchema = new Schema<ITeacher>(
     {
-      user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
+      user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     },
     { timestamps: true }
 );

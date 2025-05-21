@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IUser } from "./User";
-import {ITeacher} from "./Teacher";
+import { ITeacher } from "./Teacher";
 
 export interface IResident extends Document {
     _id: mongoose.Types.ObjectId;
-    user: IUser;
+    user: IUser
     teachers: ITeacher[];
     createdAt: Date;
     updatedAt: Date;
@@ -12,8 +12,8 @@ export interface IResident extends Document {
 
 const ResidentSchema = new Schema<IResident>(
     {
-      user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
-      teachers: [{ type: mongoose.Types.ObjectId, ref: "Teacher" }],
+      user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      teachers: { type: [{ type: Schema.Types.ObjectId, ref: "Teacher" }], default: [] },
     },
     { timestamps: true }
 );
