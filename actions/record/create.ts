@@ -1,0 +1,64 @@
+'use server'
+
+import { Record } from "@/models/Record"
+import { Surgery, ISurgery } from "@/models/Surgery"
+import dbConnect from "@/lib/dbConnect"
+
+export async function createRecord(formData: FormData) {
+    await dbConnect()
+    const resident = formData.get("resident")
+    const teacher = formData.get("teacher")
+    const patientId = formData.get("patientId")
+    const date = formData.get("date")
+    const surgeryName = formData.get("surgery")
+    const residentsYear = formData.get("residentsYear")
+
+    if (!surgeryName || typeof surgeryName !== "string") {
+        throw new Error("Surgery is required")
+    }
+    if (!teacher || typeof teacher !== "string") {
+        throw new Error("Teacher ID is required")
+    }
+    
+    const surgery = await Surgery.findOne({ name: surgeryName }).lean<ISurgery>().exec()
+    if (!surgery) {
+        throw new Error("Surgery not found");
+    }
+    
+    const dateObj = new Date(date as string);
+
+    const steps = surgery.steps.map((step: string) => ({
+        name: step,
+        residentDone: false,
+        teacherDone: false,
+        score: 0,
+    }));
+
+    const osats = surgery.osats.map((osat: { item: string; scale: { punctuation: number; description?: string }[] }) => ({
+        item: osat.item,
+        scale: osat.scale.map((scaleItem) => ({
+            punctuation: scaleItem.punctuation,
+            description: scaleItem.description,
+        })),
+        obtained: 0,
+    }));
+
+    const newRecord = new Record({
+        resident: resident,
+        teacher: teacher,
+        patientId: patientId,
+        date: dateObj,
+        surgery: surgery,
+        status: "pending",
+        residentsYear: Number(residentsYear),
+        steps: steps,
+        osats: osats,
+        residentJudgment: 0,
+        teacherJudgment: 0,
+        summaryScale: "",
+        feedback: "",
+    });
+
+    const savedRecord = await newRecord.save();
+    return savedRecord;
+}
