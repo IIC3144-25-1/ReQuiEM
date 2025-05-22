@@ -5,6 +5,9 @@ import RecordCard from "@/components/cards/record-card";
 import { RecordsFilters } from "@/components/filters/RecordsFilters";
 import { format } from "date-fns";
 import { isISurgery, isITeacher, isIUser } from "@/utils/validation";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 
 interface RecordType {
   _id: string;
@@ -20,7 +23,15 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
   const [statusFilter, setStatusFilter] = useState("");
 
   if (!records || records.length === 0) {
-    return <div className="leading-none text-center pt-10">No tienes registros todavía</div>;
+    return (
+      <div className="min-h-screen bg-white flex flex-col relative">
+        <div className="leading-none text-center pt-10">No tienes registros todavía</div>;
+        <Button className="fixed bottom-20 right-20" >
+          <PlusIcon className="mr-2" />
+          <Link href="/resident/new-record">Crear Registro</Link>
+        </Button>
+      </div>
+    )
   }
 
   const statusLabels = {
@@ -46,11 +57,17 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
   });
 
   if (!records || records.length === 0) {
-    return <div className="leading-none text-center pt-10">No tienes registros todavía</div>;
+    return (
+      <div>
+        <div className="leading-none text-center pt-10">No tienes registros todavía</div>;
+        
+      </div>
+      
+    )
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col relative">
       <RecordsFilters
         search1={searchSurgery}
         setSearch1={setSearchSurgery}
@@ -76,6 +93,10 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
           />
         ))}
       </div>
+      <Button className="fixed bottom-20 right-20" >
+        <PlusIcon className="mr-2" />
+        <Link href="/resident/new-record">Crear Registro</Link>
+      </Button>
     </div>
   );
 }

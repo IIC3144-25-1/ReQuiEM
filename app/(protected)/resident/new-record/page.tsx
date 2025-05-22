@@ -2,14 +2,14 @@
 
 import { getTeachersByUser } from "@/actions/record/getTeachersByUser"
 import { getSurgeries } from "@/actions/surgery/getSurgeries"
-import { getCurrentUser } from "@/actions/user/getUser"
 import RecordForm from "../recordForm"
+import { getUserResident } from "@/actions/resident/getByCurrentUser"
 
 
 export default async function NewRecord() {
     const surgeries = await getSurgeries()
     let teachers = await getTeachersByUser()
-    const user = await getCurrentUser()
+    const resident = await getUserResident()
     teachers = teachers || []
 
     return (
@@ -18,7 +18,7 @@ export default async function NewRecord() {
             <RecordForm
                 surgeries={JSON.parse(JSON.stringify(surgeries))}
                 teachers={JSON.parse(JSON.stringify(teachers))}
-                user={JSON.parse(JSON.stringify(user))}
+                resident={JSON.parse(JSON.stringify(resident))}
             />
         </div>
     )

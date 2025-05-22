@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils"
 import { formatRut, validateRut } from "@/utils/rut"
 import { ISurgery } from "@/models/Surgery"
 import { ITeacher } from "@/models/Teacher"
-import { IUser } from "@/models/User"
+import { IResident } from "@/models/Resident"
 import { toast } from "sonner"
 
 const recordSchema = z.object({
@@ -37,7 +37,7 @@ const recordSchema = z.object({
     residentsYear: z.string().min(1, "Se requiere año de residencia"),
 })
 
-export default function RecordForm({surgeries, teachers, user}: {surgeries: ISurgery[], teachers: ITeacher[], user: IUser}) {
+export default function RecordForm({surgeries, teachers, resident}: {surgeries: ISurgery[], teachers: ITeacher[], resident: IResident}) {
     const router = useRouter()
     const [hour, setHour] = useState("")
     const [minute, setMinute] = useState("")
@@ -45,7 +45,7 @@ export default function RecordForm({surgeries, teachers, user}: {surgeries: ISur
     const form = useForm<z.infer<typeof recordSchema>>({
         resolver: zodResolver(recordSchema),
         defaultValues: {
-            resident: user._id.toString(),
+            resident: resident._id.toString(),
             teacher: "",
             patientId: "",
             date: new Date(),

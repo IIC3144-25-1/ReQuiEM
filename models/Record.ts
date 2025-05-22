@@ -18,10 +18,6 @@ export interface IRecord extends Document {
         teacherDone: boolean;
         score: number;
     }[]
-<<<<<<< HEAD
-    status: 'pending' | 'corrected' | 'reviewed' | 'canceled';
-    comment: string;
-=======
     osats: {
         item: string;
         scale: {
@@ -33,7 +29,6 @@ export interface IRecord extends Document {
     residentJudgment: number;
     teacherJudgment: number;
     summaryScale: string;
->>>>>>> d379be2 (some models correction, first form to create a records and some get endpions)
     feedback: string;
     createdAt: Date;
     updatedAt: Date;
