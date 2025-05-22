@@ -1,7 +1,7 @@
 'use server'
 
 import { Record } from "@/models/Record"
-import { Surgery, ISurgery } from "@/models/Surgery"
+import { Surgery } from "@/models/Surgery"
 import dbConnect from "@/lib/dbConnect"
 
 export async function createRecord(formData: FormData) {
@@ -10,23 +10,19 @@ export async function createRecord(formData: FormData) {
     const teacher = formData.get("teacher")
     const patientId = formData.get("patientId")
     const date = formData.get("date")
-    const surgeryName = formData.get("surgery")
+    const surgeryId = formData.get("surgery")
     const residentsYear = formData.get("residentsYear")
 
-    if (!surgeryName || typeof surgeryName !== "string") {
+    if (!surgeryId || typeof surgeryId !== "string") {
         throw new Error("Surgery is required")
     }
     if (!teacher || typeof teacher !== "string") {
         throw new Error("Teacher ID is required")
     }
     
-    const surgery = await Surgery.findOne({ name: surgeryName }).lean<ISurgery>().exec()
-    if (!surgery) {
-        throw new Error("Surgery not found");
-    }
-    
     const dateObj = new Date(date as string);
-
+    const surgery = await Surgery.findById(surgeryId);
+    
     const steps = surgery.steps.map((step: string) => ({
         name: step,
         residentDone: false,
@@ -48,7 +44,7 @@ export async function createRecord(formData: FormData) {
         teacher: teacher,
         patientId: patientId,
         date: dateObj,
-        surgery: surgery,
+        surgery: surgeryId,
         status: "pending",
         residentsYear: Number(residentsYear),
         steps: steps,
@@ -59,6 +55,8 @@ export async function createRecord(formData: FormData) {
         feedback: "",
     });
 
-    const savedRecord = await newRecord.save();
-    return savedRecord;
+    await newRecord.save();
+    // const savedRecord = await newRecord.save();
+    // console.log("savedRecord", savedRecord);
+    return;
 }

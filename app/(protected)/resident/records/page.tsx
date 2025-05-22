@@ -1,6 +1,9 @@
 "use client";
 // import { FaBars, FaCog } from "react-icons/fa";
 import RecordCard from "@/components/cards/record-card";
+import { Button } from "@/components/ui/button"
+import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 
 const registros = [
   {
@@ -36,26 +39,24 @@ const registros = [
 export default function Registros() {
 
     return (
-        <div className="min-h-screen bg-white flex flex-col">
-        {/* Header */}
-        {/* <div className="bg-purple-800 text-white px-4 py-5 flex justify-between items-center shadow-md">
-            <h1 className="text-xl font-semibold">Registros</h1>
-        </div> */}
-
-        {/* Lista de registros */}
-        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {registros.map((reg, idx) => (
-                <RecordCard
-                    key={idx}
-                    surgery={reg.surgery}
-                    date={reg.date}
-                    time={reg.time}
-                    counterpartRole="Profesor"
-                    counterpart={reg.professor}
-                    dot={reg.status === "corrected"}
-                />
-            ))}
-        </div>
+        <div className="min-h-screen bg-white flex flex-col relative">
+          <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {registros.map((reg, idx) => (
+                  <RecordCard
+                      key={idx}
+                      surgery={reg.surgery}
+                      date={reg.date}
+                      time={reg.time}
+                      counterpartRole="Profesor"
+                      counterpart={reg.professor}
+                      dot={reg.status === "corrected"}
+                  />
+              ))}
+          </div>
+          <Button className="fixed bottom-20 right-20" >
+            <PlusIcon className="mr-2" />
+            <Link href="/resident/new-record">Crear Registro</Link>
+          </Button>
 
         </div>
     );
