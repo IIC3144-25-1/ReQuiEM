@@ -28,7 +28,7 @@ export async function getRecordsByCurrentUser( side: "resident" | "teacher" ) {
 
 async function getRecordsByResident(userId: object) {
     const resident = await Resident.findOne({ user: userId })
-    console.log("resident", resident)
+    // console.log("resident", resident)
     const records = await Record.find({ resident: resident?._id })
         .populate({ 
             path: 'teacher', 
@@ -44,7 +44,7 @@ async function getRecordsByResident(userId: object) {
         .lean<IRecord[]>()
         .exec()
     
-    console.log("records", records)
+    // console.log("records", records)
     return records as (IRecord & {
         teacher: ITeacher & { user: IUser };
         surgery: ISurgery;
