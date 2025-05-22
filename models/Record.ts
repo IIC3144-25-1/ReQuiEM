@@ -5,11 +5,11 @@ import { ISurgery } from "./Surgery";
 
 export interface IRecord extends Document {
     _id: mongoose.Types.ObjectId;
-    resident: IResident | mongoose.Types.ObjectId;
-    teacher: ITeacher | mongoose.Types.ObjectId;
+    resident: IResident;
+    teacher: ITeacher;
     patientName: string;
     date: Date;
-    surgery: ISurgery | mongoose.Types.ObjectId;
+    surgery: ISurgery;
     steps: {
         name: string;
         description?: string;
