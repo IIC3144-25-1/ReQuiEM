@@ -18,14 +18,14 @@ export async function getTeachersByUser() {
     // console.log("residents", resident)
     
     const areas = await Area.find({ residents: { $in: [resident._id] } })
-    .populate({
-        path: "teachers",
-        populate: {
-            path: "user",
-            select: "name",
-        },
-    });
-    // console.log("areas", areas)
+        .populate({
+            path: "teachers",
+            populate: {
+                path: "user",
+                select: "name",
+            },
+        });
+    console.log("areas", areas)
 
     const teachers: ITeacher[] = []
     areas.forEach((area) => {
