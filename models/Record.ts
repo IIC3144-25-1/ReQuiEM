@@ -29,6 +29,7 @@ export interface IRecord extends Document {
     residentJudgment: number;
     teacherJudgment: number;
     summaryScale: string;
+    residentComment: string;
     feedback: string;
     createdAt: Date;
     updatedAt: Date;
@@ -66,6 +67,7 @@ const RecordSchema = new Schema<IRecord>(
       residentJudgment: { type: Number, default: 0 },
       teacherJudgment: { type: Number, default: 0 },
       summaryScale: { type: String, trim: true },
+      residentComment: { type: String, trim: true },
       feedback: { type: String, trim: true }
     },
     { timestamps: true }
