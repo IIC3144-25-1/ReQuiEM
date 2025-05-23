@@ -32,13 +32,11 @@ const residentFormSchema = z.object({
 })
 
 type ResidentFormValues = z.infer<typeof residentFormSchema>
-
 type Props = { id?: string, areas: IArea[] }
 
 export function ResidentForm({ id, areas}: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
-
   const form = useForm<ResidentFormValues>({
     resolver: zodResolver(residentFormSchema),
     defaultValues: { email: '', area: '' },

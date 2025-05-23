@@ -39,12 +39,13 @@ export async function updateResident(formData: FormData): Promise<IResident> {
   if (!existing) {
     throw new Error(`No se encontró Residente con id=${data._id}`)
   }
-
+  
   // 8) Actualizar email en el modelo User
   await User.findByIdAndUpdate(
     existing.user,
     { email: data.email },
     { new: true }
+    // { teachers: data.teachers },
   )
 
   const updated = await updateResidentArea(areaId, residentId)
