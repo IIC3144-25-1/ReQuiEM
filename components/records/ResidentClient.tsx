@@ -81,9 +81,9 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
         statusOptions={statusOptions}
       />
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredRecords.map((r) => (
+      {filteredRecords.map((r) => (
+        <Link key={r._id.toString()} href={`/resident/records/view/${r._id}`}>
           <RecordCard
-            key={r._id.toString()}
             surgery={isISurgery(r.surgery) ? r.surgery.name : r.surgery.toString()}
             date={format(new Date(r.date), "dd/MM/yy")}
             time={format(new Date(r.date), "HH:mm")}
@@ -91,7 +91,9 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
             counterpart={isITeacher(r.teacher) && isIUser(r.teacher.user) ? (r.teacher.user.name || "") : r.teacher.toString()}
             dot={r.status === "corrected"}
           />
-        ))}
+        </Link>
+      ))}
+
       </div>
       <Button className="fixed bottom-20 right-20" >
         <PlusIcon className="mr-2" />
