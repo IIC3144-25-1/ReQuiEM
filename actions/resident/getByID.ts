@@ -15,7 +15,6 @@ export async function getResidentByID(residentId: string): Promise<IResident | n
   const resident = await Resident
     .findById(residentId)
     .populate('user')      // trae info del usuario
-    .populate('teachers')  // trae info de los profesores
     .lean<IResident>()
     .exec()
 

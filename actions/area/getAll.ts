@@ -7,8 +7,6 @@ export async function getAllAreas(): Promise<IArea[]> {
   await dbConnect()
 
   const areas = await Area.find()
-    .populate("residents")
-    .populate("teachers")
     .lean<IArea>()
     .exec()
 

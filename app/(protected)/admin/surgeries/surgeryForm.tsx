@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from "react"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useFieldArray } from "react-hook-form"
@@ -48,7 +47,7 @@ export const surgerySchema = z.object({
 export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
     const router = useRouter()
     // 1. Define your form.
-  const form = useForm<z.infer<typeof surgerySchema>>({
+    const form = useForm<z.infer<typeof surgerySchema>>({
     resolver: zodResolver(surgerySchema),
     defaultValues: {
         name: "",
@@ -72,31 +71,7 @@ export function SurgeryForm({surgery}: {surgery?: ISurgery}) {
           },
         ],
       },
-  })
-
-  useEffect(() => {
-    if (surgery) {
-        console.log("Surgery", surgery)
-      form.reset({
-        name: surgery.name,
-        description: surgery.description || '',
-        area: surgery.area,
-        steps: surgery.steps.map((step) => ({
-          name: step.name,
-          description: step.description || '',
-          guideline: {
-            name: step.guideline.name,
-            maxRating: String(step.guideline.maxRating),
-          },
-        })),
-        osats: surgery.osats.map((osat) => ({
-          name: osat.name,
-          description: osat.description || '',
-          maxRating: String(osat.maxRating),
-        })),
-      })
-    }
-  }, [surgery, form])
+    })
 
 
   // This in oly for the steps form, beacuse you can add more steps

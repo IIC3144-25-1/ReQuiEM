@@ -3,6 +3,7 @@
 
 import dbConnect from '@/lib/dbConnect'
 import { IResident, Resident } from '@/models/Resident'
+import { updateResidentArea } from '../area/updateResident'
 import { User } from '@/models/User'
 import { z } from 'zod'
 
@@ -10,9 +11,7 @@ import { z } from 'zod'
 const updateResidentSchema = z.object({
   _id: z.string().min(1, 'Resident ID is required'),
   email: z.string().email('Email inválido'),
-  // teachers: z
-  //   .array(z.string().min(1, 'Cada Teacher ID es requerido'))
-  //   .min(1, 'Se requiere al menos un profesor'),
+  area: z.string().min(1, 'Area id')
 })
 
 export async function updateResident(formData: FormData): Promise<IResident> {
@@ -22,33 +21,17 @@ export async function updateResident(formData: FormData): Promise<IResident> {
   // 3) Extraer y validar datos crudos
   const residentId = formData.get('_id')?.toString() || ''
   const email     = formData.get('email')?.toString()    || ''
+  const areaId = formData.get('areaId')?.toString() || ''
 
   if (!residentId) throw new Error('Resident ID (_id) es obligatorio')
   if (!email)      throw new Error('Email es obligatorio')
-
-  // 4) Recopilar índices de teachers.* 
-  const teacherIdxs = new Set<number>()
-  for (const key of formData.keys()) {
-    const m = key.match(/^teachers\.(\d+)$/)
-    if (m) teacherIdxs.add(Number(m[1]))
-  }
-
-  // 5) Construir array de teachers
-  const teachers = Array.from(teacherIdxs)
-    .sort((a, b) => a - b)
-    .map((i) => {
-      const t = formData.get(`teachers.${i}`)
-      if (!t || typeof t !== 'string') {
-        throw new Error(`Teacher ID en índice ${i} es requerido`)
-      }
-      return t
-    })
+  if (!areaId)      throw new Error('Email es obligatorio')
 
   // 6) Validar con Zod
   const data = updateResidentSchema.parse({
     _id: residentId,
     email,
-    // teachers,
+    area: areaId
   })
 
   // 7) Buscar el residente para obtener su userId
@@ -56,25 +39,16 @@ export async function updateResident(formData: FormData): Promise<IResident> {
   if (!existing) {
     throw new Error(`No se encontró Residente con id=${data._id}`)
   }
-
+  
   // 8) Actualizar email en el modelo User
   await User.findByIdAndUpdate(
     existing.user,
     { email: data.email },
     { new: true }
-  )
-
-  // 9) Actualizar teachers en el modelo Resident
-  const updated = await Resident.findByIdAndUpdate(
-    data._id,
-    { new: true }
     // { teachers: data.teachers },
   )
 
-  if (!updated) {
-    throw new Error(`Error al actualizar Residente con id=${data._id}`)
-  }
-
+  const updated = await updateResidentArea(areaId, residentId)
   console.log('Residente actualizado:', updated)
   return JSON.parse(JSON.stringify(updated))
 }
