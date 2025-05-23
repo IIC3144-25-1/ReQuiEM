@@ -36,7 +36,7 @@ export async function updateSurgery(formData: FormData): Promise<ISurgery> {
         .sort((a, b) => a - b)
         .map((i) => ({
         item:      String(formData.get(`osats.${i}.item`) ?? ''),
-        maxPunctuation: Number(formData.get(`osats.${i}.maxPunctuation`) ?? 0),
+        scale: JSON.parse(String(formData.get(`osats.${i}.scale`))) ?? '',
         }))
 
     // --- 4) Rehydrate into the shape your Zod schema expects ---
@@ -48,6 +48,5 @@ export async function updateSurgery(formData: FormData): Promise<ISurgery> {
         raw
     )
 
-    console.log("Updated surgery surgery", doc)
     return JSON.parse(JSON.stringify(doc))
 }

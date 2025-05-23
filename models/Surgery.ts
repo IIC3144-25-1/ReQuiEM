@@ -10,7 +10,7 @@ export interface ISurgery extends Document {
     osats: {
         item: string;
         scale: {
-            punctuation: number;
+            punctuation: string;
             description?: string;
         }[];
       }[];
@@ -29,7 +29,7 @@ const SurgerySchema = new Schema<ISurgery>(
           item: { type: String, required: true, trim: true },
           scale: [
             {
-              punctuation: { type: Number, required: true },
+              punctuation: { type: String, required: true },
               description: { type: String, trim: true, required: false },
             },
           ],

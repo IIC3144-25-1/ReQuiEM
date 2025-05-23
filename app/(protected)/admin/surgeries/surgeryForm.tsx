@@ -56,31 +56,28 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
     const form = useForm<z.infer<typeof surgerySchema>>({
         resolver: zodResolver(surgerySchema),
         defaultValues: {
-            name: "",
-            description: "",
-            area: "",
-            steps: [{ name: "" }],
-            osats: [{ item: "", scale: [{ punctuation: "", description: "" }] }],
-        },
-    })
-
-  useEffect(() => {
-    if (surgery) {
-        console.log("Surgery", surgery)
-        form.reset({
-            name: surgery.name,
-            description: surgery.description || '',
-            area: surgery.area._id.toString(),
-            steps: surgery.steps.map((step) => ({
+            name: surgery?.name || "",
+            description: surgery?.description || "",
+            area: surgery?.area.toString() || "",
+            steps: surgery?.steps.map((step) => ({
                 name: step,
-            })),
-            osats: surgery.osats.map((osat) => ({
+            })) || [{ name: "" }],
+            osats: surgery?.osats.map((osat) => ({
                 item: osat.item,
                 scale: osat.scale.map((s) => ({ punctuation: s.punctuation.toString(), description: s.description || "" })),
-            })),
-        })
-        }
-  }, [surgery, form])
+            })) || [
+                {
+                    item: "",
+                    scale: [
+                        {
+                            punctuation: "",
+                            description: "",
+                        },
+                    ],
+                },
+            ],
+        },
+    })
 
 
   // This in oly for the steps form, beacuse you can add more steps
@@ -98,7 +95,7 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof surgerySchema>) {
     try {
-        console.log("Values", values)
+        console.log("Values sumbited", values)
         const formData = new FormData()
 
         formData.append("name", values.name)
@@ -110,9 +107,10 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
         })
 
         values.osats.forEach((osat, index) => {
-            formData.append(`osats.${index}.item`, osat.item)
-            formData.append(`osats.${index}.scale`, JSON.stringify(osat.scale))
-        })
+            formData.append(`osats.${index}.item`, osat.item);
+            // Assuming scale should be sent as a JSON string if it's an array of objects
+            formData.append(`osats.${index}.scale`, JSON.stringify(osat.scale));
+        });
 
         if (surgery) {
             formData.append("surgeryId", surgery._id.toString())
@@ -147,7 +145,7 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
                 <FormItem className="w-[60px]">
                 <FormLabel className="text-xs">Puntaje</FormLabel>
                 <FormControl>
-                    <Input type="number" placeholder="Ej: 1" {...field} />
+                    <Input type="number" placeholder="5" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs"/>
                 </FormItem>
@@ -160,7 +158,7 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
                 <FormItem className="flex-1">
                 <FormLabel className="text-xs">Descripción</FormLabel>
                 <FormControl>
-                    <Input placeholder="Ej: No realiza la acción" {...field} />
+                    <Input placeholder="Ej: Logrado" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs"/>
                 </FormItem>

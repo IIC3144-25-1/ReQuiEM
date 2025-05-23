@@ -1,12 +1,12 @@
 
 import { getSurgery } from "@/actions/surgery/getSugery";
 import { SurgeryForm } from "../../surgeryForm";
-import { getAreas } from "@/actions/area/getAll";
+import { getAllAreas } from "@/actions/area/getAll";
 
 export default async function Page(props: {params: Promise<{id: string}>}) {
     const params = await props.params;
     const surgery = await getSurgery(params.id);
-    const areas = await getAreas();
+    const areas = await getAllAreas();
 
     if (!surgery) {
         return <div>No se encontró la cirugía</div>
