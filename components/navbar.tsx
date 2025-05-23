@@ -1,6 +1,6 @@
 'use server'
 
-import { Book, Menu, Sunset, Trees, Zap, Ambulance, Stethoscope } from "lucide-react";
+import { Book, Menu, Trees, Zap, Ambulance, Stethoscope } from "lucide-react";
 
 
 import {
@@ -62,10 +62,14 @@ const Navbar1 = async ({
       items: [
         {
           title: "Residente",
+          description: "Registros de los residentes",
+          icon: <Zap className="size-5 shrink-0" />,
           url: "/resident/records",
         },
         {
           title: "Profesor",
+          description: "Registros de los profesores",
+          icon: <Book className="size-5 shrink-0" />,
           url: "/teacher/records",
         },
       ]
@@ -85,7 +89,7 @@ const Navbar1 = async ({
           title: "Profesores",
           description: "Administra los profesores",
           icon: <Trees className="size-5 shrink-0" />,
-          url: "#",
+          url: "/admin/teacher",
         },
         {
           title: "Cirugias",
@@ -97,37 +101,7 @@ const Navbar1 = async ({
           title: "Areas",
           description: "Administra las areas quirurgicas",
           icon: <Stethoscope className="size-5 shrink-0" />,
-          url: "/admin/surgeries",
-        },
-      ],
-    },
-    {
-      title: "Residente",
-      url: "#",
-      items: [
-        {
-          title: "Registros",
-          description: "Registros de los residentes y profesores",
-          icon: <Zap className="size-5 shrink-0" />,
-          url: "/teacher/records",
-        },
-        {
-          title: "Contact Us",
-          description: "We are here to help you with any questions you have",
-          icon: <Sunset className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Status",
-          description: "Check the current status of our services and APIs",
-          icon: <Trees className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Terms of Service",
-          description: "Our terms and conditions for using our services",
-          icon: <Book className="size-5 shrink-0" />,
-          url: "#",
+          url: "/admin/areas",
         },
       ],
     },

@@ -6,8 +6,8 @@ export interface IArea extends Document {
     _id: mongoose.Types.ObjectId;
     name: string;
     description?: string;
-    residents: IResident[] | mongoose.Types.ObjectId[];
-    teachers: ITeacher[] | mongoose.Types.ObjectId[];
+    residents: IResident[];
+    teachers: ITeacher[];
     createdAt: Date;
     updatedAt: Date;
 }

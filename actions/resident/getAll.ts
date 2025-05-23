@@ -9,7 +9,6 @@ export async function getAllResident(): Promise<IResident[]> {
 
   const residents = await Resident.find()
     .populate('user')
-    .populate('teachers')
     .lean<IResident[]>()
     .exec();
 

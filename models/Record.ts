@@ -5,20 +5,31 @@ import { ISurgery } from "./Surgery";
 
 export interface IRecord extends Document {
     _id: mongoose.Types.ObjectId;
-    resident: IResident | mongoose.Types.ObjectId;
-    teacher: ITeacher | mongoose.Types.ObjectId;
-    patientName: string;
+    patientId: string;      // RUT del paciente
     date: Date;
-    surgery: ISurgery | mongoose.Types.ObjectId;
+    status: 'pending' | 'corrected' | 'reviewed' | 'canceled';
+    residentsYear: number;
+    resident: IResident;
+    teacher: ITeacher;
+    surgery: ISurgery;
     steps: {
         name: string;
-        description?: string;
-        comment?: string;
-        feedback?: string;
-        rating?: number;
+        residentDone: boolean;
+        teacherDone: boolean;
+        score: number;
     }[]
-    status: 'pending' | 'corrected' | 'reviewed' | 'canceled';
-    comment: string;
+    osats: {
+        item: string;
+        scale: {
+            punctuation: number;
+            description?: string;
+        }[];
+        obtained: number;
+    }
+    residentJudgment: number;
+    teacherJudgment: number;
+    summaryScale: string;
+    residentComment: string;
     feedback: string;
     createdAt: Date;
     updatedAt: Date;
@@ -28,21 +39,36 @@ const RecordSchema = new Schema<IRecord>(
     {
       resident: { type: mongoose.Types.ObjectId, ref: "Resident", required: true },
       teacher: { type: mongoose.Types.ObjectId, ref: "Teacher", required: true },
-      patientName: { type: String, required: true, trim: true },
+      patientId: { type: String, required: true, trim: true },
       date: { type: Date, required: true },
       surgery: { type: mongoose.Types.ObjectId, ref: "Surgery", required: true },
+      status: { type: String, enum: ['pending', 'corrected', 'reviewed', 'canceled'], default:'pending' },
+      residentsYear: { type: Number, required: true },
       steps: [
         {
           name: { type: String, required: true, trim: true },
-          description: { type: String, trim: true },
-          comment: { type: String, trim: true },
-          feedback: { type: String, trim: true },
-          rating: { type: Number, min: 1, max: 5 },
+          residentDone: { type: Boolean, default: false },
+          teacherDone: { type: Boolean, default: false },
+          score: { type: Number, default: 0 },
         },
       ],
-      status: { type: String, enum: ['pending', 'corrected', 'reviewed', 'canceled'], default:'pending' },
-      comment:{type:String},
-      feedback:{type:String}
+      osats: [
+        {
+          item: { type: String, required: true, trim: true },
+          scale: [
+            {
+              punctuation: { type: Number, required: true },
+              description: { type: String, trim: true, required: false },
+            },
+          ],
+          obtained: { type: Number, default: 0 },
+        },
+      ],
+      residentJudgment: { type: Number, default: 0 },
+      teacherJudgment: { type: Number, default: 0 },
+      summaryScale: { type: String, trim: true },
+      residentComment: { type: String, trim: true },
+      feedback: { type: String, trim: true }
     },
     { timestamps: true }
 );
