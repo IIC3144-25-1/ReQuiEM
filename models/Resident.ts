@@ -1,9 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IUser } from "./User";
+import { IArea } from "./Area";
 
 export interface IResident extends Document {
     _id: mongoose.Types.ObjectId;
-    user: IUser
+    user: IUser;
+    area: IArea;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -11,6 +13,7 @@ export interface IResident extends Document {
 const ResidentSchema = new Schema<IResident>(
     {
       user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
+      area: { type: mongoose.Types.ObjectId, ref: "Area", required: true },
     },
     { timestamps: true }
 );

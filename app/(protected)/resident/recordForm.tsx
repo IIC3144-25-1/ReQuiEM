@@ -197,7 +197,6 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
                                         disabled={(date) =>
                                         date > new Date() || date < new Date("1900-01-01")
                                         }
-                                        initialFocus
                                         locale={es}
                                     />
                                 </PopoverContent>

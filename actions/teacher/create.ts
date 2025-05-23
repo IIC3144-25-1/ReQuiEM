@@ -4,6 +4,7 @@ import dbConnect from '@/lib/dbConnect'
 import { ITeacher, Teacher } from '@/models/Teacher'
 import { User } from '@/models/User'
 import { createUser } from '../user/create'
+import { addTeacherToArea } from '../area/addTeacher'
 
 // Acción para crear un profesor y asociarlo a un área
 export async function createTeacher(formData: FormData): Promise<ITeacher> {
@@ -38,6 +39,8 @@ export async function createTeacher(formData: FormData): Promise<ITeacher> {
     user: user._id,
     area: areaId,
   })
+
+  await addTeacherToArea(areaId, teacher._id)
 
   return JSON.parse(JSON.stringify(teacher))
 }

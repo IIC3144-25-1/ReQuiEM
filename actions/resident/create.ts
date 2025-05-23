@@ -5,13 +5,12 @@ import { IResident, Resident } from '@/models/Resident'
 import { User } from '@/models/User'
 import { createUser } from '../user/create'
 import { z } from 'zod'
+import { addResidentToArea } from '../area/addResident'
 
 // 1) Esquema Zod para validar la forma final
 const residentSchema = z.object({
   user: z.string().min(1, 'User ID is required'),
-  teachers: z
-    .array(z.string().min(1, 'Each teacher ID is required'))
-    .optional(),
+  area: z.string().min(1, 'Area id')
 })
 
 type ResidentRaw = z.infer<typeof residentSchema>
@@ -41,37 +40,30 @@ export async function createResident(formData: FormData): Promise<IResident> {
   // 2.5) Obtener el userId para asignar al Resident
   const userId = user._id.toString()
 
-  // 2.6) Recopilar índices de teachers
-  const teacherIdxs = new Set<number>()
-  for (const key of formData.keys()) {
-    const m = key.match(/^teachers\.(\d+)$/)
-    if (m) teacherIdxs.add(Number(m[1]))
+  // 2.6) Recopilar el area
+  const areaId = formData.get('areaId')?.toString()
+  
+  if (!areaId) {
+    throw new Error('Area is required to create or link User')
   }
-
-  // 2.7) Construir array de teachers
-  const teachers = Array.from(teacherIdxs)
-    .sort((a, b) => a - b)
-    .map((i) => {
-      const t = formData.get(`teachers.${i}`)
-      if (!t || typeof t !== 'string') {
-        throw new Error(`Teacher ID at index ${i} is required`)
-      }
-      return t
-    })
 
   // 2.8) Raw payload para Resident
   const raw: ResidentRaw = {
     user: userId,
-    // teachers: teachers.length > 0 ? teachers : undefined,
+    area: areaId
   }
 
   // 3) Validación Zod
   const data = residentSchema.parse(raw)
 
   // 4) Crear documento Mongoose
-  const doc = await Resident.create(data)
+  const resident = await Resident.create(data)
 
-  console.log('Created resident', doc)
+  console.log('Created resident', resident);
+  
+  // Añadimos nuevo residente al area
+  await addResidentToArea(areaId, resident._id.toString())
+
   // 5) Devolver POJO serializable
-  return JSON.parse(JSON.stringify(doc))
+  return JSON.parse(JSON.stringify(resident))
 }

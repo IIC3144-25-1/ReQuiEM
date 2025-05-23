@@ -14,33 +14,34 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ITeacher } from '@/models/Teacher'
 import { createResident } from '@/actions/resident/create'
 import { updateResident } from '@/actions/resident/update'
-import { getAllTeachers } from '@/actions/teacher/getAll'
+import { IArea } from '@/models/Area'
 import { getResidentByID } from '@/actions/resident/getByID'
+
 
 // Esquema Zod para validar email y lista de profesores
 const residentFormSchema = z.object({
   email: z.string().email('Email inválido'),
-  teachers: z.array(z.string().min(1, 'Seleccione al menos un profesor')).min(1, 'Requiere al menos un profesor'),
+  area: z.string().min(1, 'El area es requerida'),
 })
 
 type ResidentFormValues = z.infer<typeof residentFormSchema>
 
-type Props = { id?: string }
+type Props = { id?: string, areas: IArea[] }
 
-export function ResidentForm({ id }: Props) {
+export function ResidentForm({ id, areas}: Props) {
   const router = useRouter()
-  const [allTeachers, setAllTeachers] = useState<ITeacher[]>([])
   const [loading, setLoading] = useState(true)
 
   const form = useForm<ResidentFormValues>({
     resolver: zodResolver(residentFormSchema),
-    defaultValues: { email: '', teachers: [] },
+    defaultValues: { email: '', area: '' },
   })
 
   // Cargar datos iniciales: lista de profesores y, si hay ID, datos del residente
@@ -48,14 +49,11 @@ export function ResidentForm({ id }: Props) {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const teachers = await getAllTeachers()
-        setAllTeachers(teachers)
-
         if (id && id !== 'new') {
           const resident = await getResidentByID(id)
           form.reset({
             email: resident?.user.email || '',
-            teachers: resident?.teachers.map(t => t._id.toString()),
+            area: resident?.area?.toString() || '',
           })
         }
       } catch (error) {
@@ -72,8 +70,8 @@ export function ResidentForm({ id }: Props) {
   async function onSubmit(values: ResidentFormValues) {
     try {
       const formData = new FormData()
-      formData.append('email', values.email)
-      values.teachers.forEach((t, i) => formData.append(`teachers.${i}`, t))
+      formData.append('email', values.email);
+      formData.append('areaId', values.area);
 
       if (id && id !== 'new') {
         formData.append('_id', id)
@@ -114,42 +112,41 @@ export function ResidentForm({ id }: Props) {
           )}
         />
 
-        {/* Checkboxes para seleccionar profesores */}
         <FormField
-          control={form.control}
-          name="teachers"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Profesores</FormLabel>
-              <FormControl>
-                <div className="space-y-2">
-                  {allTeachers.map((t) => {
-                    const idStr = t._id.toString()
-                    const checked = field.value.includes(idStr)
-                    return (
-                      <label key={idStr} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          value={idStr}
-                          checked={checked}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              field.onChange([...field.value, idStr])
-                            } else {
-                              field.onChange(field.value.filter((v) => v !== idStr))
-                            }
-                          }}
-                          className="h-4 w-4 border-gray-300 rounded"
-                        />
-                        <span>{t.user.email}</span>
-                      </label>
-                    )
-                  })}
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+            control={form.control}
+            name="area"
+            render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Area</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Selecciona un Area" />
+                            </SelectTrigger>
+                        </FormControl>
+
+                        <SelectContent>
+                            {areas.length > 0 ? (
+                                areas.map((area) => (
+                                    <SelectItem
+                                        check={false}
+                                        key={area._id.toString()}
+                                        value={area._id.toString()}
+                                    >
+                                        {area.name}
+                                    </SelectItem>
+                                ))
+                            ) : (
+                                <Alert>
+                                    <AlertDescription>
+                                        No se encontraron áreas.
+                                    </AlertDescription>
+                                </Alert>
+                            )}
+                        </SelectContent>
+                    </Select>
+                </FormItem>
+            )}
         />
 
         <div className="flex justify-end">
