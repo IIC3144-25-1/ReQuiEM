@@ -40,7 +40,12 @@ export const surgerySchema = z.object({
     osats: z.array(
       z.object({
         item: z.string().min(1, "El nombre de la evaluación es requerido"),
-        maxPunctuation: z.string().min(1, "La puntuación máxima es requerida"),
+        scale: z.array(
+            z.object({
+                punctuation: z.string().min(1, "La puntuación es requerida"),
+                description: z.string().optional(),
+            })
+            ).min(1, "Por lo menos una escala es requerida"),
       })
     ).min(1, "Por lo menos un paso OSAT es requerido"),
 });
@@ -54,17 +59,8 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
             name: "",
             description: "",
             area: "",
-            steps: [
-                {
-                    name: "",
-                },
-            ],
-            osats: [
-            {
-                item: "",
-                maxPunctuation: "",
-            },
-            ],
+            steps: [{ name: "" }],
+            osats: [{ item: "", scale: [{ punctuation: "", description: "" }] }],
         },
     })
 
@@ -80,7 +76,7 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
             })),
             osats: surgery.osats.map((osat) => ({
                 item: osat.item,
-                maxPunctuation: osat.maxPunctuation.toString(),
+                scale: osat.scale.map((s) => ({ punctuation: s.punctuation.toString(), description: s.description || "" })),
             })),
         })
         }
@@ -115,7 +111,7 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
 
         values.osats.forEach((osat, index) => {
             formData.append(`osats.${index}.item`, osat.item)
-            formData.append(`osats.${index}.maxPunctuation`, osat.maxPunctuation)
+            formData.append(`osats.${index}.scale`, JSON.stringify(osat.scale))
         })
 
         if (surgery) {
@@ -132,6 +128,66 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
         toast.error("Error creando/editando la cirugía")
     }
   }
+
+  const OsatScaleArray = ({ osatIndex }: { osatIndex: number }) => {
+    const { fields, append, remove } = useFieldArray({
+      control: form.control,
+      name: `osats.${osatIndex}.scale`
+    });
+
+    return (
+      <div className="ml-4 pl-4 border-l space-y-3 py-2">
+        <FormLabel className="text-sm font-medium">Escala de Evaluación</FormLabel>
+        {fields.map((field, scaleIndex) => (
+          <div key={field.id} className="flex items-center space-x-2 p-2 border rounded-md">
+            <FormField
+            control={form.control}
+            name={`osats.${osatIndex}.scale.${scaleIndex}.punctuation`}
+            render={({ field }) => (
+                <FormItem className="w-[60px]">
+                <FormLabel className="text-xs">Puntaje</FormLabel>
+                <FormControl>
+                    <Input type="number" placeholder="Ej: 1" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs"/>
+                </FormItem>
+            )}
+            />
+            <FormField
+            control={form.control}
+            name={`osats.${osatIndex}.scale.${scaleIndex}.description`}
+            render={({ field }) => (
+                <FormItem className="flex-1">
+                <FormLabel className="text-xs">Descripción</FormLabel>
+                <FormControl>
+                    <Input placeholder="Ej: No realiza la acción" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs"/>
+                </FormItem>
+            )}
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              className=""
+              onClick={() => remove(scaleIndex)}
+            >
+              <Trash2Icon className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => append({ punctuation: "", description: "" })}
+        >
+          Añadir Puntuación a Escala
+        </Button>
+      </div>
+    );
+  };
 
   return (
     <Form {...form}>
@@ -281,21 +337,8 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
                     )}
                 />
 
-                {/* Description */}
-                <FormField
-                    control={form.control}
-                    name={`osats.${index}.maxPunctuation`}
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Puntación maxima</FormLabel>
-                        <FormControl>
-                        <Input placeholder="Calificación maxima" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-
+                {/* Nested Scale Array for this OSAT item */}
+                <OsatScaleArray osatIndex={index} />
                 </div>
             ))}
             </div>
@@ -305,7 +348,12 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
                 onClick={() =>
                 osatAppend({
                     item: "",
-                    maxPunctuation: "",
+                    scale: [
+                        {
+                            punctuation: "",
+                            description: "",
+                        },
+                    ],
                 })
                 }
             >

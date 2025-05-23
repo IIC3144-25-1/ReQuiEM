@@ -13,7 +13,7 @@ export interface ISurgery extends Document {
             punctuation: number;
             description?: string;
         }[];
-    }[];
+      }[];
     createdAt: Date;
     updatedAt: Date;
 }
