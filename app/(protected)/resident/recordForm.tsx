@@ -22,7 +22,7 @@ import { formatRut, validateRut } from "@/utils/rut"
 import { ISurgery } from "@/models/Surgery"
 import { ITeacher } from "@/models/Teacher"
 import { IResident } from "@/models/Resident"
-import { toast } from "sonner"
+// import { toast } from "sonner"
 
 const recordSchema = z.object({
     resident: z.string().min(1, "Resident is required"),
@@ -73,14 +73,15 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
         formData.append("surgery", data.surgery)
         formData.append("residentsYear", data.residentsYear.toString())
         try {
-            await createRecord(formData)
-            router.push("/resident/records")
-            toast.success("Registro creado exitosamente")
+            const recordId = await createRecord(formData)
+            // toast.success("Nuevo registro creado")
+            router.push("/resident/complete-record/" + recordId)
             // console.log("DATA:", data)
         } catch (error) {
             console.error("Error creating record:", error)
         }
     }
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col w-full justify-center md:p-10 mt-6">
@@ -297,8 +298,8 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
                     )}
                 />
 
-                <Button type="submit" className="w-full">
-                    Crear Registro
+                <Button type="submit" className="ml-auto w-1/2">
+                    Siguiente
                 </Button>
             </form>
         </Form>
