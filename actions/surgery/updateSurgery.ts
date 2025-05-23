@@ -8,7 +8,7 @@ export async function updateSurgery(formData: FormData): Promise<ISurgery> {
 
     const name = formData.get("name")
     const description = formData.get("description")
-    const area = formData.get("area")
+    const area = formData.get("areaId")
     const surgeryId = formData.get("surgeryId")?.toString()
 
     if (!surgeryId) {
@@ -17,23 +17,14 @@ export async function updateSurgery(formData: FormData): Promise<ISurgery> {
 
     // Parse the steps and osats from the form data
     // --- 2) Collect step‑indices, build `steps` array ---
-    const stepIdxs = new Set<number>()
-    for (const key of formData.keys()) {
-        const m = key.match(/^steps\.(\d+)\./)
-        if (m) stepIdxs.add(Number(m[1]))
+    const steps: string[] = []
+
+    for (const [key, value] of formData.entries()) {
+    const match = key.match(/^steps\.(\d+)$/)
+    if (match) {
+        steps[Number(match[1])] = String(value)
     }
-    const steps = Array.from(stepIdxs)
-        .sort((a, b) => a - b)
-        .map((i) => ({
-        name:        String(formData.get(`steps.${i}.name`) ?? ''),
-        description: String(formData.get(`steps.${i}.description`) ?? ''),
-        guideline: {
-            name:      String(formData.get(`steps.${i}.guideline.name`) ?? ''),
-            maxRating: formData.get(`steps.${i}.guideline.maxRating`)
-            ? Number(formData.get(`steps.${i}.guideline.maxRating`))
-            : undefined,
-        },
-        }))
+    }
 
     // --- 3) Collect osat‑indices, build `osats` array ---
     const osatIdxs = new Set<number>()
@@ -44,11 +35,8 @@ export async function updateSurgery(formData: FormData): Promise<ISurgery> {
     const osats = Array.from(osatIdxs)
         .sort((a, b) => a - b)
         .map((i) => ({
-        name:      String(formData.get(`osats.${i}.name`) ?? ''),
-        description: String(formData.get(`osats.${i}.description`) ?? ''),
-        maxRating: formData.get(`osats.${i}.maxRating`)
-            ? Number(formData.get(`osats.${i}.maxRating`))
-            : undefined,
+        item:      String(formData.get(`osats.${i}.item`) ?? ''),
+        scale: JSON.parse(String(formData.get(`osats.${i}.scale`))) ?? '',
         }))
 
     // --- 4) Rehydrate into the shape your Zod schema expects ---
@@ -60,6 +48,5 @@ export async function updateSurgery(formData: FormData): Promise<ISurgery> {
         raw
     )
 
-    console.log("Updated surgery surgery", doc)
     return JSON.parse(JSON.stringify(doc))
 }
