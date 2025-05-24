@@ -35,3 +35,35 @@
 //     }
 //   }
 // }
+
+// Declarar tipos personalizados para TypeScript
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      openMobileMenu(): Chainable<void>;
+      openDesktopDropdown(dropdownName: string): Chainable<void>;
+      checkNavbarLogo(): Chainable<void>;
+    }
+  }
+}
+
+// Comando para abrir el menú móvil
+Cypress.Commands.add('openMobileMenu', () => {
+  cy.get('button[aria-label="Open menu"]').click();
+  cy.get('[role="dialog"]').should("be.visible");
+});
+
+// Comando para abrir dropdown en desktop
+Cypress.Commands.add('openDesktopDropdown', (dropdownName: string) => {
+  cy.get("nav").contains("button", dropdownName).click();
+  cy.get('[role="dialog"]').should("be.visible");
+});
+
+// Comando para verificar el logo
+Cypress.Commands.add('checkNavbarLogo', () => {
+  cy.contains("a", "ReQuiEM")
+    .should("be.visible")
+    .and("have.attr", "href", "/");
+});
+
+export {};
