@@ -25,7 +25,7 @@ export interface IRecord extends Document {
             description?: string;
         }[];
         obtained: number;
-    }
+    }[];
     residentJudgment: number;
     teacherJudgment: number;
     summaryScale: string;
