@@ -1,25 +1,46 @@
 'use server'
 
-import { Teacher } from "@/models/Teacher";
-import dbConnect from "@/lib/dbConnect";
-import mongoose from "mongoose";
+import dbConnect from '@/lib/dbConnect'
+import { ITeacher, Teacher } from '@/models/Teacher'
+import { User } from '@/models/User'
+import { createUser } from '../user/create'
+import { addTeacherToArea } from '../area/addTeacher'
 
-interface CreateTeacherInput {
-  user: string;
-}
 
-export async function createTeacher(data: CreateTeacherInput) {
-  await dbConnect();
+// Acción para crear un profesor y asociarlo a un área
+export async function createTeacher(formData: FormData): Promise<ITeacher> {
+  await dbConnect()
 
-  if (!mongoose.Types.ObjectId.isValid(data.user)) {
-    throw new Error("ID de usuario inválido");
+  const email = formData.get('email')?.toString() || ''
+  const areaId = formData.get('area')?.toString()
+
+  if (!email || !areaId) {
+    throw new Error('Email y área son obligatorios')
   }
 
-  const newTeacher = new Teacher({
-    user: new mongoose.Types.ObjectId(data.user),
-  });
+  // 1. Buscar si el usuario ya existe
+  let user = await User.findOne({ email })
 
-  const savedTeacher = await Teacher.create(newTeacher);
+  if (!user) {
+    // 2. Crear nuevo usuario si no existe
+    user = await createUser(formData)
+    if (!user || !user._id) {
+      throw new Error('No se pudo crear el usuario')
+    }
+  }
 
-  return savedTeacher;
+  // 3. Verificar si ya existe un Teacher para ese usuario
+  const existingTeacher = await Teacher.findOne({ user: user._id })
+  if (existingTeacher) {
+    throw new Error('Este usuario ya está registrado como profesor')
+  }
+
+  // 4. Crear el nuevo Teacher con el área asociada
+  const teacher = await Teacher.create({
+    user: user._id,
+    area: areaId,
+  })
+
+  await addTeacherToArea(areaId, teacher._id)
+  return JSON.parse(JSON.stringify(teacher))
 }

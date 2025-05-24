@@ -1,23 +1,19 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { IArea } from "./Area";
 
 export interface ISurgery extends Document {
     _id: mongoose.Types.ObjectId;
     name: string;
     description?: string;
-    area: string;
-    steps: {
-        name: string;
-        description?: string;
-        guideline: {
-          name: string;
-          maxRating: number;
-        }
-    }[];
+    area: IArea;
+    steps: string[];
     osats: {
-        name: string;
-        description?: string;
-        maxRating: number;
-    }[];
+        item: string;
+        scale: {
+            punctuation: string;
+            description?: string;
+        }[];
+      }[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -27,21 +23,16 @@ const SurgerySchema = new Schema<ISurgery>(
       name: { type: String, required: true, trim: true },
       description: { type: String, trim: true },
       area: { type: String, required: true, trim: true },
-      steps: [
-        {
-          name: { type: String, required: true, trim: true },
-          description: { type: String, trim: true },
-          guideline: {
-            name: { type: String, required: true, trim: true },
-            maxRating: { type: Number, required: true, min: 1, default: 5 },
-          },
-        },
-      ],
+      steps: [{ type: String, required: true, trim: true }],
       osats: [
         {
-          name: { type: String, required: true, trim: true },
-          description: { type: String, trim: true },
-          maxRating: { type: Number, required: true, min: 1, default: 5 },
+          item: { type: String, required: true, trim: true },
+          scale: [
+            {
+              punctuation: { type: String, required: true },
+              description: { type: String, trim: true, required: false },
+            },
+          ],
         },
       ],
     },

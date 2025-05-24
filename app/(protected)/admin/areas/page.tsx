@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-import { getAreas } from "@/actions/area/getAll";
+import { getAllAreas } from "@/actions/area/getAll";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Edit, Trash2Icon } from "lucide-react";
@@ -15,7 +15,7 @@ import { revalidatePath } from "next/cache";
 import { deleteArea } from "@/actions/area/delete";
   
 export default async function Page() {
-    const areas = await getAreas();
+    const areas = await getAllAreas();
 
     const handleDelete = async (data: FormData) => {
         'use server'

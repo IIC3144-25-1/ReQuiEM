@@ -1,78 +1,54 @@
 // actions/resident/updateResident.ts
 'use server'
 
-import { Resident } from '@/models/Resident'
 import dbConnect from '@/lib/dbConnect'
+import { IResident, Resident } from '@/models/Resident'
+import { updateResidentArea } from '../area/updateResident'
+import { User } from '@/models/User'
 import { z } from 'zod'
 
 // 1) Esquema Zod para validar los datos de actualización
 const updateResidentSchema = z.object({
   _id: z.string().min(1, 'Resident ID is required'),
-  user: z.string().min(1, 'User ID is required'),
-  teachers: z
-    .array(z.string().min(1, 'Each teacher ID is required'))
-    .min(1, 'At least one teacher is required'),
+  email: z.string().email('Email inválido'),
+  area: z.string().min(1, 'Area id')
 })
 
-/**
- * Server Action para actualizar un residente.
- * Recibe un FormData con:
- *  - _id        (string)
- *  - user       (string)
- *  - teachers.0 (string)
- *  - teachers.1 (string)
- *  - …etc.
- */
-export async function updateResident(formData: FormData) {
+export async function updateResident(formData: FormData): Promise<IResident> {
   // 2) Conectar a la base de datos
   await dbConnect()
 
-  // 3) Extraer el ID del residente
-  const residentId = formData.get('_id')
-  if (!residentId || typeof residentId !== 'string') {
-    throw new Error('Resident ID (_id) is required')
+  // 3) Extraer y validar datos crudos
+  const residentId = formData.get('_id')?.toString() || ''
+  const email     = formData.get('email')?.toString()    || ''
+  const areaId = formData.get('areaId')?.toString() || ''
+
+  if (!residentId) throw new Error('Resident ID (_id) es obligatorio')
+  if (!email)      throw new Error('Email es obligatorio')
+  if (!areaId)      throw new Error('Email es obligatorio')
+
+  // 6) Validar con Zod
+  const data = updateResidentSchema.parse({
+    _id: residentId,
+    email,
+    area: areaId
+  })
+
+  // 7) Buscar el residente para obtener su userId
+  const existing = await Resident.findById(data._id)
+  if (!existing) {
+    throw new Error(`No se encontró Residente con id=${data._id}`)
   }
-
-  // 4) Extraer el user
-  const userId = formData.get('user')
-  if (!userId || typeof userId !== 'string') {
-    throw new Error('User ID is required')
-  }
-
-  // 5) Recopilar índices de teachers
-  const teacherIdxs = new Set<number>()
-  for (const key of formData.keys()) {
-    const m = key.match(/^teachers\.(\d+)$/)
-    if (m) teacherIdxs.add(Number(m[1]))
-  }
-
-  // 6) Construir el array de teachers
-  const teachers = Array.from(teacherIdxs)
-    .sort((a, b) => a - b)
-    .map((i) => {
-      const t = formData.get(`teachers.${i}`)
-      if (!t || typeof t !== 'string') {
-        throw new Error(`Teacher ID at index ${i} is required`)
-      }
-      return t
-    })
-
-  // 7) Rehidratar el objeto crudo y validar con Zod
-  const raw = { _id: residentId, user: userId, teachers }
-  const data = updateResidentSchema.parse(raw)
-
-  // 8) Ejecutar la actualización
-  const updated = await Resident.findByIdAndUpdate(
-    data._id,
-    { user: data.user, teachers: data.teachers },
+  
+  // 8) Actualizar email en el modelo User
+  await User.findByIdAndUpdate(
+    existing.user,
+    { email: data.email },
     { new: true }
+    // { teachers: data.teachers },
   )
 
-  if (!updated) {
-    throw new Error(`Resident with id=${data._id} not found`)
-  }
-
-  console.log('Updated resident', updated)
-  // 9) Devolver un POJO serializable
+  const updated = await updateResidentArea(areaId, residentId)
+  console.log('Residente actualizado:', updated)
   return JSON.parse(JSON.stringify(updated))
 }

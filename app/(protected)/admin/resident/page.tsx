@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/table";
 import { getAllResident } from "@/actions/resident/getAll";
 import { deleteResident } from "@/actions/resident/delete";
-import { seedDummyResident } from "@/actions/resident/seed";
-import { seedDummyTeachers } from "@/actions/teacher/seed";
+/* import { seedDummyResident } from "@/actions/resident/seed";
+import { seedDummyTeachers } from "@/actions/teacher/seed"; */
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Edit, Trash2Icon } from "lucide-react";
@@ -36,19 +36,19 @@ export default function Page() {
     });
   };
 
-  const handleCreateDummy = async () => {
+  /* const handleCreateDummy = async () => {
     await seedDummyTeachers();
     await seedDummyResident();
     const updated = await getAllResident();
     setResidents(updated);
-  };
+  }; */
 
   return (
     <>
       <div className="flex justify-between items-center py-4">
         <h1 className="text-2xl font-bold">Residentes</h1>
         <div className="space-x-2">
-          <Button onClick={handleCreateDummy}>Crear Residente Dummy</Button>
+          {/* <Button onClick={handleCreateDummy}>Crear Residente Dummy</Button> */}
           <Button asChild>
             <Link href="/admin/resident/new">Crear Residente</Link>
           </Button>
@@ -58,20 +58,16 @@ export default function Page() {
       <Table className="w-full">
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
             <TableHead>Usuario</TableHead>
+            <TableHead>Mail</TableHead>
             <TableHead>Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {residents.map((resident) => (
             <TableRow key={resident._id.toString()}>
-              <TableCell>{resident._id.toString()}</TableCell>
-              <TableCell>
-                {resident?.user && typeof resident.user === "object" && "name" in resident.user
-                  ? resident.user.name
-                  : "Sin nombre"}
-              </TableCell>
+              <TableCell>{resident.user?.name || "Sin nombre"}</TableCell>
+              <TableCell>{resident.user?.email || "Sin email"}</TableCell>
               <TableCell className="flex items-center">
                 <Button asChild size="icon" variant="outline" className="mr-2">
                   <Link href={`resident/edit/${resident._id}`}>
