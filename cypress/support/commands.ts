@@ -40,30 +40,93 @@
 declare global {
   namespace Cypress {
     interface Chainable {
-      openMobileMenu(): Chainable<void>;
-      openDesktopDropdown(dropdownName: string): Chainable<void>;
-      checkNavbarLogo(): Chainable<void>;
+      mockAuthenticatedUser(): Chainable<void>;
+      mockSuccessfulLogin(): Chainable<void>;
+      mockSuccessfulLoginWithCallback(callbackUrl: string): Chainable<void>;
+      mockLogout(): Chainable<void>;
+      mockExpiredSession(): Chainable<void>;
     }
   }
 }
 
-// Comando para abrir el menú móvil
-Cypress.Commands.add('openMobileMenu', () => {
-  cy.get('button[aria-label="Open menu"]').click();
-  cy.get('[role="dialog"]').should("be.visible");
+// Comando para simular usuario autenticado
+Cypress.Commands.add("mockAuthenticatedUser", () => {
+  // Mockear la sesión de NextAuth
+  cy.setCookie("next-auth.session-token", "mock-session-token");
+
+  // Interceptar las llamadas a la API de sesión
+  cy.intercept("GET", "/api/auth/session", {
+    statusCode: 200,
+    body: {
+      user: {
+        id: "1",
+        name: "Test User",
+        email: "test@example.com",
+        image: "https://via.placeholder.com/40",
+      },
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    },
+  }).as("getSession");
 });
 
-// Comando para abrir dropdown en desktop
-Cypress.Commands.add('openDesktopDropdown', (dropdownName: string) => {
-  cy.get("nav").contains("button", dropdownName).click();
-  cy.get('[role="dialog"]').should("be.visible");
+// Comando para simular login exitoso
+Cypress.Commands.add("mockSuccessfulLogin", () => {
+  // Interceptar el signin y simular redirección exitosa
+  cy.intercept("POST", "/api/auth/signin/google", {
+    statusCode: 302,
+    headers: {
+      location: "/",
+    },
+  }).as("successfulSignIn");
+
+  // Mockear sesión después del login
+  cy.mockAuthenticatedUser();
+
+  // Simular la redirección
+  cy.get('button[type="submit"]').contains("Login with Google").click();
+  cy.visit("/");
 });
 
-// Comando para verificar el logo
-Cypress.Commands.add('checkNavbarLogo', () => {
-  cy.contains("a", "ReQuiEM")
-    .should("be.visible")
-    .and("have.attr", "href", "/");
+// Comando para simular login exitoso con callback URL
+Cypress.Commands.add(
+  "mockSuccessfulLoginWithCallback",
+  (callbackUrl: string) => {
+    cy.intercept("POST", "/api/auth/signin/google", {
+      statusCode: 302,
+      headers: {
+        location: callbackUrl,
+      },
+    }).as("successfulSignInWithCallback");
+
+    cy.mockAuthenticatedUser();
+
+    cy.get('button[type="submit"]').contains("Login with Google").click();
+    cy.visit(callbackUrl);
+  }
+);
+
+// Comando para simular logout
+Cypress.Commands.add("mockLogout", () => {
+  cy.clearCookies();
+  cy.clearLocalStorage();
+
+  cy.intercept("POST", "/api/auth/signout", {
+    statusCode: 200,
+    body: { url: "/" },
+  }).as("signOut");
+
+  cy.intercept("GET", "/api/auth/session", {
+    statusCode: 200,
+    body: {},
+  }).as("getSessionAfterLogout");
+});
+
+// Comando para simular sesión expirada
+Cypress.Commands.add("mockExpiredSession", () => {
+  cy.intercept("GET", "/api/auth/session", {
+    statusCode: 401,
+    body: { error: "Session expired" },
+  }).as("expiredSession");
 });
 
 export {};
