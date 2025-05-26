@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar1 } from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner"
+import ErrorBoundary from "@/components/error/ErrorBoundary";
 
 
 const geistSans = Geist({
@@ -30,11 +31,13 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar1 />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {children}
-        </div>
-        <Toaster />
+        <ErrorBoundary>
+          <Navbar1 />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              {children}
+            </div>
+          <Toaster />
+        </ErrorBoundary>
       </body>
     </html>
   );
