@@ -4,6 +4,8 @@ import { ITeacher, Teacher } from '@/models/Teacher'
 import { User } from '@/models/User'
 import dbConnect from '@/lib/dbConnect'
 import { z } from 'zod'
+import { deleteTeacherFromArea } from '../area/deleteTeacher'
+import { addTeacherToArea } from '../area/addTeacher'
 
 // Esquema Zod para validación de entrada
 const updateTeacherSchema = z.object({
@@ -43,6 +45,9 @@ export async function updateTeacher(formData: FormData): Promise<ITeacher> {
   if (!updatedTeacher) {
     throw new Error(`No se encontró el profesor con ID: ${data._id}`)
   }
+
+  await deleteTeacherFromArea(data._id)
+  await addTeacherToArea(data.area, data._id)
 
   console.log('Profesor actualizado:', updatedTeacher)
   return JSON.parse(JSON.stringify(updatedTeacher))

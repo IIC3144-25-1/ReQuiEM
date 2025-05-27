@@ -23,7 +23,7 @@ const SurgerySchema = new Schema<ISurgery>(
     {
       name: { type: String, required: true, trim: true },
       description: { type: String, trim: true },
-      area: { type: String, required: true, trim: true },
+      area: { type: mongoose.Types.ObjectId, required: true, ref: "Area" },
       steps: [{ type: String, required: true, trim: true }],
       osats: [
         {

@@ -3,6 +3,7 @@
 import { Resident } from "@/models/Resident";
 import dbConnect from "@/lib/dbConnect";
 import { Types } from "mongoose";
+import { deleteResidentFromArea } from "../area/deleteResident";
 
 export async function deleteResident(id: string) {
   await dbConnect();
@@ -18,6 +19,8 @@ export async function deleteResident(id: string) {
     { deleted: true },
     { new: true }
   ).exec();
+
+  await deleteResidentFromArea(id);
 
   // Si no se encuentra, lanzar error
   if (!deletedResident) {
