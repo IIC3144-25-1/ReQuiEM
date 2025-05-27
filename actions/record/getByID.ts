@@ -9,19 +9,24 @@ import dbConnect from '@/lib/dbConnect'
  * @returns IRecord | null
  */
 export async function getRecordByID(recordId: string): Promise<IRecord | null> {
-  await dbConnect()
+  await dbConnect();
 
   const record = await Record
     .findById(recordId)
-    .populate('resident')      // trae info del residente
-    .populate('teacher')  // trae info del profesor
-    .populate('surgery')  // trae info de la cirugía
+    .populate({
+      path: 'resident',
+      populate: { path: 'user' }
+    })
+    .populate({
+      path: 'teacher',
+      populate: { path: 'user' }
+    })
+    .populate('surgery')
     .lean<IRecord>()
-    .exec()
+    .exec();
 
-  // Si no existe, devolvemos null
-  if (!record) return null
+  if (!record) return null;
 
-  // Para evitar problemas de serialización en Server Components
-  return JSON.parse(JSON.stringify(record))
+  return JSON.parse(JSON.stringify(record));
 }
+
