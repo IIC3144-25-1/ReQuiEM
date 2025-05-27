@@ -13,7 +13,11 @@ export async function deleteResident(id: string) {
   }
 
   // Eliminar residente
-  const deletedResident = await Resident.findByIdAndDelete(id);
+  const deletedResident = await Resident.findByIdAndUpdate(
+    id,
+    { deleted: true },
+    { new: true }
+  ).exec();
 
   // Si no se encuentra, lanzar error
   if (!deletedResident) {

@@ -12,6 +12,7 @@ export interface IUser extends Document {
     admin: boolean;
     createdAt: Date;
     updatedAt: Date;
+    deleted?: boolean;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -24,6 +25,7 @@ const UserSchema = new Schema<IUser>(
       phone: { type: String, trim: true },
       birthdate: { type: Date },
       admin: { type: Boolean, default: false },
+      deleted: { type: Boolean, default: false }
     },
     { timestamps: true }
   );

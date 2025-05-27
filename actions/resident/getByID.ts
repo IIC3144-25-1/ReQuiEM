@@ -14,6 +14,7 @@ export async function getResidentByID(residentId: string): Promise<IResident | n
 
   const resident = await Resident
     .findById(residentId)
+    .where('deleted').equals(false) // Aseguramos que no esté eliminado
     .populate('user')      // trae info del usuario
     .lean<IResident>()
     .exec()

@@ -16,6 +16,7 @@ export interface ISurgery extends Document {
       }[];
     createdAt: Date;
     updatedAt: Date;
+    deleted?: boolean;
 }
 
 const SurgerySchema = new Schema<ISurgery>(
@@ -35,6 +36,7 @@ const SurgerySchema = new Schema<ISurgery>(
           ],
         },
       ],
+      deleted: { type: Boolean, default: false },
     },
     { timestamps: true }
 );

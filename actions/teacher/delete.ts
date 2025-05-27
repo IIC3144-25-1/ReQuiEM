@@ -12,7 +12,12 @@ export async function deleteTeacher(id: string) {
     throw new Error('ID inválido')
   }
 
-  const deleted = await Teacher.findByIdAndDelete(id)
+  const deleted = await Teacher.findByIdAndUpdate(
+    id,
+    { deleted: true },
+    { new: true }
+  ).exec()
+  // Si no se encuentra, lanzar error
   if (!deleted) {
     throw new Error('Profesor no encontrado')
   }
