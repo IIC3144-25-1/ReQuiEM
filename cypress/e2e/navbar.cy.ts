@@ -1,3 +1,5 @@
+import "cypress-plugin-tab";
+
 describe("Navbar End-to-End Tests", () => {
   beforeEach(() => {
     // Visit the main page before each test
@@ -297,10 +299,20 @@ describe("Navbar End-to-End Tests", () => {
     it("should show user options in mobile menu when authenticated", () => {
       cy.get('button[aria-label="Open menu"]').click();
       cy.get('[role="dialog"]').within(() => {
-        // Adjust according to your actual implementation. Look for a Logout button or Profile link
-        cy.contains("button", "Logout")
-          .should("be.visible")
-          .or(cy.contains("a", "Perfil").should("be.visible"));
+        // Check that either Logout button or Profile link exists
+        // Using a more flexible approach that accepts either element
+        cy.get("body").then(($body) => {
+          const hasLogout = $body.find('button:contains("Logout")').length > 0;
+          const hasPerfil = $body.find('a:contains("Perfil")').length > 0;
+
+          expect(hasLogout || hasPerfil).to.be.true;
+
+          if (hasLogout) {
+            cy.contains("button", "Logout").should("be.visible");
+          } else if (hasPerfil) {
+            cy.contains("a", "Perfil").should("be.visible");
+          }
+        });
       });
     });
   });
@@ -311,7 +323,7 @@ describe("Navbar End-to-End Tests", () => {
       cy.visit("/admin/resident");
 
       // Should redirect to login or show access denied message
-      cy.url().should("satisfy", (url) => {
+      cy.url().should("satisfy", (url: string): boolean => {
         return url.includes("/login") || url.includes("/unauthorized");
       });
     });
