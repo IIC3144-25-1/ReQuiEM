@@ -49,7 +49,7 @@ interface Navbar1Props {
   };
 }
 
-const Navbar1 = async ({
+const Navbar = async ({
   logo = {
     alt: "logo",
     title: "ReQuiEM",
@@ -271,4 +271,4 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
   );
 };
 
-export { Navbar1 };
+export { Navbar };
