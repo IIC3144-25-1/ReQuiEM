@@ -11,6 +11,7 @@ export async function getTeacherByID(id: string): Promise<ITeacher | null> {
     throw new Error('ID inválido')
   }
   const teacher = await Teacher.findById(id)
+    .where('deleted').equals(false)
     .populate('user')
     .populate('area')
     .lean()

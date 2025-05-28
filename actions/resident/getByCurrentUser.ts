@@ -9,7 +9,7 @@ export async function getUserResident(): Promise<IResident | null> {
     await dbConnect();
 
     const user = await getCurrentUser();
-    const resident = await Resident.findOne({user: user?._id})
+    const resident = await Resident.findOne({user: user?._id, deleted: false})
 
     return resident;
 }

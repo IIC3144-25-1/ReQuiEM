@@ -8,6 +8,7 @@ export async function getAllResident(): Promise<IResident[]> {
   await dbConnect();
 
   const residents = await Resident.find()
+    .where('deleted').equals(false)
     .populate('user')
     .lean<IResident[]>()
     .exec();
