@@ -3,6 +3,7 @@
 import { Teacher } from '@/models/Teacher'
 import dbConnect from '@/lib/dbConnect'
 import { Types } from 'mongoose'
+import { deleteTeacherFromArea } from '../area/deleteTeacher'
 
 // Server Action para eliminar un profesor
 export async function deleteTeacher(id: string) {
@@ -12,10 +13,17 @@ export async function deleteTeacher(id: string) {
     throw new Error('ID inválido')
   }
 
-  const deleted = await Teacher.findByIdAndDelete(id)
+  const deleted = await Teacher.findByIdAndUpdate(
+    id,
+    { deleted: true },
+    { new: true }
+  ).exec()
+  // Si no se encuentra, lanzar error
   if (!deleted) {
     throw new Error('Profesor no encontrado')
   }
+
+  await deleteTeacherFromArea(id)
 
   return { success: true, message: 'Profesor eliminado correctamente' }
 }

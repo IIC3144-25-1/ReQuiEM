@@ -7,6 +7,7 @@ export async function getArea(id: string): Promise<IArea | null> {
     await dbConnect();
 
     const area = await Area.findById(id)
+        .where("deleted").equals(false)
         .populate("residents")
         .populate("teachers")
         .lean<IArea>()

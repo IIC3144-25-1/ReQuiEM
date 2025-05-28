@@ -8,12 +8,14 @@ export interface IResident extends Document {
     area: IArea;
     createdAt: Date;
     updatedAt: Date;
+    deleted?: boolean;
 }
 
 const ResidentSchema = new Schema<IResident>(
     {
       user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
       area: { type: mongoose.Types.ObjectId, ref: "Area", required: true },
+      deleted: { type: Boolean, default: false },
     },
     { timestamps: true }
 );

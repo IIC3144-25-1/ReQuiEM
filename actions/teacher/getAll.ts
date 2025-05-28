@@ -7,7 +7,7 @@ import dbConnect from '@/lib/dbConnect'
 export async function getAllTeachers(): Promise<ITeacher[]> {
   await dbConnect()
 
-  const teachers = await Teacher.find()
+  const teachers = await Teacher.find({ deleted: false })
     .populate('user')
     .populate('area')
     .lean<ITeacher[]>()

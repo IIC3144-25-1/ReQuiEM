@@ -17,7 +17,6 @@ import { deleteTeacher } from "@/actions/teacher/delete";
 
 export default async function Page() {
   const teachers = await getAllTeachers();
-  console.log(teachers);
 
   const handleDelete = async (data: FormData) => {
     'use server'

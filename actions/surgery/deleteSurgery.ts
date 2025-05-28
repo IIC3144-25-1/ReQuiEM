@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache"
 export async function deleteSurgery(surgeryId: string): Promise<void> {
     await dbConnect()
 
-    await Surgery.findByIdAndDelete(surgeryId)
+    await Surgery.findByIdAndUpdate(surgeryId, { deleted: true })
 
     console.log("Deleted surgery", surgeryId)
 
