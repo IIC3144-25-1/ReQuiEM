@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar1 } from "@/components/navbar";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
-
+import { Navbar } from "@/components/navbar/navbar";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,8 +17,33 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Requiem",
-  description: "Application for managing Healthcare data",
+  metadataBase: new URL("https://surgiskills.cl"),
+  title: "ReQuiEM",
+  description: "Evaluación Quirúrgica Médica: plataforma para el registro y retroalimentación de procedimientos médicos.",
+  icons: {
+    icon: "/Icon.ico",
+  },
+  openGraph: {
+    title: "ReQuiEM",
+    description: "Plataforma para evaluación y seguimiento de procedimientos médicos.",
+    url: "https://surgiskills.cl",
+    siteName: "ReQuiEM",
+    images: [
+      {
+        url: "/Icon.ico",
+        width: 1200,
+        height: 630,
+        alt: "Logo de ReQuiEM",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ReQuiEM",
+    description: "Plataforma para evaluación y retroalimentación médica",
+    images: ["/Icon.ico"],
+  },
 };
 
 export default async function RootLayout({
@@ -28,16 +53,20 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/Icon.ico" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ErrorBoundary>
-          <Navbar1 />
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              {children}
-            </div>
+          <Navbar />
+          <div className="mx-auto">
+            {children}
+          </div>
           <Toaster />
         </ErrorBoundary>
+        <Script src="/service-worker.js" strategy="afterInteractive" />
       </body>
     </html>
   );

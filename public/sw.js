@@ -5,7 +5,22 @@ const URLS_TO_CACHE = [
   '/dashboard',
   '/admin',
   '/admin/areas',
+  '/admin/areas/edit/[id]',
+  '/admin/areas/new',
   '/admin/resident',
+  '/admin/resident/edit/[id]',
+  '/admin/resident/new',
+  '/admin/surgeries',
+  '/admin/surgeries/edit/[id]',
+  '/admin/surgeries/new',
+  '/admin/teacher',
+  '/admin/teacher/edit/[id]',
+  '/admin/teacher/new',
+  '/resident/complete-record/[id]',
+  '/resident/new-record',
+  '/resident/records',
+  '/resident/records/view/[id]',
+  '/teacher/records'
 ];
 
 

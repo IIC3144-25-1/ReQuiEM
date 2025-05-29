@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Navbar1 } from "../../components/navbar";
+import { Navbar } from "../../components/navbar/navbar";
 
 // Solo necesitamos mantener estos mocks esenciales
 jest.mock("@/actions/user/getUser", () => ({
@@ -37,12 +37,12 @@ describe("Navbar1", () => {
   };
 
   it("renders logo correctly", async () => {
-    render(await Navbar1(defaultProps));
+    render(await Navbar(defaultProps));
     expect(screen.getAllByText("ReQuiEM Test")[0]).toBeInTheDocument();
   });
 
   it("renders main menu items", async () => {
-    render(await Navbar1(defaultProps));
+    render(await Navbar(defaultProps));
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
     expect(screen.getByText("Administrador")).toBeInTheDocument();
   });
@@ -50,7 +50,7 @@ describe("Navbar1", () => {
 
 
   it("renders mobile menu sheet content", async () => {
-    render(await Navbar1(defaultProps));
+    render(await Navbar(defaultProps));
     // En nuestros mocks, verificamos que los componentes del Sheet se renderizan
     expect(screen.getAllByText(defaultProps.logo.title).length).toBeGreaterThan(
       1
@@ -59,7 +59,7 @@ describe("Navbar1", () => {
 
 
   it("renders mobile menu login options correctly", async () => {
-    render(await Navbar1(defaultProps));
+    render(await Navbar(defaultProps));
 
     // Verificar que el botón de login existe en la versión móvil
     const loginButtons = screen.getAllByText("Iniciar Sesión");
@@ -74,7 +74,7 @@ describe("Navbar1", () => {
       Promise.resolve({ name: "Dr. Test" })
     );
 
-    render(await Navbar1(defaultProps));
+    render(await Navbar(defaultProps));
 
     // Verificar que el saludo aparece en la versión móvil
     const greetings = screen.getAllByText("Hola Dr. Test! 👋");
@@ -83,7 +83,7 @@ describe("Navbar1", () => {
 
   // Test corregido para props por defecto
   it("renders with default props when no props provided", async () => {
-    render(await Navbar1({}));
+    render(await Navbar({}));
     // Usamos getAllByText para manejar múltiples elementos "ReQuiEM"
     const logoTexts = screen.getAllByText("ReQuiEM");
     expect(logoTexts.length).toBeGreaterThan(0);
@@ -94,7 +94,7 @@ describe("Navbar1", () => {
   });
 
   it("renders navigation links with correct hrefs", async () => {
-    render(await Navbar1(defaultProps));
+    render(await Navbar(defaultProps));
     // Buscamos el link por su texto y url
     const links = screen.getAllByRole("link");
     const dashboardLink = links.find(
