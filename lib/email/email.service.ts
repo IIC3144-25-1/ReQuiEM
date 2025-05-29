@@ -10,6 +10,7 @@ export class EmailService {
     // Initialize SendGrid with API key
     const apiKey = process.env.SENDGRID_API_KEY;
     if (!apiKey) {
+      console.error('SENDGRID_API_KEY is not defined in environment variables');
       throw new Error('SENDGRID_API_KEY is not defined in environment variables');
     }
     
