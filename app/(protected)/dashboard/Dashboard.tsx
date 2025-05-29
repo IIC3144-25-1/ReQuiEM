@@ -19,8 +19,8 @@ const Dashboard: FC = async () => {
   ];
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 h-screen flex items-center justify-center overflow-hidden">
-      <div className="bg-white rounded-lg shadow dark:bg-gray-800 w-full max-w-md">
+    <section className=" h-screen flex items-center justify-center overflow-hidden">
+      <div className=" rounded-lg shadow dark:bg-gray-800 w-full max-w-md">
         <header className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center">
             <div>

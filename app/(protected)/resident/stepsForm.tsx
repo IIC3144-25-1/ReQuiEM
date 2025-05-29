@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -76,8 +77,11 @@ export function StepsRecordForm({record} : {record: IRecord}) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-8 flex flex-col">
-
-        <FormLabel className="text-base font-semibold">Pasos Realizados</FormLabel>
+        <div>
+          <FormLabel className="text-base font-semibold">Pasos Realizados</FormLabel>
+          <FormDescription className="mb-2">Marca los pasos que realizaste durante la cirugía</FormDescription>
+        </div>
+        
         <div className="flex flex-col space-y-6 relative mt-0">
             <div className="h-23/24 w-px border border-gray-800 bg-gray-800 absolute ml-[5px] z-0 top-1/2 -translate-y-1/2"></div>
           {fields.map((field, index) => (
@@ -109,7 +113,8 @@ export function StepsRecordForm({record} : {record: IRecord}) {
             name="residentJudgment"
             render={({ field }) => (
             <FormItem className="flex flex-col items-start space-x-3 space-y-0 rounded-md">
-                <FormLabel className="text-base font-semibold mb-2">Juicio Global</FormLabel>
+                <FormLabel className="text-base font-semibold">Juicio Global</FormLabel>
+                <FormDescription className="mb-2">Califica cómo crees que fue tu desempeño</FormDescription>
                 <FormControl>
                     <Slider
                         max={10}
