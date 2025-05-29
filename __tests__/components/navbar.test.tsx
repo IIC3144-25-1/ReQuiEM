@@ -11,7 +11,7 @@ jest.mock("next/navigation", () => ({
   usePathname: jest.fn(() => "/"),
 }));
 
-describe("Navbar1", () => {
+describe("Navbar", () => {
   const defaultProps = {
     logo: {
       alt: "Test Logo",

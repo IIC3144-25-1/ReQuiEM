@@ -36,7 +36,7 @@ interface MenuItem {
   items?: MenuItem[]
 }
 
-interface Navbar1Props {
+interface NavbarProps {
   logo?: { alt: string; title: string }
   auth?: { login: { title: string; url: string } }
 }
@@ -44,10 +44,10 @@ interface Navbar1Props {
 const defaultLogo = { alt: "logo", title: "ReQuiEM" }
 const defaultAuth = { login: { title: "Login", url: "/login" } }
 
-export const Navbar1 = async ({
+export const Navbar = async ({
   logo = defaultLogo,
   auth = defaultAuth,
-}: Navbar1Props) => {
+}: NavbarProps) => {
   const user = await getCurrentUser()
   const roleInfo: RoleInfo | null = await getRole()
   const isAdmin = roleInfo?.isAdmin === true
