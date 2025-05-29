@@ -15,7 +15,7 @@ export default async function EditRecord(props: {params: Promise<{id: string}>})
     }
 
     return (
-        <div className="flex flex-col w-full justify-center max-w-lg mx-auto md:p-10">
+        <div className="flex flex-col w-full justify-center max-w-lg mx-auto md:p-10 px-4">
             <h1 className="text-2xl font-bold text-center">Completar Registro</h1>
             <StepsRecordForm record={JSON.parse(JSON.stringify(record))} />
         </div>

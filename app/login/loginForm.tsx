@@ -36,7 +36,7 @@ export function LoginForm({
   return (
     <div
       className={cn(
-        "flex min-h-screen items-center justify-center bg-gradient-to-b from-white to-gray-100 px-4",
+        "flex min-h-screen items-center justify-center  px-4",
         className
       )}
       {...props}

@@ -13,7 +13,7 @@ export default async function ReviewRecord(props: {params: Promise<{id: string}>
     }
 
     return (
-        <div className="flex flex-col w-full justify-center max-w-lg mx-auto md:p-10">
+        <div className="flex flex-col w-full justify-center max-w-lg mx-auto md:p-10 px-4">
             <h1 className="text-2xl font-bold text-center">Corrección de Registro</h1>
             <ReviewRecordForm record={(record)} />
         </div>
