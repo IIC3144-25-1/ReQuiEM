@@ -1,8 +1,14 @@
 import { EmailStrategy } from '../email-factory.strategy';
 
+interface NewUserWelcomeData {
+  user: {
+    name?: string;
+    email: string;
+  };
+}
+
 export class NewUserWelcomeStrategy implements EmailStrategy {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  formatData(data: any) {
+  formatData(data: NewUserWelcomeData) {
     if (!data.user) {
       throw new Error('Missing required data: user information');
     }
