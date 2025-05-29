@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://surgiskills.cl"),
   title: "ReQuiEM",
   description: "Evaluación Quirúrgica Médica: plataforma para el registro y retroalimentación de procedimientos médicos.",
+  manifest: "/manifest.json",
   icons: {
     icon: "/Icon.ico",
   },
