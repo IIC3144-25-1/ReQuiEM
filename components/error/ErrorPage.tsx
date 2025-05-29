@@ -44,7 +44,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
           {errorStack && (
             <div>
               <h4 className="font-medium">Stack trace:</h4>
-              <pre className="bg-gray-100 rounded p-2 overflow-auto text-xs text-gray-600">
+              <pre className="bg-gray-100 rounded p-2 overflow-auto text-xs text-gray-600 max-h-100">
                 {errorStack}
               </pre>
             </div>

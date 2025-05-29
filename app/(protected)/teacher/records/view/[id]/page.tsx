@@ -1,16 +1,26 @@
 import { getRecordByID } from "@/actions/record/getByID";
 import PastRecord from "@/components/records/PastRecord";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, NotebookPen } from "lucide-react";
+import { ChevronLeft, NotebookPen, SearchX } from "lucide-react";
 import Link from "next/link";
 
 export default async function Page(props: {params: Promise<{id: string}>}) {
-  const { id } = await props.params;
-  console.log("ID de la cirugía:", id); // Eliminar cuando se remplaze la linea de abajo
-  const record = await getRecordByID((await props.params).id)
+  let params;
+  try {
+    params = await props.params;
+  } catch (error) {
+    console.error("Error al obtener los parámetros:", error);
+    return <div>Error al cargar los parámetros</div>;
+  }
+  const record = await getRecordByID(params.id);
 
   if (!record) {
-    return <div>No se encontró la cirugía</div>;
+    return (
+      <div className="flex flex-col items-center mt-30 font-semibold">
+        No se encontró la cirugía
+        <SearchX className="w-3xl mt-10" />
+      </div>
+    );
   }
 
   return(
