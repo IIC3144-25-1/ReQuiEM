@@ -38,6 +38,7 @@ export const config = {
               image: user.image,
             },
             provider: 'oauth',
+            
             isFirstLogin: true,
           }
         })

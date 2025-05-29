@@ -18,9 +18,9 @@ export class EmailService {
   }
 
   async sendEmail(payload: EmailPayload): Promise<void> {
+    // Factory pattern to get the appropriate strategy based on the email type
     const strategy = this.strategyFactory.create(payload.type);
 
-    console.log(payload.to, "payload.to");
     // Use test email in development
     const recipientEmail = 
       process.env.ENV === 'production' 
