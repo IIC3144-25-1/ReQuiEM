@@ -57,6 +57,5 @@ export async function createRecord(formData: FormData) {
 
     const record = await newRecord.save();
     // const savedRecord = await newRecord.save();
-    // console.log("savedRecord", savedRecord);
     return record._id.toString();
 }

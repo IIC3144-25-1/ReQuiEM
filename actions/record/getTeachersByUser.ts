@@ -26,7 +26,6 @@ export async function getTeachersByUser() {
                 select: "name",
             },
         });
-    // console.log("areas", areas)
 
     const teachers: ITeacher[] = []
     areas.forEach((area) => {
@@ -34,7 +33,6 @@ export async function getTeachersByUser() {
             teachers.push(teacher)
         });
     });
-    // console.log("teachers", teachers)
 
     return teachers
 }
