@@ -9,3 +9,54 @@ export default async function RecordsPage() {
 
   return <ResidentRecordsClient records={serializableRecords} />
 }
+
+  // const registros = [
+  //   {
+  //     surgery: {
+  //       name: "Ureterorrenoscopía"
+  //     },
+  //     date: Date.now(),
+  //     teacher: {
+  //       user: {
+  //         name: "Ricardo Pérez",
+  //       },
+  //     },
+  //     status: "corrected",
+  //   },
+  //   {
+  //     surgery: {
+  //       name: "Cistoscopía"
+  //     },
+  //     date: Date.now(),
+  //     teacher: {
+  //       user: {
+  //         name: "Ricardo Pérez",
+  //       },
+  //     },
+  //     status: "corrected",
+  //   },
+  //   {
+  //     surgery: {
+  //       name: "Cistoscopía"
+  //     },
+  //     date: Date.now(),
+  //     teacher: {
+  //       user: {
+  //         name: "Ricardo Pérez",
+  //       },
+  //     },
+  //     status: "reviewed"
+  //   },
+  //   {
+  //     surgery: {
+  //       name: "Cistoscopía"
+  //     },
+  //     date: Date.now(),
+  //     teacher: {
+  //       user: {
+  //         name: "Ricardo Pérez",
+  //       },
+  //     },
+  //     status: "reviewed",
+  //   }
+  // ];

@@ -10,7 +10,7 @@ import dbConnect from '@/lib/dbConnect'
  */
 export async function getRecordByID(recordId: string): Promise<IRecord | null> {
   await dbConnect();
-  // console.log("\n Getting record by ID:", recordId);
+
   const record = await Record
     .findById(recordId)
     .populate({
@@ -21,14 +21,9 @@ export async function getRecordByID(recordId: string): Promise<IRecord | null> {
       path: 'teacher',
       populate: { path: 'user' }
     })
-    .populate({
-      path: 'surgery',
-      populate: { path: 'name' }
-    })
+    .populate('surgery')
     .lean<IRecord>()
     .exec();
-  
-  // console.log("\n Record found:", record);
 
   if (!record) return null;
 
