@@ -1,6 +1,8 @@
 {
 	"theme_color": "#51b6f5",
 	"background_color": "#ffffff",
+	"scope": "/",
+    "start_url": "/",
 	"icons": [
 		{
 			"purpose": "maskable",
