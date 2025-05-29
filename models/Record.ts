@@ -16,7 +16,7 @@ export interface IRecord extends Document {
         name: string;
         residentDone: boolean;
         teacherDone: boolean;
-        score: 'a' | 'b' | 'c' | 'n/a';
+        score: number;
     }[]
     osats: {
         item: string;
@@ -28,7 +28,7 @@ export interface IRecord extends Document {
     }[];
     residentJudgment: number;
     teacherJudgment: number;
-    summaryScale: 'A' | 'B' | 'C' | 'D' | 'E';
+    summaryScale: string;
     residentComment: string;
     feedback: string;
     createdAt: Date;
@@ -50,7 +50,7 @@ const RecordSchema = new Schema<IRecord>(
           name: { type: String, required: true, trim: true },
           residentDone: { type: Boolean, default: false },
           teacherDone: { type: Boolean, default: false },
-          score: { type: String, enum: ['a', 'b', 'c', 'n/a'], default: 'a' },
+          score: { type: Number, default: 0 },
         },
       ],
       osats: [
@@ -67,7 +67,7 @@ const RecordSchema = new Schema<IRecord>(
       ],
       residentJudgment: { type: Number, default: 0 },
       teacherJudgment: { type: Number, default: 0 },
-      summaryScale: { type: String, enum: ['A', 'B', 'C', 'D', 'E'], default: 'A' },
+      summaryScale: { type: String, trim: true },
       residentComment: { type: String, trim: true },
       feedback: { type: String, trim: true },
       deleted: { type: Boolean, default: false },

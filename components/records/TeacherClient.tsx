@@ -5,7 +5,6 @@ import RecordCard from "@/components/cards/record-card";
 import { RecordsFilters } from "@/components/filters/RecordsFilters";
 import { format } from "date-fns";
 import { isIResident, isISurgery, isIUser } from "@/utils/validation";
-import Link from "next/link";
 
 interface RecordType {
   _id: string;
@@ -65,16 +64,15 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
       />
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredRecords.map((r) => (
-          <Link key={r._id.toString()} href={`/teacher/records/view/${r._id}`}>
-            <RecordCard
-              surgery={isISurgery(r.surgery) ? r.surgery.name : r.surgery.toString()}
-              date={format(new Date(r.date), "dd/MM/yy")}
-              time={format(new Date(r.date), "HH:mm")}
-              counterpartRole="Residente"
-              counterpart={isIResident(r.resident) && isIUser(r.resident.user) ? (r.resident.user.name || "") : r.resident.toString()}
-              dot={r.status === "pending"}
-            />
-          </Link>
+          <RecordCard
+            key={r._id.toString()}
+            surgery={isISurgery(r.surgery) ? r.surgery.name : r.surgery.toString()}
+            date={format(new Date(r.date), "dd/MM/yy")}
+            time={format(new Date(r.date), "HH:mm")}
+            counterpartRole="Residente"
+            counterpart={isIResident(r.resident) && isIUser(r.resident.user) ? (r.resident.user.name || "") : r.resident.toString()}
+            dot={r.status === "pending"}
+          />
         ))}
       </div>
     </div>

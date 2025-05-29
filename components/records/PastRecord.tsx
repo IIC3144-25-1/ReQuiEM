@@ -4,8 +4,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { IRecord } from "@/models/Record";
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
 
 
 
@@ -33,7 +31,7 @@ export default function PastRecord({ record }: { record: IRecord }) {
             <p>
               <strong>Fecha:</strong>{" "}
               {record.date
-                ? format(record.date, "d '/' MMM '/' yyyy", { locale: es })
+                ? new Date(record.date).toLocaleDateString()
                 : "No disponible"}
             </p>
             <p>
