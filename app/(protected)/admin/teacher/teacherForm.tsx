@@ -25,6 +25,7 @@ import { getAllAreas } from '@/actions/area/getAll'
 import { getTeacherByID } from '@/actions/teacher/getByID'
 import { Skeleton } from '@/components/ui/skeleton'
 import { IArea } from '@/models/Area'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const teacherFormSchema = z.object({
   name: z.string().optional(),
@@ -170,19 +171,26 @@ export function TeacherForm({ id }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Área</FormLabel>
-              <FormControl>
-                <select
-                  {...field}
-                  className="w-full p-2 border rounded-md bg-white text-sm"
-                >
-                  <option value="">Selecciona un área</option>
-                  {areas.map((area) => (
-                    <option key={area._id} value={area._id}>
-                      {area.name}
-                    </option>
-                  ))}
-                </select>
-              </FormControl>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecciona un área" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {areas.length > 0 ? (
+                    areas.map((area) => (
+                      <SelectItem key={area._id} value={area._id}>
+                        {area.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="" disabled>
+                      No se encontraron áreas
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

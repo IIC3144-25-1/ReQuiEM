@@ -10,6 +10,7 @@ export interface IArea extends Document {
     teachers: ITeacher[];
     createdAt: Date;
     updatedAt: Date;
+    deleted?: boolean;
 }
 const AreaSchema = new Schema<IArea>(
     {
@@ -17,6 +18,7 @@ const AreaSchema = new Schema<IArea>(
         description: { type: String, trim: true },
         residents: { type: [{ type: mongoose.Types.ObjectId, ref: "Resident" }], default: [] },
         teachers: { type: [{ type: mongoose.Types.ObjectId, ref: "Teacher" }], default: [] },
+        deleted: { type: Boolean, default: false },
     },
     { timestamps: true }
 );

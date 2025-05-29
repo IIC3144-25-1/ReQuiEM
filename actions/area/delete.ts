@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache"
 export async function deleteArea(areaId: string): Promise<void> {
     await dbConnect()
 
-    await Area.findByIdAndDelete(areaId)
+    await Area.findByIdAndUpdate(areaId, { deleted: true })
 
     console.log("Deleted Area", areaId)
 

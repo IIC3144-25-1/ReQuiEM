@@ -6,7 +6,7 @@ import { Area, IArea } from "@/models/Area"
 export async function getAllAreas(): Promise<IArea[]> {
   await dbConnect()
 
-  const areas = await Area.find()
+  const areas = await Area.find({ deleted: false })
     .lean<IArea>()
     .exec()
 

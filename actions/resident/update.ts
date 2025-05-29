@@ -3,9 +3,10 @@
 
 import dbConnect from '@/lib/dbConnect'
 import { IResident, Resident } from '@/models/Resident'
-import { updateResidentArea } from '../area/updateResident'
 import { User } from '@/models/User'
 import { z } from 'zod'
+import { deleteResidentFromArea } from '../area/deleteResident'
+import { addResidentToArea } from '../area/addResident'
 
 // 1) Esquema Zod para validar los datos de actualización
 const updateResidentSchema = z.object({
@@ -35,7 +36,11 @@ export async function updateResident(formData: FormData): Promise<IResident> {
   })
 
   // 7) Buscar el residente para obtener su userId
-  const existing = await Resident.findById(data._id)
+  const existing = await Resident.findByIdAndUpdate(
+    data._id,
+    { area: data.area },
+    { new: true }
+  )
   if (!existing) {
     throw new Error(`No se encontró Residente con id=${data._id}`)
   }
@@ -48,7 +53,9 @@ export async function updateResident(formData: FormData): Promise<IResident> {
     // { teachers: data.teachers },
   )
 
-  const updated = await updateResidentArea(areaId, residentId)
-  console.log('Residente actualizado:', updated)
-  return JSON.parse(JSON.stringify(updated))
+  // Actualizar areas
+  await deleteResidentFromArea(residentId)
+  await addResidentToArea(areaId, residentId)
+
+  return JSON.parse(JSON.stringify(existing))
 }
