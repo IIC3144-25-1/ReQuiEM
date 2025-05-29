@@ -1,8 +1,7 @@
-// app/components/Navbar1.tsx
 'use server'
 
 import React from "react"
-import { Book, Menu as MenuIcon, Trees, Zap, Ambulance, Stethoscope } from "lucide-react"
+import { Book, Menu as MenuIcon, Trees, Ambulance, Stethoscope } from "lucide-react"
 import {
   Accordion,
   AccordionContent,
@@ -27,6 +26,7 @@ import {
 } from "@/components/ui/sheet"
 import { getCurrentUser } from "@/actions/user/getUser"
 import { getRole, RoleInfo } from "@/actions/user/getRole"
+import Link from "next/link"
 
 interface MenuItem {
   title: string
@@ -48,100 +48,51 @@ export const Navbar1 = async ({
   logo = defaultLogo,
   auth = defaultAuth,
 }: Navbar1Props) => {
-  // fetch user & role
   const user = await getCurrentUser()
   const roleInfo: RoleInfo | null = await getRole()
   const isAdmin = roleInfo?.isAdmin === true
-  const role = roleInfo?.role // 'teacher' | 'resident' | null
+  const role = roleInfo?.role
 
-  // build menu dynamically
-  const dashboardItem: MenuItem = { title: "Dashboard", url: "/dashboard" }
-  const registrosBase: MenuItem = {
-    title: "Registros",
-    url: "#",
-    items: [
-      {
-        title: "Residente",
-        description: "Registros de los residentes",
-        icon: <Zap className="size-5 shrink-0" />,
-        url: "/resident/records",
-      },
-      {
-        title: "Profesor",
-        description: "Registros de los profesores",
-        icon: <Book className="size-5 shrink-0" />,
-        url: "/teacher/records",
-      },
-    ],
-  }
-  const adminBase: MenuItem = {
-    title: "Administrador",
-    url: "#",
-    items: [
-      {
-        title: "Residentes",
-        description: "Administra los residentes",
-        icon: <Book className="size-5 shrink-0" />,
-        url: "/admin/resident",
-      },
-      {
-        title: "Profesores",
-        description: "Administra los profesores",
-        icon: <Trees className="size-5 shrink-0" />,
-        url: "/admin/teacher",
-      },
-      {
-        title: "Cirugias",
-        description: "Maneja las cirugias",
-        icon: <Ambulance className="size-5 shrink-0" />,
-        url: "/admin/surgeries",
-      },
-      {
-        title: "Areas",
-        description: "Administra las areas quirurgicas",
-        icon: <Stethoscope className="size-5 shrink-0" />,
-        url: "/admin/areas",
-      },
-    ],
-  }
+  const menuToRender: MenuItem[] = []
 
-  const menuToRender: MenuItem[] = [dashboardItem]
+  if (isAdmin || role === "teacher" || role === "resident") {
+    menuToRender.push({ title: "Dashboard", url: "/dashboard" })
+  }
 
   if (isAdmin) {
-    menuToRender.push(adminBase)
-  }
-  if (role === "teacher" || role === "resident") {
-    // filter registros items by role
-    const filteredItems = registrosBase.items!.filter((sub) =>
-      role === "teacher"
-        ? sub.title === "Profesor"
-        : sub.title === "Residente"
-    )
-    if (filteredItems.length > 0) {
-      menuToRender.push({ ...registrosBase, items: filteredItems })
-    }
+    menuToRender.push({
+      title: "Administrador",
+      url: "#",
+      items: [
+        { title: "Residentes", description: "Administra los residentes", icon: <Book className="size-5 shrink-0" />, url: "/admin/resident" },
+        { title: "Profesores", description: "Administra los profesores", icon: <Trees className="size-5 shrink-0" />, url: "/admin/teacher" },
+        { title: "Cirugias", description: "Maneja las cirugias", icon: <Ambulance className="size-5 shrink-0" />, url: "/admin/surgeries" },
+        { title: "Areas", description: "Administra las areas quirurgicas", icon: <Stethoscope className="size-5 shrink-0" />, url: "/admin/areas" },
+      ],
+    })
   }
 
-  // render...
+  if (role === "teacher") {
+    menuToRender.push({ title: "Registros", url: "/teacher/records" })
+  } else if (role === "resident") {
+    menuToRender.push({ title: "Registros", url: "/resident/records" })
+  }
+
   return (
     <section className="p-4">
       <div className="container mx-auto">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
-            {/* Logo */}
-            <a href="/" className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tighter">
-                {logo.title}
-              </span>
-            </a>
+            <Link href="/" className="flex items-center gap-2">
+              <span className="text-lg font-semibold tracking-tighter">{logo.title}</span>
+            </Link>
             <NavigationMenu>
               <NavigationMenuList>
                 {menuToRender.map((item) => renderMenuItem(item))}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-
           <div className="flex gap-2 items-center">
             {user ? (
               <div className="text-md font-semibold">Hola {user.name}! 👋</div>
@@ -156,12 +107,9 @@ export const Navbar1 = async ({
         {/* Mobile Menu */}
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <a href="/" className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tighter">
-                {logo.title}
-              </span>
-            </a>
+            <Link href="/" className="flex items-center gap-2">
+              <span className="text-lg font-semibold tracking-tighter">{logo.title}</span>
+            </Link>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
@@ -171,26 +119,18 @@ export const Navbar1 = async ({
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>
-                    <a href="/" className="flex items-center gap-2">
-                      <span className="text-lg font-semibold tracking-tighter">
-                        {logo.title}
-                      </span>
-                    </a>
+                    <Link href="/" className="flex items-center gap-2">
+                      <span className="text-lg font-semibold tracking-tighter">{logo.title}</span>
+                    </Link>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="flex w-full flex-col gap-4"
-                  >
+                  <Accordion type="single" collapsible className="flex w-full flex-col gap-4">
                     {menuToRender.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
                   <div className="flex flex-col gap-3">
                     {user ? (
-                      <div className="text-md font-semibold">
-                        Hola {user.name}! 👋
-                      </div>
+                      <div className="text-md font-semibold">Hola {user.name}! 👋</div>
                     ) : (
                       <Button asChild variant="outline">
                         <a href={auth.login.url}>{auth.login.title}</a>
@@ -214,11 +154,7 @@ const renderMenuItem = (item: MenuItem) => {
         <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
         <NavigationMenuContent className="bg-popover text-popover-foreground">
           {item.items.map((sub) => (
-            <NavigationMenuLink
-              asChild
-              key={sub.title}
-              className="w-80"
-            >
+            <NavigationMenuLink asChild key={sub.title} className="w-80">
               <SubMenuLink item={sub} />
             </NavigationMenuLink>
           ))}
@@ -226,6 +162,7 @@ const renderMenuItem = (item: MenuItem) => {
       </NavigationMenuItem>
     )
   }
+
   return (
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
@@ -253,15 +190,16 @@ const renderMobileMenuItem = (item: MenuItem) => {
       </AccordionItem>
     )
   }
+
   return (
-    <a key={item.title} href={item.url} className="text-md font-semibold">
+    <Link key={item.title} href={item.url} className="text-md font-semibold">
       {item.title}
-    </a>
+    </Link>
   )
 }
 
 const SubMenuLink = ({ item }: { item: MenuItem }) => (
-  <a
+  <Link
     className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
     href={item.url}
   >
@@ -274,5 +212,5 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => (
         </p>
       )}
     </div>
-  </a>
+  </Link>
 )
