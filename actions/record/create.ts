@@ -27,7 +27,7 @@ export async function createRecord(formData: FormData) {
         name: step,
         residentDone: false,
         teacherDone: false,
-        score: 'a',
+        score: 0,
     }));
 
     const osats = surgery.osats.map((osat: { item: string; scale: { punctuation: number; description?: string }[] }) => ({
@@ -36,7 +36,7 @@ export async function createRecord(formData: FormData) {
             punctuation: scaleItem.punctuation,
             description: scaleItem.description,
         })),
-        obtained: osat.scale[0].punctuation,
+        obtained: 0,
     }));
 
     const newRecord = new Record({
@@ -49,13 +49,12 @@ export async function createRecord(formData: FormData) {
         residentsYear: Number(residentsYear),
         steps: steps,
         osats: osats,
-        residentJudgment: 4,
-        teacherJudgment: 4,
-        summaryScale: "A",
+        residentJudgment: 0,
+        teacherJudgment: 0,
+        summaryScale: "",
         feedback: "",
     });
-    
-    // console.log("savedRecord", newRecord);
+
     const record = await newRecord.save();
     // const savedRecord = await newRecord.save();
     return record._id.toString();

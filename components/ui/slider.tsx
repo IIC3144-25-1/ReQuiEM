@@ -68,23 +68,12 @@ function Slider({
           <span key={points}>{points}</span>
         ))}
       </div>
-      <div className="mt-1 -mx-1.5 flex items-start space-x-1 justify-between text-muted-foreground text-xs w-full">
-        {labels.map((label, index) => {
-          let align = "text-left";
-          if (index === 0) align = "text-left";
-          else if (index === labels.length - 1) align = "text-right";
-          else align = "text-center";
-          let width = "";
-          if (label !== "") width = "min-w-1/4"
-          return (
-            <span
-              key={index}
-              className={`text-xs text-muted-foreground ${align} ${width}`}
-            >
-              {label}
-            </span>
-          );
-        })}
+      <div className="mt-1 -mx-1.5 flex items-center justify-between text-muted-foreground text-xs w-full">
+        {labels.map((label, index) => (
+          <span key={index} className="text-xs text-muted-foreground">
+            {label}
+          </span>
+        ))}
       </div>
     </div>
   )
