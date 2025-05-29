@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12 bg-gradient-to-b from-white to-gray-100 text-center">
+    <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12 text-center">
       <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
         Bienvenido a <span className="text-blue-600">ReQuiEM</span>
       </h1>

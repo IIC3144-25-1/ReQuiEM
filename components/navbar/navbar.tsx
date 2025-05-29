@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -112,7 +113,7 @@ export const Navbar = async ({
             </Link>
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
+                <Button  variant="link"  size="icon">
                   <MenuIcon className="size-4" />
                 </Button>
               </SheetTrigger>
@@ -184,7 +185,9 @@ const renderMobileMenuItem = (item: MenuItem) => {
         </AccordionTrigger>
         <AccordionContent className="mt-2">
           {item.items.map((sub) => (
-            <SubMenuLink key={sub.title} item={sub} />
+            <SheetClose key={sub.title} asChild>
+              <SubMenuLink key={sub.title} item={sub} />
+            </SheetClose>
           ))}
         </AccordionContent>
       </AccordionItem>
@@ -192,9 +195,11 @@ const renderMobileMenuItem = (item: MenuItem) => {
   }
 
   return (
-    <Link key={item.title} href={item.url} className="text-md font-semibold">
-      {item.title}
-    </Link>
+    <SheetClose asChild key={item.title}>
+      <Link key={item.title} href={item.url} className="text-md font-semibold">
+        {item.title}
+      </Link>
+    </SheetClose>
   )
 }
 
