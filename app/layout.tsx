@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "ReQuiEM",
   description: "Evaluación Quirúrgica Médica: plataforma para el registro y retroalimentación de procedimientos médicos.",
   icons: {
-    icon: "/Icon.png",
+    icon: "/Icon.ico",
   },
   openGraph: {
     title: "ReQuiEM",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     siteName: "ReQuiEM",
     images: [
       {
-        url: "/Icon.png",
+        url: "/Icon.ico",
         width: 1200,
         height: 630,
         alt: "Logo de ReQuiEM",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ReQuiEM",
     description: "Plataforma para evaluación y retroalimentación médica",
-    images: ["/Icon.png"],
+    images: ["/Icon.ico"],
   },
 };
 
@@ -53,7 +53,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/Icon.png" />
+        <link rel="icon" href="/Icon.ico" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
