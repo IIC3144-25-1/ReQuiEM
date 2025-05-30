@@ -82,8 +82,8 @@ export function StepsRecordForm({record} : {record: IRecord}) {
           <FormDescription className="mb-2">Marca los pasos que realizaste durante la cirugía</FormDescription>
         </div>
         
-        <div className="flex flex-col space-y-6 relative mt-0">
-            <div className="h-23/24 w-px border border-gray-800 bg-gray-800 absolute ml-[5px] z-0 top-1/2 -translate-y-1/2"></div>
+        <div className="flex flex-col space-y-6 relative">
+            <div className="h-23/24 w-px border border-gray-800 bg-gray-800 absolute ml-[5px] top-31/64 -translate-y-1/2 z-0" />
           {fields.map((field, index) => (
             <FormField
               key={field.id}
@@ -95,7 +95,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 outline-offset-1 z-10"
+                      className="w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 z-10"
                       check={false}
                     />
                   </FormControl>

@@ -6,10 +6,13 @@ import dbConnect from "@/lib/dbConnect"
 export async function reviewRecord(formData: FormData) {
   await dbConnect()
   const recordId = formData.get('recordId')
-  const teacherJudgment = formData.get('teacherJudgment')
-  const summaryScale = formData.get('summaryScale')
-  const feedback = formData.get('feedback')
-  const status = 'corrected'
+  const record = await Record.findById(recordId)
+  if (!record) throw new Error('Record not found')
+
+  record.teacherJudgment = formData.get('teacherJudgment')
+  record.summaryScale = formData.get('summaryScale')
+  record.feedback = formData.get('feedback')
+  record.status = 'corrected'
 
   const stepsIdxs = new Set<number>()
   for (const key of formData.keys()) {
@@ -36,16 +39,23 @@ export async function reviewRecord(formData: FormData) {
         obtained: Number(formData.get(`osats.${i}.obtained`) ?? 0),
     }))
 
+  for (let i = 0; i < record.steps.length; i++) {
+    const newStep = steps.find(s => s.name === record.steps[i].name)
+    if (newStep) {
+      record.steps[i].teacherDone = newStep.teacherDone
+      record.steps[i].score = newStep.score
+    }
+  }
+  
+  for (let i = 0; i < record.osats.length; i++) {
+    const newOsat = osats.find(o => o.item === record.osats[i].item)
+    if (newOsat) {
+      record.osats[i].obtained = newOsat.obtained
+    }
+  }
 
-  const raw = { teacherJudgment, summaryScale, feedback, steps, osats, status }
-  console.log(raw)
-
-  const doc = await Record.findByIdAndUpdate(
-      recordId , 
-      raw
-  )
-
-  return JSON.parse(JSON.stringify(doc))
+  await record.save()
+  console.log("Record reviewed successfully:", record)
+  return JSON.parse(JSON.stringify(record))
 }
-    
-    
+
