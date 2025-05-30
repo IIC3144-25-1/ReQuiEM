@@ -26,7 +26,7 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
     return (
       <div className="min-h-screen bg-white flex flex-col relative">
         <div className="leading-none text-center pt-10">No tienes registros todavía</div>
-        <Button className="fixed bottom-10 right-10" >
+        <Button className="fixed bottom-20 right-20" >
           <PlusIcon className="mr-2" />
           <Link href="/resident/new-record">Crear Registro</Link>
         </Button>
