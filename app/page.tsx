@@ -16,19 +16,21 @@ export default function Home() {
         Una plataforma para registrar procedimientos quirúrgicos y facilitar la retroalimentación entre doctores e internos de medicina.
       </p>
 
-      <Link href="/login">
-        <Button className="flex items-center gap-2 px-6 py-3 text-lg">
-          <LogIn className="w-5 h-5" />
-          Iniciar Sesión
-        </Button>
-      </Link>
+      <div className="flex flex-row items-center justify-center gap-4 mt-6">
+        {/* Botón de cierre de sesión solo para debugging temporal */}
+        <form action={logout} className="">
+          <Button type="submit" variant="outline">
+            Cerrar Sesión (Temporal)
+          </Button>
+        </form>
 
-      {/* Botón de cierre de sesión solo para debugging temporal */}
-      <form action={logout} className="mt-6">
-        <Button type="submit" variant="outline">
-          Cerrar Sesión (Temporal)
-        </Button>
-      </form>
+        <Link href="/login">
+          <Button className="flex items-center gap-2 px-6 py-3">
+            <LogIn className="w-6 h-5" />
+            Iniciar Sesión
+          </Button>
+        </Link>
+      </div>
     </main>
   );
 }

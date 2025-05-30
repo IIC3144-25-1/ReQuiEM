@@ -36,7 +36,7 @@ const reviewRecordSchema = z.object({
   feedback: z.string(),
 });
 
-const sumaryScalesList = [
+export const sumaryScalesList = [
   { value: 'A', label: 'Competente para asistir adecuadamente' },
   { value: 'B', label: 'Competente para desarrollar la operación bajo estricta supervision' },
   { value: 'C', label: 'Competente para desarrollar la operación bajo supervision limitada' },
@@ -110,22 +110,22 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-8 flex flex-col">
-        <div className="flex flex-raw mt-4">
-          <div className="mr-4 font-semibold space-y-1 flex flex-col">
+        <div className="flex flex-row mt-4">
+          <div className="mr-4 font-semibold flex flex-col">
             <Label>Cirugía:</Label>
             <Label>Residente:</Label>
             <Label>Fecha:</Label>
           </div>
-          <div className="space-y-1 flex flex-col">
+          <div className="flex flex-col">
             <Label>{record.surgery.name}</Label>
             <Label>{record.resident.user.name}</Label>
-            <Label>{format(record.date, "d '/' MMM '/' yyyy", { locale: es })}</Label>
+            <Label>{format(record.date, "d '/' MMM '/' yyyy ', ' HH:mm", { locale: es })}</Label>
           </div>
         </div>
 
         <FormLabel className="text-lg font-semibold mt-4">Pasos Realizados por el Residente</FormLabel>
         <div className="flex flex-col space-y-6 relative mt-0">
-          <div className="h-23/24 w-px border border-gray-800 bg-gray-800 absolute ml-[5px] z-0 top-1/2 -translate-y-1/2"></div>
+          <div className="h-23/24 w-px border border-gray-800 bg-gray-800 absolute ml-[5px] top-31/64 -translate-y-1/2 z-0"></div>
           {stepFields.map((field, index) => (
             <FormField
               key={field.id}
@@ -137,7 +137,7 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 outline-offset-1 z-10"
+                      className="w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 z-10"
                       check={false}
                     />
                   </FormControl>
