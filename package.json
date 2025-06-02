@@ -83,6 +83,8 @@
     "@types/react-dom": "^19",
     "@types/sendgrid": "^4.3.0",
     "babel-jest": "^29.7.0",
+    "cypress": "^14.4.0",
+    "cypress-plugin-tab": "^1.0.5",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "identity-obj-proxy": "^3.0.0",
