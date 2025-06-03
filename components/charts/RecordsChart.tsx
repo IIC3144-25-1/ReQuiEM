@@ -56,7 +56,7 @@ export default function RecordsChart({ data }: RecordsChartProps) {
             tick={{ fontSize: 12 }}
         />
         <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-        <Bar dataKey="count" fill="var(--color-count)" radius={8} >
+        <Bar dataKey="count" fill="var(--color-count)" radius={4} >
             <LabelList
                 position="top"
                 offset={12}
