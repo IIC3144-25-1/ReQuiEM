@@ -10,6 +10,10 @@ export async function TotalTypesOfSurgeryForResident({ residentId }: { residentI
     await Surgery.init(); // Ensure Surgery model is initialized
     const records = await Record.find({ resident: residentId }).populate('surgery').lean();
 
+    if (records.length === 0) {
+        return <div></div>;
+    }
+
     const surgeryCount: Record<string, number> = {};
 
     for (const record of records) {
@@ -23,7 +27,7 @@ export async function TotalTypesOfSurgeryForResident({ residentId }: { residentI
     }));
 
     console.log("Surgery Data:", data);
-    
+
 
     return <SurgeryPieChart data={data} />;
 }

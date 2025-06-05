@@ -7,6 +7,10 @@ export async function RecordsCompleted({residentId}: { residentId: string }) {
     await dbConnect();
     const records = await Record.find({ resident: residentId }).lean();
 
+    if (records.length === 0) {
+        return <div></div>;
+    }
+
     const weekMap: Record<string, number> = {};
     records.forEach((rec) => {
         const date = new Date(rec.createdAt);
