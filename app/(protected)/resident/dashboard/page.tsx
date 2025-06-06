@@ -3,6 +3,7 @@ import { ChartSkeleton } from "@/components/charts/ChartSkeleton";
 import { RecordsCompleted } from "@/components/charts/RecordsCompletedByResident";
 import { TotalTypesOfSurgeryForResident } from "@/components/charts/TotalTipesOfSurgeryForResident";
 import { Suspense } from "react";
+import { DownloadRecordsButton } from "@/components/records/DownloadRecordsButton";
 
 
 export default async function DashboardPage() {
@@ -21,6 +22,7 @@ export default async function DashboardPage() {
       <Suspense fallback={<ChartSkeleton />}>
         <TotalTypesOfSurgeryForResident residentId={resident._id.toString()} />
       </Suspense>
+      <DownloadRecordsButton side="resident" />
     </div> 
   );
 }
