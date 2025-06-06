@@ -19,8 +19,10 @@ const URLS_TO_CACHE = [
   '/resident/complete-record/[id]/',
   '/resident/new-record/',
   '/resident/records/',
-  '/resident/records/view/[id]/',
-  '/teacher/records/'
+  '/resident/records/[id]/',
+  '/teacher/records/',
+  '/teacher/records/[id]/',
+  '/teacher/review/[id]/',
 ];
 
 

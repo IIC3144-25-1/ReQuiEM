@@ -55,7 +55,7 @@ export async function reviewRecord(formData: FormData) {
   }
 
   await record.save()
-  console.log("Record reviewed successfully:", record)
+  // console.log("Record reviewed successfully:", record)
   return JSON.parse(JSON.stringify(record))
 }
 

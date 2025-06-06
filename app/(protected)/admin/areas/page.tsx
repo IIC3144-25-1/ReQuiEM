@@ -35,9 +35,11 @@ export default async function Page() {
                 <p className="text-sm text-muted-foreground">Aquí puedes ver, editar y crear nuevas áreas</p>
             </div>
             <div className="my-4">
-                <Button asChild>
-                    <Link href={"/admin/areas/new"}>Crear nueva área</Link>
-                </Button>
+                <Link href={"/admin/areas/new"}>
+                    <Button asChild>
+                        Crear nueva área
+                    </Button>
+                </Link>
             </div>
         </div>
         <Table className="w-full">
@@ -54,9 +56,11 @@ export default async function Page() {
                         <TableCell>{area.name}</TableCell>
                         <TableCell>{area.description}</TableCell>
                         <TableCell className="flex items-center">
-                            <Button asChild size='icon' variant='outline' className="mr-2">
-                                <Link href={`/admin/areas/edit/${area._id}`}><Edit /></Link>
-                            </Button>
+                            <Link href={`/admin/areas/edit/${area._id}`}>
+                                <Button asChild size='icon' variant='outline' className="mr-2">
+                                    <Edit />
+                                </Button>
+                            </Link>
                             <form action={handleDelete}>
                                 <input name="areaId" className="hidden" value={area._id.toString()} readOnly/>
                                 <Button size='icon' variant='outline' className="mr-2 hover:border-destructive" type="submit">

@@ -28,10 +28,10 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
     all: "Todos",
     pending: "Pendiente",
     corrected: "Corregido",
-    reviewed: "Revisado",
-    canceled: "Cancelado",
+    // reviewed: "Revisado",
+    // canceled: "Cancelado",
   };
-  const statusOptions = ["all", "pending", "corrected", "reviewed", "canceled"];
+  const statusOptions = ["all", "pending", "corrected"]; //, "reviewed", "canceled"
 
   const filteredRecords = records.filter((r) => {
     const validSurgery = isISurgery(r.surgery) && typeof r.surgery.name === "string";
@@ -39,7 +39,8 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
     if (validSurgery && validResident) {
       const matchesSearch = r.surgery.name.toLowerCase().includes(searchSurgery.toLowerCase());
       const matchesResident = r.resident.user.name.toLowerCase().includes(searchResident.toLowerCase());
-      const matchesStatus = statusFilter === "all" || !statusFilter ? true : r.status === statusFilter;
+      const matchesStatus = statusFilter === "all" || r.status === statusFilter
+        || (r.status === "reviewed" && statusFilter === "corrected") || !statusFilter;
       return matchesSearch && matchesStatus && matchesResident;
     }
     return true;
@@ -65,7 +66,7 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
       />
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredRecords.map((r) => (
-          <Link key={r._id.toString()} href={`/teacher/records/view/${r._id}`}>
+          <Link key={r._id.toString()} href={`/teacher/records/${r._id}`}>
             <RecordCard
               surgery={isISurgery(r.surgery) ? r.surgery.name : r.surgery.toString()}
               date={format(new Date(r.date), "dd/MM/yy")}

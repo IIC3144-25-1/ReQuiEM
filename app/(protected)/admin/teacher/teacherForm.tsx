@@ -210,9 +210,11 @@ export function TeacherForm({ id }: Props) {
         />
 
         <div className="flex justify-between">
-          <Button variant="outline" asChild>
-            <Link href="/admin/teacher">Cancelar</Link>
-          </Button>
+          <Link href="/admin/teacher">
+            <Button variant="outline" asChild>
+              Cancelar
+            </Button>
+          </Link>
           <Button type="submit">
             {teacher?._id ? 'Actualizar Profesor' : 'Crear Profesor'}
           </Button>

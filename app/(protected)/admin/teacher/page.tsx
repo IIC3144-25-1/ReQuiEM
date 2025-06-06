@@ -33,9 +33,11 @@ export default async function Page() {
           <p className="text-sm text-muted-foreground">Aquí puedes ver, editar y crear nuevos profesores</p>
         </div>
         <div className="my-4">
-          <Button asChild>
-            <Link href={"/admin/teacher/new"}>Crear nuevo profesor</Link>
-          </Button>
+          <Link href={"/admin/teacher/new"}>
+            <Button asChild>
+              Crear nuevo profesor
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -56,9 +58,11 @@ export default async function Page() {
               <TableCell>{teacher.user?.email || "Sin email"}</TableCell>
               <TableCell>{teacher.area?.name || "Sin área"}</TableCell>
               <TableCell className="flex items-center">
-                <Button asChild size="icon" variant="outline" className="mr-2">
-                  <Link href={`/admin/teacher/edit/${teacher._id}`}><Edit /></Link>
-                </Button>
+                <Link href={`/admin/teacher/edit/${teacher._id}`}>
+                  <Button asChild size="icon" variant="outline" className="mr-2">
+                    <Edit />
+                  </Button>
+                </Link>
                 <form action={handleDelete}>
                   <input name="teacherId" className="hidden" value={teacher._id.toString()} readOnly />
                   <Button size="icon" variant="outline" className="mr-2 hover:border-destructive" type="submit">
