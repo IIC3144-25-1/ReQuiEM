@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { Toaster } from "@/components/ui/sonner";
-import { Navbar } from "./navbar";
+import { Navbar } from "./Navbar";
 
 export default function LayoutWrapper({
   children,
