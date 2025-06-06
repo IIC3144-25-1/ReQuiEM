@@ -57,7 +57,7 @@ export const Navbar = async ({
   const menuToRender: MenuItem[] = []
 
   if (isAdmin || role === "teacher" || role === "resident") {
-    menuToRender.push({ title: "Dashboard", url: "/dashboard" })
+    menuToRender.push({ title: "Dashboard", url: role === "teacher" ? "/teacher/dashboard" : "/resident/dashboard"  })
   }
 
   if (isAdmin) {
