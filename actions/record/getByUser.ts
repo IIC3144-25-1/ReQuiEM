@@ -38,6 +38,13 @@ async function getRecordsByResident(userId: object) {
             }
         })
         .populate({
+            path: 'resident',
+            populate: {
+                path: 'user',
+                select: 'name'
+            }
+        })
+        .populate({
             path: 'surgery',
             select: 'name',
         })
@@ -54,6 +61,13 @@ async function getRecordsByResident(userId: object) {
 async function getRecordsByTeacher(userId: object) {
     const teacher = await Teacher.findOne({ user: userId })
     const records = await Record.find({ teacher: teacher?._id })
+        .populate({ 
+            path: 'teacher', 
+            populate: {
+                path: 'user',
+                select: 'name'
+            }
+        })
         .populate({
             path: 'resident',
             populate: {

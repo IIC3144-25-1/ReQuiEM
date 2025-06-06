@@ -10,11 +10,11 @@ export function DownloadRecordsButton({ side }: { side: "resident" | "teacher" }
     { key: "_id", label: "ID" },
     { key: "date", label: "Fecha" },
     { key: "status", label: "Estado" },
+    { key: "patientId", label: "RUT Paciente" },
+    { key: "resident.user.name", label: "Residente" },
     { key: "residentsYear", label: "Año Residente" },
     { key: "teacher.user.name", label: "Profesor" },
     { key: "surgery.name", label: "Cirugía" },
-    // { key: "steps", label: "Pasos (nombre - residente - profesor - puntaje)" },
-    // { key: "osats", label: "OSATS (ítem - obtenido)" },
     { key: "residentJudgment", label: "Juicio Residente" },
     { key: "teacherJudgment", label: "Juicio Profesor" },
     { key: "summaryScale", label: "Escala Resumen" },
@@ -51,6 +51,23 @@ export function DownloadRecordsButton({ side }: { side: "resident" | "teacher" }
       alert("No hay registros disponibles para descargar.");
       return;
     }
+
+    const maxSteps = Math.max(...records.map((r: any) => r.steps?.length || 0));
+    const maxOsats = Math.max(...records.map((r: any) => r.osats?.length || 0));
+
+    // Agrega pasos y OSATS a los headers
+    for (let i = 0; i < maxSteps; i++) {
+      headers.push({ key: `steps.${i}.name`, label: `Paso ${i + 1} Descripción` });
+      headers.push({ key: `steps.${i}.residentDone`, label: `Paso ${i + 1} Hecho (Residente)` });
+      headers.push({ key: `steps.${i}.teacherDone`, label: `Paso ${i + 1} Hecho (Profesor)` });
+      headers.push({ key: `steps.${i}.score`, label: `Paso ${i + 1} Puntaje` });
+    }
+
+    for (let i = 0; i < maxOsats; i++) {
+      headers.push({ key: `osats.${i}.item`, label: `OSATS ${i + 1} Descrpición` });
+      headers.push({ key: `osats.${i}.obtained`, label: `OSATS ${i + 1} Puntaje` });
+    }
+
     const flatRecords = flattenRecords(records, headers);
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Registros");
