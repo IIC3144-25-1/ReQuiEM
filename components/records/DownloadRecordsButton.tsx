@@ -30,13 +30,23 @@ export function DownloadRecordsButton({ side }: { side: "resident" | "teacher" }
     canceled: "Cancelado",
   };
   
-  function flattenRecords(records: any[], headers: { key: any; label: any; }[]) {
+  type Header = { key: string; label: string };
+
+  function getNestedValue(obj: unknown, path: string): unknown {
+    return path.split('.').reduce((acc, key) => {
+      if (acc && typeof acc === "object" && key in acc) {
+        return (acc as Record<string, unknown>)[key];
+      }
+      return "";
+    }, obj);
+  }
+
+  function flattenRecords(records: unknown[], headers: Header[]) {
     return records.map((record) => {
-      const flat: Record<string, any> = {};
+      const flat: Record<string, unknown> = {};
       headers.forEach(({ key, label }) => {
-        let value = key.split('.').reduce((obj: { [x: string]: any; }, k: string | number) => (obj ? obj[k] : ""), record);
-        // Si es el status, usa el diccionario
-        if (key === "status" && value in statusLabels) {
+        let value = getNestedValue(record, key);
+        if (key === "status" && typeof value === "string" && value in statusLabels) {
           value = statusLabels[value as keyof typeof statusLabels];
         }
         flat[label] = value;
@@ -46,14 +56,27 @@ export function DownloadRecordsButton({ side }: { side: "resident" | "teacher" }
   }
   
   const handleDownload = async () => {
-    const records = await DownloadRecords(side);
+    const records = await DownloadRecords(side) as Record<string, unknown>[];
     if (!records || records.length === 0) {
       alert("No hay registros disponibles para descargar.");
       return;
     }
 
-    const maxSteps = Math.max(...records.map((r: any) => r.steps?.length || 0));
-    const maxOsats = Math.max(...records.map((r: any) => r.osats?.length || 0));
+    const maxSteps = Math.max(
+      ...records.map((r) =>
+        Array.isArray((r as Record<string, unknown>).steps)
+          ? ((r as { steps: unknown[] }).steps?.length ?? 0)
+          : 0
+      )
+    );
+
+    const maxOsats = Math.max(
+      ...records.map((r) =>
+        Array.isArray((r as Record<string, unknown>).osats)
+          ? ((r as { osats: unknown[] }).osats?.length ?? 0)
+          : 0
+      )
+    );
 
     // Agrega pasos y OSATS a los headers
     for (let i = 0; i < maxSteps; i++) {
