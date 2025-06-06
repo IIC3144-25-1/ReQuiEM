@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-//import { Navbar } from "../../components/navbar/Navbar";
+//import { Navbar } from "../../components/navbar/navbar";
 
 // Solo necesitamos mantener estos mocks esenciales
 jest.mock("@/actions/user/getUser", () => ({
