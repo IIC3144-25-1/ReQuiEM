@@ -22,6 +22,7 @@ import { formatRut, validateRut } from "@/utils/rut"
 import { ISurgery } from "@/models/Surgery"
 import { ITeacher } from "@/models/Teacher"
 import { IResident } from "@/models/Resident"
+import { Loader2Icon } from "lucide-react";
 // import { toast } from "sonner"
 
 const recordSchema = z.object({
@@ -39,8 +40,12 @@ const recordSchema = z.object({
 
 export default function RecordForm({surgeries, teachers, resident}: {surgeries: ISurgery[], teachers: ITeacher[], resident: IResident}) {
     const router = useRouter()
-    const [hour, setHour] = useState("")
-    const [minute, setMinute] = useState("")
+    const now = new Date();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const roundedMinutes = Math.floor(now.getMinutes() / 5) * 5;
+    const [hour, setHour] = useState(pad(now.getHours()));
+    const [minute, setMinute] = useState(pad(roundedMinutes));
+    const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof recordSchema>>({
         resolver: zodResolver(recordSchema),
@@ -55,7 +60,8 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
     })
 
     async function onSubmit(data: z.infer<typeof recordSchema>) {
-        console.log("DATA:", data)
+        setLoading(true);
+        // console.log("DATA:", data)
         const fullDate = new Date(data.date);
         if (hour !== "") {
             fullDate.setHours(parseInt(hour, 10));
@@ -79,6 +85,8 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
             // console.log("DATA:", data)
         } catch (error) {
             console.error("Error creating record:", error)
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -204,7 +212,7 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
                             </Popover>
                             <Select value={hour} onValueChange={setHour}>
                                 <SelectTrigger className="w-[45px]" arrow={false}>
-                                    <SelectValue placeholder="12" />
+                                    <SelectValue placeholder="14" />
                                 </SelectTrigger>
                                 <SelectContent className="h-[200px] w-[45px]">
                                     {Array.from({ length: 24 }, (_, i) => (
@@ -298,8 +306,10 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
                     )}
                 />
 
-                <Button type="submit" className="ml-auto w-1/2">
-                    Siguiente
+                <Button type="submit" className="ml-auto w-1/2" disabled={loading}>
+                    {loading ? (
+                        <Loader2Icon className="animate-spin" />
+                    ) : "Siguiente"}
                 </Button>
             </form>
         </Form>

@@ -41,6 +41,7 @@ async function getRecordsByResident(userId: object) {
             path: 'surgery',
             select: 'name',
         })
+        .sort({ updatedAt: -1 })
         .lean<IRecord[]>()
         .exec()
     
@@ -53,7 +54,10 @@ async function getRecordsByResident(userId: object) {
 
 async function getRecordsByTeacher(userId: object) {
     const teacher = await Teacher.findOne({ user: userId })
-    const records = await Record.find({ teacher: teacher?._id })
+    const records = await Record.find({
+        teacher: teacher?._id,
+        steps: { $exists: true, $ne: [] }
+    })
         .populate({
             path: 'resident',
             populate: {
@@ -65,6 +69,7 @@ async function getRecordsByTeacher(userId: object) {
             path: 'surgery',
             select: 'name',
         })
+        .sort({ createdAt: -1 })
         .lean<IRecord[]>()
         .exec()
     return records

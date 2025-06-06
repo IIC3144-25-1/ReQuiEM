@@ -96,11 +96,13 @@ export const Navbar = async ({
           </div>
           <div className="flex gap-2 items-center">
             {user ? (
-              <div className="text-md font-semibold">Hola {user.name}! 👋</div>
+              <div className="text-md font-semibold">Hola {user.name}!</div>
             ) : (
-              <Button asChild variant="outline">
-                <a href={auth.login.url}>{auth.login.title}</a>
-              </Button>
+              <Link href={auth.login.url}>
+                <Button asChild variant="outline">
+                  {auth.login.title}
+                </Button>
+              </Link>
             )}
           </div>
         </nav>
@@ -133,9 +135,11 @@ export const Navbar = async ({
                     {user ? (
                       <div className="text-md font-semibold">Hola {user.name}! 👋</div>
                     ) : (
-                      <Button asChild variant="outline">
-                        <a href={auth.login.url}>{auth.login.title}</a>
-                      </Button>
+                      <Link href={auth.login.url}>
+                        <Button asChild variant="outline">
+                          {auth.login.title}
+                        </Button>
+                      </Link>
                     )}
                   </div>
                 </div>

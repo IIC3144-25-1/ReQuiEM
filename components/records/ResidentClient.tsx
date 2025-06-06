@@ -26,10 +26,12 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
     return (
       <div className="min-h-screen bg-white flex flex-col relative">
         <div className="leading-none text-center pt-10">No tienes registros todavía</div>
-        <Button className="fixed bottom-20 right-20" >
-          <PlusIcon className="mr-2" />
-          <Link href="/resident/new-record">Crear Registro</Link>
-        </Button>
+        <Link href="/resident/new-record">
+          <Button className="fixed bottom-20 right-20" >
+            <PlusIcon className="mr-2" />
+            Crear Registro
+          </Button>
+        </Link>
       </div>
     )
   }
@@ -38,10 +40,10 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
     all: "Todos",
     pending: "Pendiente",
     corrected: "Corregido",
-    reviewed: "Revisado",
-    canceled: "Cancelado",
+    // reviewed: "Revisado",
+    // canceled: "Cancelado",
   };
-  const statusOptions = ["all", "pending", "corrected", "reviewed", "canceled"];
+  const statusOptions = ["all", "pending", "corrected"]; //, "reviewed", "canceled"
 
   const filteredRecords = records.filter((r) => {
     const validSurgery = isISurgery(r.surgery) && typeof r.surgery.name === "string";
@@ -50,7 +52,8 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
     if (validSurgery && validTeacher) {
       const matchesSearch = r.surgery.name.toLowerCase().includes(searchSurgery.toLowerCase());
       const matchesTeacher = r.teacher.user.name.toLowerCase().includes(searchTeacher.toLowerCase());
-      const matchesStatus = statusFilter === "all" || !statusFilter ? true : r.status === statusFilter;
+      const matchesStatus = statusFilter === "all" || r.status === statusFilter
+        || (r.status === "reviewed" && statusFilter === "corrected") || !statusFilter;
       return matchesSearch && matchesStatus && matchesTeacher;
     }
     return true;
@@ -72,7 +75,7 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
       />
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {filteredRecords.map((r) => (
-        <Link key={r._id.toString()} href={`/resident/records/view/${r._id}`}>
+        <Link key={r._id.toString()} href={`/resident/records/${r._id}`}>
           <RecordCard
             surgery={isISurgery(r.surgery) ? r.surgery.name : r.surgery.toString()}
             date={format(new Date(r.date), "dd/MM/yy")}
@@ -85,10 +88,12 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
       ))}
 
       </div>
-      <Button className="fixed bottom-10 right-10" >
+      <Link href="/resident/new-record">
+        <Button className="fixed bottom-10 right-10 sm:bottom-20 sm:right-20" >
         <PlusIcon className="mr-2" />
-        <Link href="/resident/new-record">Crear Registro</Link>
-      </Button>
+          Crear Registro
+        </Button>
+      </Link>
     </div>
   );
 }
