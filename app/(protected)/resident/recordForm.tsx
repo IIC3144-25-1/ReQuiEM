@@ -22,7 +22,7 @@ import { formatRut, validateRut } from "@/utils/rut"
 import { ISurgery } from "@/models/Surgery"
 import { ITeacher } from "@/models/Teacher"
 import { IResident } from "@/models/Resident"
-import { Loader2Icon } from "lucide-react";
+// import { Loader2Icon } from "lucide-react";
 // import { toast } from "sonner"
 
 const recordSchema = z.object({
@@ -45,7 +45,7 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
     const roundedMinutes = Math.floor(now.getMinutes() / 5) * 5;
     const [hour, setHour] = useState(pad(now.getHours()));
     const [minute, setMinute] = useState(pad(roundedMinutes));
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof recordSchema>>({
         resolver: zodResolver(recordSchema),
@@ -60,7 +60,7 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
     })
 
     async function onSubmit(data: z.infer<typeof recordSchema>) {
-        setLoading(true);
+        // setLoading(true);
         // console.log("DATA:", data)
         const fullDate = new Date(data.date);
         if (hour !== "") {
@@ -86,7 +86,7 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
         } catch (error) {
             console.error("Error creating record:", error)
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     }
 
@@ -306,10 +306,8 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
                     )}
                 />
 
-                <Button type="submit" className="ml-auto w-1/2" disabled={loading}>
-                    {loading ? (
-                        <Loader2Icon className="animate-spin" />
-                    ) : "Siguiente"}
+                <Button type="submit" className="ml-auto w-1/2" disabled={form.formState.isSubmitting}>
+                    Siguiente
                 </Button>
             </form>
         </Form>
