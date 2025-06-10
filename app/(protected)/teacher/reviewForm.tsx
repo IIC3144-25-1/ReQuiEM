@@ -4,10 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useFieldArray } from "react-hook-form"
 import { z } from "zod"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from "@/components/ui/select"
 import { Label } from "@radix-ui/react-label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
@@ -44,8 +46,17 @@ export const sumaryScalesList = [
   { value: 'E', label: 'Competente para supervisar y enseñar operación' },
 ];
 
+export const scoreList = {
+  'a': 'No realizado',
+  'b': 'Realizado parcialmente, requiere corrección',
+  'c': 'Realizado completo, de forma independiente',
+  'n/a': 'No aplica'
+}
+
 export function ReviewRecordForm({record} : {record: IRecord}) {
   const router = useRouter()
+  const [scores, setScores] = useState<string[]>(Array(record.steps.length).fill('a'))
+  
   const form = useForm<z.infer<typeof reviewRecordSchema>>({
     resolver: zodResolver(reviewRecordSchema),
     defaultValues: {
@@ -74,6 +85,14 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
     name: "osats",
   });
 
+  const handleValueChange = (value: string, index: number) => {
+    setScores((prev) => {
+      const newScores = [...prev];
+      newScores[index] = value;
+      return newScores;
+    });
+  }
+
   async function onSubmit(data: z.infer<typeof reviewRecordSchema>) {
     const formData = new FormData()
     console.log("Submitting review record:", data)
@@ -83,7 +102,7 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
     data.steps.forEach((step, index) => {
       formData.append(`steps.${index}.name`, step.name)
       formData.append(`steps.${index}.teacherDone`, String(step.teacherDone))
-      formData.append(`steps.${index}.score`, String(step.score))
+      formData.append(`steps.${index}.score`, scores[index])
     })
 
     data.osats.forEach((osat, index) => {
@@ -96,9 +115,10 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
     formData.append('feedback', data.feedback)
 
     try {
+
       await reviewRecord(formData);
       toast.success("Registro completado correctamente")
-      router.push('/teacher/records')
+      router.push(`/teacher/records/${record._id}`)
     } catch (error) {
       console.log("Error al completar el registro:", error)
       toast.error("Error al completar el registro")
@@ -119,7 +139,7 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
           <div className="flex flex-col">
             <Label>{record.surgery.name}</Label>
             <Label>{record.resident.user.name}</Label>
-            <Label>{format(record.date, "d '/' MMM '/' yyyy ', ' HH:mm", { locale: es })}</Label>
+            <Label>{format(record.date, "d '/' MMM '/' yyyy ' a las ' HH:mm", { locale: es })}</Label>
           </div>
         </div>
 
@@ -132,15 +152,31 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
               control={form.control}
               name={`steps.${index}.teacherDone`}
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
+                <FormItem className="flex flex-row items-start space-x-2 space-y-0 rounded-md">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className="w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 z-10"
+                      onCheckedChange={value => {
+                        field.onChange(value);
+                        handleValueChange("c", index)
+                      }}
+                      className="min-w-3 w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 z-10"
                       check={false}
                     />
                   </FormControl>
+                  <Select onValueChange={value => handleValueChange(value, index)} disabled={!field.value}>
+                    <SelectTrigger className="min-w-[30px] max-h-[30px] p-0 -mt-2 flex justify-center items-center" arrow={false}>
+                      <span>{scores[index] || "a"}</span>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="a" disabled={field.value}>a <div className="w-px h-5 bg-gray-300"/>{scoreList['a']}</SelectItem>
+                        <SelectItem value="b">b <div className="w-px h-5 bg-gray-300"/>{scoreList['b']}</SelectItem>
+                        <SelectItem value="c">c <div className="w-px h-5 bg-gray-300"/>{scoreList['c']}</SelectItem>
+                        <SelectItem value="n/a">n/a<div className="w-px h-5 bg-gray-300"/>{scoreList['n/a']}</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                   <FormLabel>{record.steps[index].name}</FormLabel>
                   <FormMessage className="text-xs"/>
                 </FormItem>
