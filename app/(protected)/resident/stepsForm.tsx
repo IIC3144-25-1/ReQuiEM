@@ -53,7 +53,6 @@ export function StepsRecordForm({record} : {record: IRecord}) {
 
 
     async function onSubmit(data: z.infer<typeof stepsRecordSchema>) {
-        console.log(data)
         const formData = new FormData()
         formData.append('recordId', record._id.toString())
         formData.append('residentJudgment', String(data.residentJudgment))

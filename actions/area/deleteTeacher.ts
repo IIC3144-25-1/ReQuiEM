@@ -11,5 +11,4 @@ export async function deleteTeacherFromArea(teacherId: string): Promise<void> {
         { $pull: { teachers: teacherId } }
     );
 
-    console.log("Deleted Teacher from Area", teacherId);
 }
