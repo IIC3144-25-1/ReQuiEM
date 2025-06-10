@@ -38,6 +38,13 @@ async function getRecordsByResident(userId: object) {
             }
         })
         .populate({
+            path: 'resident',
+            populate: {
+                path: 'user',
+                select: 'name'
+            }
+        })
+        .populate({
             path: 'surgery',
             select: 'name',
         })
