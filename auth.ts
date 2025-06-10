@@ -8,6 +8,7 @@ import { EmailTypesEnum } from "@/lib/email/types/email-types.enum"
 
 export const config = {
   adapter: MongoDBAdapter(clientPromise),
+  debug: true, // Cambia a false en producción
   providers: [
     Google,
     MicrosoftEntraID({
