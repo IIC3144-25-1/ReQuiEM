@@ -9,7 +9,6 @@ export async function deleteSurgery(surgeryId: string): Promise<void> {
 
     await Surgery.findByIdAndUpdate(surgeryId, { deleted: true })
 
-    console.log("Deleted surgery", surgeryId)
 
     revalidatePath("/admin/surgeries")
 }

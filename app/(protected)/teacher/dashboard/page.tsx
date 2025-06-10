@@ -10,7 +10,13 @@ import { ChartSkeleton } from "@/components/charts/ChartSkeleton";
 import { Suspense } from "react";
 import Loading from "@/app/loading";
 
-export default async function TeacherDashboardPage({ searchParams }: { searchParams: { resident?: string } }) {
+export default async function TeacherDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise < {
+    resident: string
+  } > ;
+}) {
     const user = await getCurrentUser();
 
     if (!user) {
@@ -32,10 +38,8 @@ export default async function TeacherDashboardPage({ searchParams }: { searchPar
         );
     }
     const residents = await getTeacherResidents(teacher?._id.toString());
-    const { resident } = await searchParams;
-    const defaultResidentId = resident || residents[0]?._id.toString();
-
-    console.log("Resident", defaultResidentId);
+    const residentId = (await searchParams)?.resident as string;
+    const defaultResidentId = residentId || residents[0]?._id.toString();
 
     return (
         <div className="flex flex-col items-center justify-center h-full">

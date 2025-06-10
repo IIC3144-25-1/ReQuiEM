@@ -52,7 +52,6 @@ export default async function Page() {
         </TableHeader>
         <TableBody>
           {teachers.map((teacher) => (
-            console.log(teacher),
             <TableRow key={teacher._id.toString()}>
               <TableCell>{teacher.user?.name || "Sin nombre"}</TableCell>
               <TableCell>{teacher.user?.email || "Sin email"}</TableCell>
