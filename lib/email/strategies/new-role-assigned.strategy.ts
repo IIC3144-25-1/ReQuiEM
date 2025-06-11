@@ -15,11 +15,11 @@ export class NewRoleAssignedStrategy implements EmailStrategy {
       platformName: "ReQuiEM",
       platformDescription: "Sistema de Registro Quirúrgico Electrónico Médico",
       universityName: "Universidad Católica de Chile",
+      supportEmail: "equipo6.iic3144@gmail.com ",
     };
   }
 
   getTemplateId(): string {
-    // TODO: Replace with actual SendGrid template ID
-    return "d-template-id-for-role-assignment";
+    return "d-4f66833e80b8457684c78930489b1b6b";
   }
 }

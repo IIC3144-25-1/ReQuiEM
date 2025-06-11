@@ -14,13 +14,14 @@ export class RecordPendingReviewStrategy implements EmailStrategy {
       studentName: data.record.studentName,
       recordDate: new Date(data.record.createdAt).toLocaleDateString("es-CL"),
       platformName: "ReQuiEM",
-      platformDescription: "Sistema de Registro Quirúrgico Electrónico Médico",
+      platformDescription: "Sistema de Registro y evaluación de cirugía",
       universityName: "Universidad Católica de Chile",
+      recordURL: `${process.env.NEXT_PUBLIC_APP_URL}`,
+      supportEmail: "equipo6.iic3144@gmail.com ",
     };
   }
 
   getTemplateId(): string {
-    // TODO: Replace with actual SendGrid template ID
-    return "d-template-id-for-record-pending-review";
+    return "d-0ddfd0c272ba48d59eadf17ef97b0676";
   }
 }
