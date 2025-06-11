@@ -40,15 +40,15 @@ export function SurgeryPieChart({ data }: { data: { name: string; value: number 
   } satisfies ChartConfig
 
   return (
-    <Card className="flex flex-col max-w-[400px]">
-      <CardHeader className="items-center pb-0">
+    <Card className="flex flex-col h-full min-h-[350px]">
+      <CardHeader className="items-center">
         <CardTitle>Cirugias realizadas</CardTitle>
         <CardDescription>Cirugías por tipo y total</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
+      <CardContent className="flex-1">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square min-h-[250px] max-w-[250px] w-full"
+          className="mx-auto h-full w-full"
         >
           <PieChart>
             <ChartTooltip

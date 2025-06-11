@@ -9,6 +9,7 @@ import { TotalTypesOfSurgeryForResident } from "@/components/charts/TotalTipesOf
 import { ChartSkeleton } from "@/components/charts/ChartSkeleton";
 import { Suspense } from "react";
 import Loading from "@/app/loading";
+import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
 
 export default async function TeacherDashboardPage({
   searchParams,
@@ -42,20 +43,27 @@ export default async function TeacherDashboardPage({
     const defaultResidentId = residentId || residents[0]?._id.toString();
 
     return (
-        <div className="flex flex-col items-center justify-center h-full">
+        <div className="flex flex-col items-center justify-center h-full my-8">
             <h1 className="text-2xl font-bold mb-4">Teacher Dashboard</h1>
             <TeacherDashboardClient residents={residents} />
 
             <Suspense fallback={<Loading />}>
-                <div className="flex flex-col gap-8 items-center w-full">
-
-                <Suspense fallback={<ChartSkeleton />}>
-                    <RecordsCompleted residentId={defaultResidentId} />
-                </Suspense>
-
-                <Suspense fallback={<ChartSkeleton />}>
-                    <TotalTypesOfSurgeryForResident residentId={defaultResidentId} />
-                </Suspense>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full max-w-4xl">
+                    <div className="col-span-1 md:col-span-2">
+                        <Suspense fallback={<ChartSkeleton />}>
+                            <RecordsCompleted residentId={defaultResidentId} />
+                        </Suspense>
+                    </div>
+                    <div className="col-span-1">
+                        <Suspense fallback={<ChartSkeleton />}>
+                            <TotalTypesOfSurgeryForResident residentId={defaultResidentId} />
+                        </Suspense>
+                    </div>
+                    <div className="col-span-1 md:col-span-2">
+                        <Suspense fallback={<ChartSkeleton />}>
+                            <StepsCompletedInTime residentId={defaultResidentId} />
+                        </Suspense>
+                    </div>
                 </div>
             </Suspense>
         </div>

@@ -33,10 +33,10 @@ export default function StepsCompletedChart({
   const filteredData = data.filter((row) => row.surgery === selectedSurgery);
 
   return (
-    <Card>
-      <CardHeader className="border-b py-5">
-        <CardTitle className="mb-1">Porcentaje de pasos completados</CardTitle>
-        <div className="flex items-center justify-between gap-2">
+    <Card className="h-full min-h-[350px]">
+      <CardHeader>
+        <CardTitle>Porcentaje de pasos completados</CardTitle>
+        <div className="flex items-center justify-between">
           <CardDescription>
             Para la cirugía <b>{selectedSurgery}</b> por mes
           </CardDescription>
@@ -58,7 +58,7 @@ export default function StepsCompletedChart({
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[400px] my-4 w-full">
+        <ChartContainer config={chartConfig} className="w-full">
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={filteredData} margin={{ top: 30, right: 30, left: 30 }}>
               <CartesianGrid vertical={false} />
