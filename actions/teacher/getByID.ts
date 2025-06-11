@@ -19,3 +19,20 @@ export async function getTeacherByID(id: string): Promise<ITeacher | null> {
 
   return teacher ? JSON.parse(JSON.stringify(teacher)) : null
 }
+
+export async function getTeacherByUserID(userId: string): Promise<ITeacher | null> {
+  await dbConnect()
+
+  if (!Types.ObjectId.isValid(userId)) {
+    throw new Error('ID inválido')
+  }
+  
+  const teacher = await Teacher.findOne({ user: userId })
+    .where('deleted').equals(false)
+    .populate('user')
+    .populate('area')
+    .lean()
+    .exec()
+
+  return teacher ? JSON.parse(JSON.stringify(teacher)) : null
+}

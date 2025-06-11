@@ -34,7 +34,7 @@ export default async function Page() {
         </div>
         <div className="my-4">
           <Link href={"/admin/teacher/new"}>
-            <Button asChild>
+            <Button>
               Crear nuevo profesor
             </Button>
           </Link>
@@ -52,14 +52,13 @@ export default async function Page() {
         </TableHeader>
         <TableBody>
           {teachers.map((teacher) => (
-            console.log(teacher),
             <TableRow key={teacher._id.toString()}>
               <TableCell>{teacher.user?.name || "Sin nombre"}</TableCell>
               <TableCell>{teacher.user?.email || "Sin email"}</TableCell>
               <TableCell>{teacher.area?.name || "Sin área"}</TableCell>
               <TableCell className="flex items-center">
                 <Link href={`/admin/teacher/edit/${teacher._id}`}>
-                  <Button asChild size="icon" variant="outline" className="mr-2">
+                  <Button size="icon" variant="outline" className="mr-2">
                     <Edit />
                   </Button>
                 </Link>

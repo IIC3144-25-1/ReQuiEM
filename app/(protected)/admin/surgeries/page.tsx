@@ -43,7 +43,7 @@ export default async function Page() {
             </div>
             <div className="my-4">
                 <Link href={"/admin/surgeries/new"}>
-                    <Button asChild>
+                    <Button>
                     Crear nueva cirugia
                     </Button>
                 </Link>
@@ -66,7 +66,7 @@ export default async function Page() {
                         <TableCell>{surgery.area.name}</TableCell>
                         <TableCell className="flex items-center">
                             <Link href={`/admin/surgeries/edit/${surgery._id}`}>
-                                <Button asChild size='icon' variant='outline' className="mr-2">
+                                <Button size='icon' variant='outline' className="mr-2">
                                     <Edit />
                                 </Button>
                             </Link>

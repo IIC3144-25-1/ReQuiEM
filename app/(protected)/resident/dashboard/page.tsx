@@ -4,6 +4,7 @@ import { RecordsCompleted } from "@/components/charts/RecordsCompletedByResident
 import { TotalTypesOfSurgeryForResident } from "@/components/charts/TotalTipesOfSurgeryForResident";
 import { Suspense } from "react";
 import { DownloadRecordsButton } from "@/components/records/DownloadRecordsButton";
+import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
 
 
 export default async function DashboardPage() {
@@ -22,6 +23,11 @@ export default async function DashboardPage() {
       <Suspense fallback={<ChartSkeleton />}>
         <TotalTypesOfSurgeryForResident residentId={resident._id.toString()} />
       </Suspense>
+
+      <Suspense fallback={<ChartSkeleton />}>
+        <StepsCompletedInTime residentId={resident._id.toString()} />
+      </Suspense>
+
       <DownloadRecordsButton side="resident" />
     </div> 
   );

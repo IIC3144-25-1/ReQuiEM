@@ -50,7 +50,7 @@ export default function Page() {
         <div className="space-x-2">
           {/* <Button onClick={handleCreateDummy}>Crear Residente Dummy</Button> */}
           <Link href="/admin/resident/new">
-            <Button asChild>
+            <Button>
               Crear Residente
             </Button>
           </Link>
@@ -72,7 +72,7 @@ export default function Page() {
               <TableCell>{resident.user?.email || "Sin email"}</TableCell>
               <TableCell className="flex items-center">
                 <Link href={`resident/edit/${resident._id}`}>
-                  <Button asChild size="icon" variant="outline" className="mr-2">
+                  <Button size="icon" variant="outline" className="mr-2">
                     <Edit />
                   </Button>
                 </Link>

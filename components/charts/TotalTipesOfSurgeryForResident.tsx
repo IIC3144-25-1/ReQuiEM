@@ -26,8 +26,5 @@ export async function TotalTypesOfSurgeryForResident({ residentId }: { residentI
         value,
     }));
 
-    console.log("Surgery Data:", data);
-
-
     return <SurgeryPieChart data={data} />;
 }

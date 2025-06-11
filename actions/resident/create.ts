@@ -62,7 +62,6 @@ export async function createResident(formData: FormData): Promise<IResident> {
   // 4) Crear documento Mongoose
   const resident = await Resident.create(data);
 
-  console.log("Created resident", resident);
 
   // Añadimos nuevo residente al area
   await addResidentToArea(areaId, resident._id.toString());
