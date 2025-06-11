@@ -16,7 +16,7 @@ import {
 const chartConfig = {
   percent: {
     label: "Porcentaje completado:",
-    color: "var(--chart-1)",
+    color: "var(--chart-4)",
   }
 } satisfies ChartConfig;
 
