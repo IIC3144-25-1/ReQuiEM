@@ -95,7 +95,6 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
 
   async function onSubmit(data: z.infer<typeof reviewRecordSchema>) {
     const formData = new FormData()
-    console.log("Submitting review record:", data)
     
     formData.append('recordId', record._id.toString())
     
@@ -124,8 +123,6 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
       toast.error("Error al completar el registro")
     }
   }
-
-  console.log("Form errors:", form.formState.errors)
 
   return (
     <Form {...form}>

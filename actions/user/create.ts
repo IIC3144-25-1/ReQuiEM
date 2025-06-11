@@ -46,7 +46,6 @@ export async function createUser(formData: FormData) {
 
   // 5) Crear usuario en MongoDB
   const doc = await User.create(userToCreate)
-  console.log('Created user:', doc)
 
   // 6) Retornar objeto serializable
   return JSON.parse(JSON.stringify(doc))

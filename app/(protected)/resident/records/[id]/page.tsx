@@ -8,7 +8,6 @@ import { redirect } from "next/navigation";
 
 export default async function Page(props: {params: Promise<{id: string}>}) {
   const { id } = await props.params;
-  console.log("ID de la cirugía:", id);
   const record = await getRecordByID((await props.params).id)
   updateStatus(id)
 

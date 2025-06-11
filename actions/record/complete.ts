@@ -23,7 +23,6 @@ export async function completeRecord(formData: FormData) {
         }))
 
     const raw = { residentJudgment, residentComment, steps }
-    console.log(raw)
 
     const doc = await Record.findByIdAndUpdate(
         recordId , 
