@@ -9,7 +9,5 @@ export async function deleteArea(areaId: string): Promise<void> {
 
     await Area.findByIdAndUpdate(areaId, { deleted: true })
 
-    console.log("Deleted Area", areaId)
-
     revalidatePath("/admin/surgeries")
 }

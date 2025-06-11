@@ -8,7 +8,8 @@ import { StepsRecordForm } from "../../stepsForm"
 export default async function EditRecord(props: {params: Promise<{id: string}>}) {
     await dbConnect()
     const params = await props.params;
-    const record = await Record.findById(params.id)
+    const record = await Record.findById(params.id).populate('surgery')
+
 
     if (!record){
         return <div>No se encontró el registro</div>

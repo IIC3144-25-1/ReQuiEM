@@ -26,7 +26,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <Card className="max-w-md w-full shadow-lg">
         <CardHeader>
           <CardTitle className="text-6xl text-red-600 text-center">

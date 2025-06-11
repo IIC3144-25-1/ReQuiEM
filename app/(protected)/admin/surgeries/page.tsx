@@ -42,9 +42,11 @@ export default async function Page() {
                 <p className="text-sm text-muted-foreground">Aquí puedes ver, editar y crear nuevas cirugías</p>
             </div>
             <div className="my-4">
-                <Button asChild>
-                    <Link href={"/admin/surgeries/new"}>Crear nueva cirugia</Link>
-                </Button>
+                <Link href={"/admin/surgeries/new"}>
+                    <Button>
+                    Crear nueva cirugia
+                    </Button>
+                </Link>
             </div>
         </div>
         <Table className="w-full">
@@ -63,9 +65,11 @@ export default async function Page() {
                         <TableCell>{surgery.description}</TableCell>
                         <TableCell>{surgery.area.name}</TableCell>
                         <TableCell className="flex items-center">
-                            <Button asChild size='icon' variant='outline' className="mr-2">
-                                <Link href={`/admin/surgeries/edit/${surgery._id}`}><Edit /></Link>
-                            </Button>
+                            <Link href={`/admin/surgeries/edit/${surgery._id}`}>
+                                <Button size='icon' variant='outline' className="mr-2">
+                                    <Edit />
+                                </Button>
+                            </Link>
                             <form>
                                 <input name="surgeryId" className="hidden" value={surgery._id.toString()} readOnly/>
                                 <Button size='icon' variant='outline' className="mr-2 hover:border-destructive" type="submit">

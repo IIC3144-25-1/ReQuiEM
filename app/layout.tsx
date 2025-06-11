@@ -4,7 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Navbar } from "@/components/navbar/navbar";
-import Script from "next/script";
+// import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -67,7 +67,7 @@ export default async function RootLayout({
           </div>
           <Toaster />
         </ErrorBoundary>
-        <Script src="/service-worker.js" strategy="afterInteractive" />
+        {/* <Script src="/service-worker.js" strategy="afterInteractive" /> */}
       </body>
     </html>
   );

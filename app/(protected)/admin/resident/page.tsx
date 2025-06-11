@@ -49,9 +49,11 @@ export default function Page() {
         <h1 className="text-2xl font-bold">Residentes</h1>
         <div className="space-x-2">
           {/* <Button onClick={handleCreateDummy}>Crear Residente Dummy</Button> */}
-          <Button asChild>
-            <Link href="/admin/resident/new">Crear Residente</Link>
-          </Button>
+          <Link href="/admin/resident/new">
+            <Button>
+              Crear Residente
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -69,11 +71,11 @@ export default function Page() {
               <TableCell>{resident.user?.name || "Sin nombre"}</TableCell>
               <TableCell>{resident.user?.email || "Sin email"}</TableCell>
               <TableCell className="flex items-center">
-                <Button asChild size="icon" variant="outline" className="mr-2">
-                  <Link href={`resident/edit/${resident._id}`}>
+                <Link href={`resident/edit/${resident._id}`}>
+                  <Button size="icon" variant="outline" className="mr-2">
                     <Edit />
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
                 <Button
                   size="icon"
                   variant="outline"

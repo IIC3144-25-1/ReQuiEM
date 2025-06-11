@@ -44,14 +44,14 @@ export function LoginForm({
       <Card className="w-full max-w-md shadow-md rounded-xl p-6">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-gray-900">
-            Bienvenido 👋
+            Bienvenido
           </CardTitle>
           <CardDescription className="text-sm text-gray-600 mt-2">
             Inicia sesión para acceder a tu cuenta
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-4">
+        <CardContent className="flex flex-col gap-4 py-4">
           <form action={handleLoginWithGoogle}>
             <Button
               type="submit"

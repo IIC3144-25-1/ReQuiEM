@@ -38,8 +38,8 @@ export function StepsRecordForm({record} : {record: IRecord}) {
         resolver: zodResolver(stepsRecordSchema),
         defaultValues: {
             residentJudgment: 5,
-            steps: record.steps.map((s) => ({
-                name: s.name,
+            steps: record.surgery.steps.map((s) => ({
+                name: s,
                 residentDone: false
             })),
             residentComment: '',
@@ -53,7 +53,6 @@ export function StepsRecordForm({record} : {record: IRecord}) {
 
 
     async function onSubmit(data: z.infer<typeof stepsRecordSchema>) {
-        console.log(data)
         const formData = new FormData()
         formData.append('recordId', record._id.toString())
         formData.append('residentJudgment', String(data.residentJudgment))
@@ -95,11 +94,11 @@ export function StepsRecordForm({record} : {record: IRecord}) {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 z-10"
+                      className="min-w-3 w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 z-10"
                       check={false}
                     />
                   </FormControl>
-                  <FormLabel>{record.steps[index].name}</FormLabel>
+                  <FormLabel className="leading-4">{record.surgery.steps[index]}</FormLabel>
                   <FormMessage className="text-xs"/>
                 </FormItem>
               )}
