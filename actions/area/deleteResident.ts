@@ -11,6 +11,5 @@ export async function deleteResidentFromArea(residentId: string): Promise<void> 
         { $pull: { residents: residentId } }
     );
 
-    console.log("Deleted Resident from Area", residentId);
 }
 

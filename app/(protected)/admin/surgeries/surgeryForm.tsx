@@ -95,7 +95,6 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof surgerySchema>) {
     try {
-        console.log("Values sumbited", values)
         const formData = new FormData()
 
         formData.append("name", values.name)

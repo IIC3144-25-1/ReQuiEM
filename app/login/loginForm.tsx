@@ -51,7 +51,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-4">
+        <CardContent className="flex flex-col gap-4 py-4">
           <form action={handleLoginWithGoogle}>
             <Button
               type="submit"
