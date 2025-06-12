@@ -35,13 +35,13 @@ const chartConfig = {
 
 export default function RecordsChart({ data }: RecordsChartProps) {
   return (
-    <Card>
+    <Card className="h-full min-h-[350px]">
       <CardHeader>
         <CardTitle>Cantidad de registros completados</CardTitle>
         <CardDescription>Por semana</CardDescription>
       </CardHeader>
       <CardContent>
-    <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[400px] my-4 w-full">
+    <ChartContainer config={chartConfig} className="w-full ">
       <BarChart accessibilityLayer data={data} margin={{top: 30}}>
         <CartesianGrid vertical={false} />
         <XAxis
