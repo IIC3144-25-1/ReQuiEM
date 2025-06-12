@@ -18,30 +18,30 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://surgiskills.cl"),
-  title: "ReQuiEM",
+  title: "SurgerySkills",
   description: "Evaluación Quirúrgica Médica: plataforma para el registro y retroalimentación de procedimientos médicos.",
   manifest: "/manifest.json",
   icons: {
     icon: "/Icon.ico",
   },
   openGraph: {
-    title: "ReQuiEM",
+    title: "SurgerySkills",
     description: "Plataforma para evaluación y seguimiento de procedimientos médicos.",
     url: "https://surgiskills.cl",
-    siteName: "ReQuiEM",
+    siteName: "SurgerySkills",
     images: [
       {
         url: "/Icon.ico",
         width: 1200,
         height: 630,
-        alt: "Logo de ReQuiEM",
+        alt: "Logo de SurgerySkills",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ReQuiEM",
+    title: "SurgerySkills",
     description: "Plataforma para evaluación y retroalimentación médica",
     images: ["/Icon.ico"],
   },

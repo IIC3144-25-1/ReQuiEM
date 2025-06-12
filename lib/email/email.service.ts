@@ -40,7 +40,7 @@ export class EmailService {
         to: recipientEmail,
         from: {
             email: validFromEmail,
-            name:  'Requiem'
+            name:  'SurgerySkills'
         },
         templateId: templateId,
         dynamic_template_data: formattedData,

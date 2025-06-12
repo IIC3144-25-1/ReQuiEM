@@ -13,7 +13,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({ user }) => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12 text-center">
       <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-        Bienvenido a <span className="text-blue-600">ReQuiEM</span>
+        Bienvenido a <span className="text-blue-600">SurgerySkills</span>
       </h1>
 
       <p className="text-gray-700 text-lg md:text-xl max-w-xl mb-8">
