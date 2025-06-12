@@ -2,10 +2,7 @@
 
 import { Record } from "@/models/Record";
 import { Surgery } from "@/models/Surgery";
-import { Teacher } from "@/models/Teacher";
-import { Resident } from "@/models/Resident";
 import dbConnect from "@/lib/dbConnect";
-import { emailService } from "@/lib/email/email.service";
 
 export async function createRecord(formData: FormData) {
   await dbConnect();
@@ -29,12 +26,12 @@ export async function createRecord(formData: FormData) {
   const dateObj = new Date(date as string);
   const surgery = await Surgery.findById(surgeryId);
 
-  // const steps = surgery.steps.map((step: string) => ({
-  //     name: step,
-  //     residentDone: false,
-  //     teacherDone: false,
-  //     score: 'a',
-  // }));
+  const steps = surgery.steps.map((step: string) => ({
+      name: step,
+      residentDone: false,
+      teacherDone: false,
+      score: 'a',
+  }));
 
   const osats = surgery.osats.map(
     (osat: {
@@ -58,7 +55,7 @@ export async function createRecord(formData: FormData) {
     surgery: surgeryId,
     status: "pending",
     residentsYear: Number(residentsYear),
-    // steps: steps,
+    steps: steps,
     osats: osats,
     residentJudgment: 4,
     teacherJudgment: 4,
@@ -66,42 +63,7 @@ export async function createRecord(formData: FormData) {
     feedback: "",
   });
 
-  // console.log("savedRecord", newRecord);
   const record = await newRecord.save();
-  // const savedRecord = await newRecord.save();
-
-  // Get teacher and resident info for the email
-  const [teacherDoc, residentDoc] = await Promise.all([
-    Teacher.findById(teacher).populate("user"),
-    Resident.findById(resident).populate("user"),
-  ]);
-
-  if (!teacherDoc?.user || !residentDoc?.user) {
-    console.error("Could not find teacher or resident for email notification");
-    return record._id.toString();
-  }
-
-  // Send email notification to teacher
-  try {
-    await emailService.sendRecordPendingReviewEmail(teacherDoc.user.email, {
-      user: {
-        id: teacherDoc.user._id.toString(),
-        name: teacherDoc.user.name || "Profesor",
-        email: teacherDoc.user.email,
-        image: teacherDoc.user.image,
-      },
-      record: {
-        id: record._id.toString(),
-        title: surgery.name,
-        studentName: residentDoc.user.name || "Residente",
-        studentEmail: residentDoc.user.email,
-        createdAt: record.date.toISOString(),
-      },
-    });
-  } catch (error) {
-    console.error("Error sending record pending review email:", error);
-    // Don't throw the error, as the record was created successfully
-  }
 
   return record._id.toString();
 }
