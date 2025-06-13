@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import RecordCard from "@/components/cards/record-card";
-import { RecordsFilters } from "@/components/filters/RecordsFilters";
+import { RecordsFilterInput, RecordsFilterSelect } from "@/components/filters/RecordsFilters";
+import { Head } from "../head/Head";
 import { format } from "date-fns";
 import { isISurgery, isITeacher, isIUser } from "@/utils/validation";
 import { Button } from "@/components/ui/button";
@@ -61,17 +62,36 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
 
   return (
     <div className="min-h-screen bg-white flex flex-col relative">
-      <RecordsFilters
-        search1={searchSurgery}
-        setSearch1={setSearchSurgery}
-        search1Placeholder="Buscar por cirugía..."
-        search2={searchTeacher}
-        setSearch2={setSearchTeacher}
-        search2Placeholder="Buscar por profesor..."
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        statusLabels={statusLabels}
-        statusOptions={statusOptions}
+      <Head
+        title="Tus Registros"
+        components={[
+          <div key="1" className="flex flex-row gap-2 sm:gap-4">
+            <RecordsFilterInput
+              search={searchSurgery}
+              setSearch={setSearchSurgery}
+              searchPlaceholder="Buscar por cirugía..."
+            />
+            <RecordsFilterInput
+              search={searchTeacher}
+              setSearch={setSearchTeacher}
+              searchPlaceholder="Buscar por profesor..."
+            />
+          </div>,
+          <div key="2" className="w-1/2 sm:w-full">
+            <RecordsFilterSelect
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+              statusLabels={statusLabels}
+              statusOptions={statusOptions}
+            />
+          </div>,
+          <Link href="/resident/new-record" key="3">
+            <Button className="hidden sm:flex" >
+            <PlusIcon/>
+              Crear Registro
+            </Button>
+          </Link>
+        ]}
       />
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {filteredRecords.map((r) => (
@@ -88,9 +108,10 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
       ))}
 
       </div>
-      <Link href="/resident/new-record">
-        <Button className="fixed bottom-10 right-10 sm:bottom-20 sm:right-20" >
-        <PlusIcon className="mr-2" />
+
+      <Link href="/resident/new-record" className="">
+        <Button className="fixed bottom-10 right-10 sm:hidden" >
+          <PlusIcon className=""/>
           Crear Registro
         </Button>
       </Link>

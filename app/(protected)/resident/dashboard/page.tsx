@@ -5,6 +5,7 @@ import { TotalTypesOfSurgeryForResident } from "@/components/charts/TotalTipesOf
 import { Suspense } from "react";
 import { DownloadRecordsButton } from "@/components/records/DownloadRecordsButton";
 import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
+import { Head } from "@/components/head/Head";
 
 export default async function DashboardPage() {
   const resident = await getUserResident();
@@ -14,10 +15,20 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8 items-center justify-center h-full my-8">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+    <div className="flex flex-col gap-8 items-center justify-center h-full my-8 max-w-4xl mx-auto">
+      <Head
+        title="Dashboard"
+        components={[
+          <DownloadRecordsButton
+            side="resident"
+            key="1"
+            className=""
+          />
+        ]}
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full max-w-4xl">
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 w-full">
         <div className="col-span-1 md:col-span-2">
           <Suspense fallback={<ChartSkeleton />}>
             <RecordsCompleted residentId={resident._id.toString()} />
@@ -35,7 +46,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <DownloadRecordsButton side="resident" />
+      {/* <DownloadRecordsButton side="resident" className="fixed bottom-10 right-10 sm:hidden"/> */}
     </div> 
   );
 }

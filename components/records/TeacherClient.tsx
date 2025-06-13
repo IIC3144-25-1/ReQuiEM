@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import RecordCard from "@/components/cards/record-card";
-import { RecordsFilters } from "@/components/filters/RecordsFilters";
+import { RecordsFilterInput, RecordsFilterSelect } from "@/components/filters/RecordsFilters";
+import { Head } from "../head/Head";
 import { format } from "date-fns";
 import { isIResident, isISurgery, isIUser } from "@/utils/validation";
 import Link from "next/link";
@@ -52,18 +53,32 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <RecordsFilters
-        search1={searchSurgery}
-        setSearch1={setSearchSurgery}
-        search1Placeholder="Buscar por cirugía..."
-        search2={searchResident}
-        setSearch2={setSearchResident}
-        search2Placeholder="Buscar por residente..."
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        statusLabels={statusLabels}
-        statusOptions={statusOptions}
+      <Head
+        title="Tus Registros"
+        components={[
+          <div key="1" className="flex flex-row gap-2 sm:gap-4">
+            <RecordsFilterInput
+              search={searchSurgery}
+              setSearch={setSearchSurgery}
+              searchPlaceholder="Buscar por cirugía..."
+            />
+            <RecordsFilterInput
+              search={searchResident}
+              setSearch={setSearchResident}
+              searchPlaceholder="Buscar por residente..."
+            />
+          </div>,
+          <div key="2" className="w-1/2 sm:w-full">
+            <RecordsFilterSelect
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+              statusLabels={statusLabels}
+              statusOptions={statusOptions}
+            />
+          </div>
+        ]}
       />
+      
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredRecords.map((r) => (
           <Link key={r._id.toString()} href={`/teacher/records/${r._id}`}>

@@ -1,8 +1,6 @@
 import { getRecordByID } from "@/actions/record/getByID";
 import PastRecord from "@/components/records/PastRecord";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, NotebookPen, SearchX } from "lucide-react";
-import Link from "next/link";
+import { SearchX } from "lucide-react";
 
 export default async function Page(props: {params: Promise<{id: string}>}) {
   let params;
@@ -25,26 +23,7 @@ export default async function Page(props: {params: Promise<{id: string}>}) {
 
   return(
     <div className="flex flex-col items-center">
-      <PastRecord record={record} />
-
-      <div className="mt-10 mb-20 flex">
-        <Link href="/teacher/records">
-          <Button className="mr-4 w-30" variant="outline">
-            <ChevronLeft/>
-            Volver
-          </Button>
-        </Link>
-
-        { record.status === "pending" && (
-          <Link href={`/teacher/review/${record._id}`}>
-            <Button className="w-40">
-              <NotebookPen/>
-              Dar Feedback
-            </Button>
-          </Link>
-        )}
-      </div>
-
+      <PastRecord record={record} side="teacher"/>
     </div>
   )
 }
