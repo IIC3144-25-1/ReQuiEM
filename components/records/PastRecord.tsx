@@ -72,7 +72,7 @@ export default function PastRecord({ record, side }: { record: IRecord; side: st
                 <p>Residente:</p>
                 <p>Profesor:</p>
                 <p>Fecha:</p>
-                <p>RUT del paciente:</p>
+                <p>ID del paciente:</p>
                 <p>Año del residente:</p>
               </div>
 

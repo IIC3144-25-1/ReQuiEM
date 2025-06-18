@@ -40,11 +40,23 @@ export const Navbar = async () => {
     menuToRender.push({ title: "Registros", url: "/resident/records" })
   }
 
+  if (isAdmin || role === "teacher" || role === "resident") {
+    menuToRender.push({
+      title: "Area",
+      url: "/area",
+    })
+  }
+
   return (
     <NavbarClient
       logo={defaultLogo}
       auth={defaultAuth}
-      user={user && user.name ? { name: user.name } : null}
+      user={user && user.name && user.image ? { name: user.name, image: user.image }
+            : user && user.name ? { name: user.name, image: 'gray'}
+            : user && user.image ? { name: user.email, image: user.image}
+            : user ? {name: user.email, image: 'gray'}
+            : null
+          }
       menuToRender={menuToRender}
     />
   )
