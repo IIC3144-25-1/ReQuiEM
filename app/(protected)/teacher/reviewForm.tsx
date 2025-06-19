@@ -155,7 +155,8 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
                       checked={field.value}
                       onCheckedChange={value => {
                         field.onChange(value);
-                        handleValueChange("c", index)
+                        if (value === true) handleValueChange("c", index)
+                        else if (value === false) handleValueChange("a", index)
                       }}
                       className="min-w-3 w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 z-10"
                       check={false}
