@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import RecordCard from "@/components/cards/record-card";
+import Pagination from "../pagination/Pagination";
 import { RecordsFilters } from "@/components/filters/RecordsFilters";
 import { format } from "date-fns";
 import { isIResident, isISurgery, isIUser } from "@/utils/validation";
@@ -15,10 +16,13 @@ interface RecordType {
   status: string;
 }
 
+const PAGE_SIZE = 12;
+
 export default function TeacherRecordsClient({ records }: { records: RecordType[] }) {
   const [searchSurgery, setSearchSurgery] = useState("");
   const [searchResident, setSearchResident] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   if (!records || records.length === 0) {
     return <div className="leading-none text-center pt-10">No tienes registros todavía</div>;
@@ -46,6 +50,12 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
     return true;
   });
 
+  const totalPages = Math.ceil(filteredRecords.length / PAGE_SIZE);
+  const pageRecords = filteredRecords.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
   if (!records || records.length === 0) {
     return <div className="leading-none text-center pt-10">No tienes registros todavía</div>;
   }
@@ -65,7 +75,7 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
         statusOptions={statusOptions}
       />
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredRecords.map((r) => (
+        {pageRecords.map((r) => (
           <Link key={r._id.toString()} href={`/teacher/records/${r._id}`}>
             <RecordCard
               surgery={isISurgery(r.surgery) ? r.surgery.name : r.surgery.toString()}
@@ -78,6 +88,11 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
           </Link>
         ))}
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }
