@@ -54,7 +54,8 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Head
-        title="Tus Registros"
+        title="Registros de Residentes"
+        description="Aquí puedes ver los registros de los residentes de tu área"
         components={[
           <div key="1" className="flex flex-row gap-2 sm:gap-4">
             <RecordsFilterInput

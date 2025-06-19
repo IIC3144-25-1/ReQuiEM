@@ -5,13 +5,18 @@ import { useRouter } from "next/navigation"
 import { StrAvatar } from "@/components/ui/avatar";
 import { IArea } from "@/models/Area";
 import { isTailwindColor } from "@/utils/colors";
+import { Head } from "@/components/head/Head";
 
 
 export default function Area({area} : {area: IArea}) {
   const router = useRouter();
   return (
     <div>
-      <h1 className="leading-none font-semibold text-2xl px-6 py-2 my-2 sm:mb-0">{area.name}</h1>
+      <Head
+        title={area.name}
+        description={area.description}
+        components={[]}
+      />
 
       <h2 className="leading-none font-semibold text-lg px-6 py-2 mb-2 mt-10 sm:mb-0">Profesores</h2>
       <Table className="w-full">

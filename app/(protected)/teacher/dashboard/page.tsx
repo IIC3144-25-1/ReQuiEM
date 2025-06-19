@@ -48,6 +48,7 @@ export default async function TeacherDashboardPage({
             
             <Head
                 title="Dashboard"
+                description="Aquí puedes ver estadísticas y gráficos de los residentes que supervisas"
                 components={[
                     <div key="1" className="flex items-center gap-4 justify-center">
                         <div  className="text-muted-foreground">Datos del residente: </div>

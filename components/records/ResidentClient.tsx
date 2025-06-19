@@ -64,6 +64,7 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
     <div className="min-h-screen bg-white flex flex-col relative">
       <Head
         title="Tus Registros"
+        description="Aquí puedes ver y crear nuevos registros"
         components={[
           <div key="1" className="flex flex-row gap-2 sm:gap-4">
             <RecordsFilterInput

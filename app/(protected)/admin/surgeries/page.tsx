@@ -15,6 +15,7 @@ import Link from "next/link";
 import { Edit, Trash2Icon } from "lucide-react";
 import { revalidatePath } from "next/cache";
 import { ISurgery } from "@/models/Surgery";
+import { Head } from "@/components/head/Head";
   
 export default async function Page() {
     const surgeries = await getSurgeries();
@@ -36,19 +37,14 @@ export default async function Page() {
 
     return (
         <>
-        <div className="flex justify-between items-center py-4">
-            <div>
-                <h1 className="text-2xl font-bold">Bienvenido al panel de cirugias</h1>
-                <p className="text-sm text-muted-foreground">Aquí puedes ver, editar y crear nuevas cirugías</p>
-            </div>
-            <div className="my-4">
-                <Link href={"/admin/surgeries/new"}>
-                    <Button>
+        <Head title="Panel de cirugías" description="Aquí puedes ver, editar y crear nuevas cirugías"
+        components={[
+            <Link href={"/admin/surgeries/new"} key={"new-surgery-link"}>
+                <Button>
                     Crear nueva cirugia
-                    </Button>
-                </Link>
-            </div>
-        </div>
+                </Button>
+            </Link>
+        ]} />
         <Table className="w-full">
             <TableHeader>
                 <TableRow>
