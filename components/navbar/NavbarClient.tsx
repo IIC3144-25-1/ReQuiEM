@@ -26,6 +26,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { StrAvatar } from "@/components/ui/avatar"
+import { TailwindColor } from "@/utils/colors"
 
 interface MenuItem {
   title: string
@@ -38,7 +40,7 @@ interface MenuItem {
 interface NavbarClientProps {
   logo: { alt: string; title: string }
   auth: { login: { title: string; url: string } }
-  user: { name: string } | null
+  user: { name: string, image: TailwindColor } | null
   menuToRender: MenuItem[]
 }
 
@@ -65,7 +67,10 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
           </div>
           <div className="flex gap-2 items-center">
             {user ? (
-              <div className="text-md font-semibold">Hola {user.name}! 👋</div>
+              <Link href="/profile" className="flex items-center space-x-2">
+                <StrAvatar color={user.image} name={user.name} />
+                <div className="text-md">{user.name}</div>
+              </Link>
             ) : (
               <Button asChild variant="outline">
                 <a href={auth.login.url}>{auth.login.title}</a>
@@ -98,9 +103,12 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
                   <Accordion type="single" collapsible className="flex w-full flex-col gap-4">
                     {menuToRender.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-3 mt-5">
                     {user ? (
-                      <div className="text-md font-semibold">Hola {user.name}! 👋</div>
+                      <Link href="/profile" className="flex items-center space-x-2">
+                        <StrAvatar color={user.image} name={user.name} />
+                        <div className="text-md font-semibold">{user.name}</div>
+                      </Link>
                     ) : (
                       <Button asChild variant="outline">
                         <a href={auth.login.url}>{auth.login.title}</a>

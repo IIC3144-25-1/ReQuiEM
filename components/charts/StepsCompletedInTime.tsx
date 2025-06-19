@@ -9,6 +9,10 @@ export default async function StepsCompletedInTime({ residentId }: { residentId:
     .populate({ path: "surgery", select: "name" })
     .lean();
 
+  if (records.length === 0) {
+        return <div></div>;
+    }
+
   // Creamos un array con { month, percent, surgery }
   type DataRow = { month: string; percent: number; surgery: string };
   const data: DataRow[] = [];
