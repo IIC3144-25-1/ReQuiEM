@@ -18,6 +18,7 @@ export default async function DashboardPage() {
     <div className="flex flex-col gap-8 items-center justify-center h-full my-8 max-w-4xl mx-auto">
       <Head
         title="Dashboard"
+        description="Aquí puedes ver estadísticas y gráficos de tu desempeño como residente"
         components={[
           <DownloadRecordsButton
             side="resident"

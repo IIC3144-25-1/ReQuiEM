@@ -10,7 +10,7 @@ export function RecordsFilterInput({ search, setSearch, searchPlaceholder } :
       placeholder={searchPlaceholder}
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full md:min-w-3xs"
+      className="w-full "
     />
   );
 }

@@ -19,6 +19,7 @@ import { Edit, Trash2Icon } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { IResident } from "@/models/Resident";
+import { Head } from "@/components/head/Head";
 
 export default function Page() {
   const [residents, setResidents] = useState<IResident[]>([]);
@@ -45,17 +46,17 @@ export default function Page() {
 
   return (
     <>
-      <div className="flex justify-between items-center py-4">
-        <h1 className="text-2xl font-bold">Residentes</h1>
-        <div className="space-x-2">
-          {/* <Button onClick={handleCreateDummy}>Crear Residente Dummy</Button> */}
-          <Link href="/admin/resident/new">
+      <Head
+        title="Panel de Residentes"
+        description="Aquí puedes ver, editar y crear nuevos residentes"
+        components={[
+          <Link href="/admin/resident/new" key="new-resident-link">
             <Button>
-              Crear Residente
+              Crear nuevo residente
             </Button>
-          </Link>
-        </div>
-      </div>
+          </Link>,
+        ]}
+      />
 
       <Table className="w-full">
         <TableHeader>

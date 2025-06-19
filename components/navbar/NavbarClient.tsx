@@ -28,6 +28,11 @@ import {
 } from "@/components/ui/sheet"
 import { StrAvatar } from "@/components/ui/avatar"
 import { TailwindColor } from "@/utils/colors"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface MenuItem {
   title: string
@@ -67,10 +72,16 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
           </div>
           <div className="flex gap-2 items-center">
             {user ? (
-              <Link href="/profile" className="flex items-center space-x-2">
-                <StrAvatar color={user.image} name={user.name} />
-                <div className="text-md">{user.name}</div>
-              </Link>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link href="/profile" className="flex items-center space-x-2">
+                    <StrAvatar color={user.image} name={user.name} />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{user.name}</p>
+                </TooltipContent>
+              </Tooltip>
             ) : (
               <Button asChild variant="outline">
                 <a href={auth.login.url}>{auth.login.title}</a>
@@ -105,14 +116,20 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
                   </Accordion>
                   <div className="flex flex-col gap-3 mt-5">
                     {user ? (
+                      <SheetClose asChild>
                       <Link href="/profile" className="flex items-center space-x-2">
                         <StrAvatar color={user.image} name={user.name} />
-                        <div className="text-md font-semibold">{user.name}</div>
+                        <p className="text-sm font-semibold">{user.name}</p>
                       </Link>
+                      </SheetClose>
                     ) : (
-                      <Button asChild variant="outline">
-                        <a href={auth.login.url}>{auth.login.title}</a>
-                      </Button>
+                      <SheetClose asChild>
+                        <Button variant="outline" asChild className="w-full">
+                          <Link href={auth.login.url} className="w-full">
+                            {auth.login.title}
+                          </Link>
+                        </Button>
+                      </SheetClose>
                     )}
                   </div>
                 </div>

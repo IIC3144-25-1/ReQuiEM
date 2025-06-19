@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Edit, Trash2Icon } from "lucide-react";
 import { revalidatePath } from "next/cache";
 import { deleteArea } from "@/actions/area/delete";
+import { Head } from "@/components/head/Head";
   
 export default async function Page() {
     const areas = await getAllAreas();
@@ -29,19 +30,17 @@ export default async function Page() {
 
     return (
         <>
-        <div className="flex justify-between items-center py-4">
-            <div>
-                <h1 className="text-2xl font-bold">Bienvenido al panel de áreas</h1>
-                <p className="text-sm text-muted-foreground">Aquí puedes ver, editar y crear nuevas áreas</p>
-            </div>
-            <div className="my-4">
-                <Link href={"/admin/areas/new"}>
+        <Head
+            title="Panel de áreas"
+            description="Aquí puedes ver, editar y crear nuevas áreas"
+            components={[
+                <Link href={"/admin/areas/new"} key={"new-area-link"}>
                     <Button>
                         Crear nueva área
                     </Button>
                 </Link>
-            </div>
-        </div>
+            ]}
+        />
         <Table className="w-full">
             <TableHeader>
                 <TableRow>

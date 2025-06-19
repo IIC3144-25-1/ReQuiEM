@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from "@/components/ui/table";
 import { Head } from "../head/Head";
@@ -28,11 +28,11 @@ export default function PastRecord({ record, side }: { record: IRecord; side: st
     return (
       <div className="flex flex-col min-h-screen w-full justify-center mx-auto sm:p-4 sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
   
-        <Card className="relative ">
-          {/* <CardHeader> */}
-            {/* <CardTitle className="text-2xl">{record.surgery?.name || "Cirugía no especificada"}</CardTitle> */}
+        <Card className="relative">
+          <CardHeader>
             <Head
               title={record.surgery?.name || "Cirugía no especificada"}
+              description={`Registro de cirugía realizado por ${record.resident?.user?.name}`}
               components={
                 side === "resident"
                   ? [
@@ -63,37 +63,39 @@ export default function PastRecord({ record, side }: { record: IRecord; side: st
                     ]
               }
             />
-          {/* </CardHeader> */}
-          <CardContent className="px-3 sm:px-6">
-            
+          </CardHeader>
+          <CardContent >
+    
             <hr className="my-4 mb-4" />
-            <div className="flex flex-row justify-center sm:justify-start">
-              <div className="text-sm leading-none space-y-2 font-semibold mr-2 sm:mr-6 text-right sm:text-left">
-                <p>Residente:</p>
-                <p>Profesor:</p>
-                <p>Fecha:</p>
-                <p>ID del paciente:</p>
-                <p>Año del residente:</p>
-              </div>
+            <div className="flex flex-row justify-between items-start sm:items-center mb-4">
+              <div className="flex flex-row justify-center sm:justify-start">
+                <div className="text-sm leading-none space-y-2 font-semibold mr-2 sm:mr-6 text-right sm:text-left">
+                  <p>Residente:</p>
+                  <p>Profesor:</p>
+                  <p>Fecha:</p>
+                  <p>ID del paciente:</p>
+                  <p>Año del residente:</p>
+                </div>
 
-              <div className="text-sm font-normal leading-none space-y-2">
-                <p>{record.resident?.user?.name || "No disponible"}</p>
-                <p>{record.teacher?.user?.name || "No disponible"}</p>
-                <p>{format(record.date, "d '/' MMM '/' yyyy ' a las ' HH:mm", { locale: es })}</p>
-                <p>{record.patientId || "No disponible"}</p>
-                <p>{record.residentsYear || "No disponible"}º año</p>
+                <div className="text-sm font-normal leading-none space-y-2">
+                  <p>{record.resident?.user?.name || "No disponible"}</p>
+                  <p>{record.teacher?.user?.name || "No disponible"}</p>
+                  <p>{format(record.date, "d '/' MMM '/' yyyy ' a las ' HH:mm", { locale: es })}</p>
+                  <p>{record.patientId || "No disponible"}</p>
+                  <p>{record.residentsYear || "No disponible"}º año</p>
+                </div>
               </div>
-            </div>
   
             {statusLabel[record.status] === "Corregido" ? (
-              <Badge variant="success" className="capitalize absolute top-5 sm:top-26 right-5 sm:right-20">
+              <Badge variant="success" className="capitalize top-5 sm:top-26 right-5 sm:right-20">
                 {statusLabel[record.status] || "Estado desconocido"}
               </Badge>
             ) : (
-              <Badge variant="yellow" className="capitalize absolute top-5 sm:top-26 right-5 sm:right-20">
+              <Badge variant="yellow" className="capitalize top-5 sm:top-26 right-5 sm:right-20">
                 {statusLabel[record.status] || "Estado desconocido"}
               </Badge>
             )}
+            </div>
             
             <hr className="my-4" />
             <h2 className="font-semibold mb-4 text-lg mt-2">Pasos de la cirugía</h2>
