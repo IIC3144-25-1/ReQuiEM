@@ -35,6 +35,8 @@ export function LoginForm({
 
   return (
     <div
+      data-testid="signin-page"
+      role="main"
       className={cn(
         "flex min-h-screen items-center justify-center  px-4",
         className
@@ -54,9 +56,11 @@ export function LoginForm({
         <CardContent className="flex flex-col gap-4 py-4">
           <form action={handleLoginWithGoogle}>
             <Button
+              data-testid="google-signin-button"
               type="submit"
               variant="outline"
               className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
+              aria-label="Iniciar sesión con Google"
             >
               <Image
                 src={GOOGLE_LOGO}
@@ -70,9 +74,11 @@ export function LoginForm({
 
           <form action={handleLoginWithMicrosoft}>
             <Button
+              data-testid="microsoft-signin-button"
               type="submit"
               variant="outline"
               className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
+              aria-label="Iniciar sesión con Microsoft"
             >
               <Image
                 src={MICROSOFT_LOGO}

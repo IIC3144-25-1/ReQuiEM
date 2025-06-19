@@ -1,0 +1,117 @@
+{
+  "records": [
+    {
+      "id": "record-1",
+      "patientId": "12.345.678-9",
+      "date": "2024-01-15T14:30:00Z",
+      "status": "reviewed",
+      "surgery": {
+        "name": "Apendicectomía Laparoscópica",
+        "area": "Cirugía General"
+      },
+      "resident": {
+        "name": "Dr. Juan Pérez",
+        "year": 3
+      },
+      "teacher": {
+        "name": "Dr. María González"
+      },
+      "residentJudgment": 8,
+      "teacherJudgment": 7,
+      "summaryScale": "B"
+    },
+    {
+      "id": "record-2",
+      "patientId": "98.765.432-1",
+      "date": "2024-01-14T10:15:00Z",
+      "status": "pending",
+      "surgery": {
+        "name": "Colecistectomía",
+        "area": "Cirugía General"
+      },
+      "resident": {
+        "name": "Dr. Ana Silva",
+        "year": 2
+      },
+      "teacher": {
+        "name": "Dr. Carlos Mendoza"
+      },
+      "residentJudgment": 6,
+      "teacherJudgment": null,
+      "summaryScale": null
+    },
+    {
+      "id": "record-3",
+      "patientId": "11.222.333-4",
+      "date": "2024-01-13T16:45:00Z",
+      "status": "corrected",
+      "surgery": {
+        "name": "Herniorrafia Inguinal",
+        "area": "Cirugía General"
+      },
+      "resident": {
+        "name": "Dr. Luis Rodriguez",
+        "year": 1
+      },
+      "teacher": {
+        "name": "Dr. María González"
+      },
+      "residentJudgment": 7,
+      "teacherJudgment": null,
+      "summaryScale": null
+    },
+    {
+      "id": "record-4",
+      "patientId": "55.666.777-8",
+      "date": "2024-01-12T09:30:00Z",
+      "status": "reviewed",
+      "surgery": {
+        "name": "Tiroidectomía",
+        "area": "Cirugía de Cabeza y Cuello"
+      },
+      "resident": {
+        "name": "Dr. Carmen López",
+        "year": 4
+      },
+      "teacher": {
+        "name": "Dr. Roberto Silva"
+      },
+      "residentJudgment": 9,
+      "teacherJudgment": 9,
+      "summaryScale": "A"
+    },
+    {
+      "id": "record-5",
+      "patientId": "33.444.555-6",
+      "date": "2024-01-11T13:20:00Z",
+      "status": "reviewed",
+      "surgery": {
+        "name": "Mastectomía",
+        "area": "Cirugía Oncológica"
+      },
+      "resident": {
+        "name": "Dr. Pedro Martínez",
+        "year": 5
+      },
+      "teacher": {
+        "name": "Dr. Elena Vargas"
+      },
+      "residentJudgment": 8,
+      "teacherJudgment": 8,
+      "summaryScale": "A"
+    }
+  ],
+  "pagination": {
+    "total": 150,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 8
+  },
+  "filters": {
+    "status": "all",
+    "dateRange": {
+      "start": "2024-01-01",
+      "end": "2024-01-31"
+    }
+  }
+}
