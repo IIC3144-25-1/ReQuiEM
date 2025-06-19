@@ -3,7 +3,7 @@
 import { useState } from "react";
 import RecordCard from "@/components/cards/record-card";
 import Pagination from "../pagination/Pagination";
-import { RecordsFilters } from "@/components/filters/RecordsFilters";
+// import { RecordsFilters } from "@/components/filters/RecordsFilters";
 import { RecordsFilterInput, RecordsFilterSelect } from "@/components/filters/RecordsFilters";
 import { Head } from "../head/Head";
 import { format } from "date-fns";
