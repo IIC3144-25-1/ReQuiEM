@@ -123,9 +123,13 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
                       </Link>
                       </SheetClose>
                     ) : (
-                      <Button asChild variant="outline">
-                        <a href={auth.login.url}>{auth.login.title}</a>
-                      </Button>
+                      <SheetClose asChild>
+                        <Button variant="outline" asChild className="w-full">
+                          <Link href={auth.login.url} className="w-full">
+                            {auth.login.title}
+                          </Link>
+                        </Button>
+                      </SheetClose>
                     )}
                   </div>
                 </div>
