@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { User } from "@/models/User";
 import { setupTestDB, teardownTestDB, clearTestDB } from "../utils/db-utils";
 
-describe.skip("User Model", () => {
+describe("User Model", () => {
   beforeAll(async () => {
     await setupTestDB();
   });
