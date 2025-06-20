@@ -11,6 +11,7 @@ import { ChartSkeleton } from "@/components/charts/ChartSkeleton";
 import { Suspense } from "react";
 import Loading from "@/app/loading";
 import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
+import ScaleSummary from "@/components/charts/ScaleSummary";
 
 export default async function TeacherDashboardPage({
   searchParams,
@@ -67,6 +68,11 @@ export default async function TeacherDashboardPage({
                     <div className="col-span-1">
                         <Suspense fallback={<ChartSkeleton />}>
                             <TotalTypesOfSurgeryForResident residentId={defaultResidentId} />
+                        </Suspense>
+                    </div>
+                    <div className="col-span-1">
+                        <Suspense fallback={<ChartSkeleton />}>
+                            <ScaleSummary residentId={defaultResidentId} />
                         </Suspense>
                     </div>
                     <div className="col-span-1 md:col-span-2">
