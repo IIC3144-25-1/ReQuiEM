@@ -1,6 +1,7 @@
 import { getUserResident } from "@/actions/resident/getByCurrentUser";
 import { ChartSkeleton } from "@/components/charts/ChartSkeleton";
 import { RecordsCompleted } from "@/components/charts/RecordsCompletedByResident";
+import ScaleSummary from "@/components/charts/ScaleSummary";
 import { TotalTypesOfSurgeryForResident } from "@/components/charts/TotalTipesOfSurgeryForResident";
 import { Suspense } from "react";
 import { DownloadRecordsButton } from "@/components/records/DownloadRecordsButton";
@@ -38,6 +39,11 @@ export default async function DashboardPage() {
         <div className="col-span-1">
           <Suspense fallback={<ChartSkeleton />}>
             <TotalTypesOfSurgeryForResident residentId={resident._id.toString()} />
+          </Suspense>
+        </div>
+        <div className="col-span-1">
+          <Suspense fallback={<ChartSkeleton />}>
+            <ScaleSummary residentId={resident._id.toString()} />
           </Suspense>
         </div>
         <div className="col-span-1 md:col-span-2">
