@@ -7,11 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useSearchParams, useRouter } from 'next/navigation'
 
 
-export default function TeacherDashboardClient({
-  residents,
-}: {
-  residents: IResident[];
-}) {
+export default function ResidentSelect({ residents }: { residents: IResident[] }) {
   const searchParams = useSearchParams()
   const router = useRouter();
   const initialId = searchParams.get("resident") || residents[0]?._id.toString();

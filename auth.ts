@@ -1,26 +1,16 @@
 import NextAuth from "next-auth"
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/db"
-import Google from "next-auth/providers/google"
-import MicrosoftEntraID from "@auth/core/providers/microsoft-entra-id"
+import authConfig from "@/auth.config"
 import { emailService } from "@/lib/email/email.service"
 import { EmailTypesEnum } from "@/lib/email/types/email-types.enum"
 
-export const config = {
+
+export const { signIn, signOut, auth, handlers } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
-  providers: [
-    Google,
-    MicrosoftEntraID({
-      clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID,
-      clientSecret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
-      issuer: `https://login.microsoftonline.com/${process.env.AUTH_MICROSOFT_ENTRA_ID_ISSUER}/v2.0`,
-      authorization: {
-        params: {
-          prompt: "select_account",
-        },
-      },
-    }),
-  ],
+  session: {
+    strategy: "jwt",
+  },
   events: {
     // Este evento se ejecuta SOLO cuando se crea un usuario por primera vez
     async createUser({ user }: { user: { id?: string; email?: string | null; name?: string | null; image?: string | null } }) {
@@ -48,7 +38,6 @@ export const config = {
         console.error('❌ Error sending welcome email:', emailError)
       }
     }
-  }
-}
-
-export const { signIn, signOut, auth, handlers } = NextAuth(config)
+  },
+  ...authConfig,
+})

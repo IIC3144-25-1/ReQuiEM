@@ -23,7 +23,7 @@ export function LoginForm({
     "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg";
 
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || null;
+  const callbackUrl = searchParams.get("callbackUrl") || "/after-login";
 
   const handleLoginWithGoogle = async () => {
     await loginWithGoogle({ redirectTo: callbackUrl });

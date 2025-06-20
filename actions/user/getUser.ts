@@ -15,3 +15,9 @@ export async function getCurrentUser() {
   return user; // Return user object or null if not found
 }
 
+
+export async function getUser(id: string) {
+  await dbConnect();
+  const user = await User.findById(id);
+  return user;
+}

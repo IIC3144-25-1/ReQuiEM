@@ -14,6 +14,7 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { getAllTeachers } from "@/actions/teacher/getAll";
 import { deleteTeacher } from "@/actions/teacher/delete";
+import { Head } from "@/components/head/Head";
 
 export default async function Page() {
   const teachers = await getAllTeachers();
@@ -27,19 +28,15 @@ export default async function Page() {
 
   return (
     <>
-      <div className="flex justify-between items-center py-4">
-        <div>
-          <h1 className="text-2xl font-bold">Panel de profesores</h1>
-          <p className="text-sm text-muted-foreground">Aquí puedes ver, editar y crear nuevos profesores</p>
-        </div>
-        <div className="my-4">
-          <Link href={"/admin/teacher/new"}>
+    <Head title="Panel de profesores" description="Aquí puedes ver, editar y crear nuevos profesores" 
+    components={[
+          <Link href={"/admin/teacher/new"} key={"new-teacher-link"}>
             <Button>
               Crear nuevo profesor
             </Button>
           </Link>
-        </div>
-      </div>
+      ]} />
+  
 
       <Table className="w-full">
         <TableHeader>

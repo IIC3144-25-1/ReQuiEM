@@ -1,9 +1,6 @@
 import { getRecordByID } from "@/actions/record/getByID";
 import { updateStatus } from "@/actions/record/updateStatus";
 import PastRecord from "@/components/records/PastRecord";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Page(props: {params: Promise<{id: string}>}) {
@@ -18,17 +15,11 @@ export default async function Page(props: {params: Promise<{id: string}>}) {
   if (!record.steps || record.steps.length === 0){
     redirect(`/resident/complete-record/${record._id}`); 
   }
+  // console.log(record)
 
   return(
     <div className="flex flex-col items-center">
-      <PastRecord record={record} />
-
-      <Link href="/resident/records">
-        <Button className="mt-10 mb-20 w-30" variant="outline">
-          <ChevronLeft className="" />
-          Volver
-        </Button>
-      </Link>
+      <PastRecord record={record} side="resident" />
     </div>
   )
 }

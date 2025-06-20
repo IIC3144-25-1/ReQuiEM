@@ -1,8 +1,9 @@
 "use client";
 
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from "@/components/ui/table";
+import { Head } from "../head/Head";
 import { Badge } from "@/components/ui/badge";
 import { sumaryScalesList } from "@/app/(protected)/teacher/reviewForm";
 import React from "react";
@@ -11,6 +12,9 @@ import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { scoreList } from "@/app/(protected)/teacher/reviewForm";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, NotebookPen } from "lucide-react";
+import Link from "next/link";
 
 
 const statusLabel = {
@@ -20,44 +24,78 @@ const statusLabel = {
   canceled: "Cancelado"
 };
 
-export default function PastRecord({ record }: { record: IRecord }) {
+export default function PastRecord({ record, side }: { record: IRecord; side: string }) {
     return (
       <div className="flex flex-col min-h-screen w-full justify-center mx-auto sm:p-4 sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
   
-        <Card className="relative ">
+        <Card className="relative">
           <CardHeader>
-            <CardTitle className="text-2xl">{record.surgery?.name || "Cirugía no especificada"}</CardTitle>
+            <Head
+              title={record.surgery?.name || "Cirugía no especificada"}
+              description={`Registro de cirugía realizado por ${record.resident?.user?.name}`}
+              components={
+                side === "resident"
+                  ? [
+                      <Link href="/resident/records" key="1">
+                        <Button className="w-full sm:min-w-30" variant="outline">
+                          <ChevronLeft />
+                          Volver
+                        </Button>
+                      </Link>,
+                    ]
+                  : [
+                    <div key="1" className="w-full flex justify-center space-x-2">
+                      <Link href="/teacher/records" className="w-full sm:w-30">
+                        <Button className="mr-4 w-full" variant="outline">
+                          <ChevronLeft />
+                          Volver
+                        </Button>
+                      </Link>
+                      {record.status === "pending" && (
+                        <Link href={`/teacher/review/${record._id}`} className="w-full sm:w-40">
+                          <Button className="w-full">
+                            <NotebookPen />
+                            Dar Feedback
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                    ]
+              }
+            />
           </CardHeader>
-          <CardContent className="px-3 sm:px-6">
-            
+          <CardContent >
+    
             <hr className="my-4 mb-4" />
-            <div className="flex flex-row justify-center sm:justify-start">
-              <div className="text-sm leading-none space-y-2 font-semibold mr-2 sm:mr-6 text-right sm:text-left">
-                <p>Residente:</p>
-                <p>Profesor:</p>
-                <p>Fecha:</p>
-                <p>RUT del paciente:</p>
-                <p>Año del residente:</p>
-              </div>
+            <div className="flex flex-row justify-between items-start sm:items-center mb-4">
+              <div className="flex flex-row justify-center sm:justify-start">
+                <div className="text-sm leading-none space-y-2 font-semibold mr-2 sm:mr-6 text-right sm:text-left">
+                  <p>Residente:</p>
+                  <p>Profesor:</p>
+                  <p>Fecha:</p>
+                  <p>ID del paciente:</p>
+                  <p>Año del residente:</p>
+                </div>
 
-              <div className="text-sm font-normal leading-none space-y-2">
-                <p>{record.resident?.user?.name || "No disponible"}</p>
-                <p>{record.teacher?.user?.name || "No disponible"}</p>
-                <p>{format(record.date, "d '/' MMM '/' yyyy ' a las ' HH:mm", { locale: es })}</p>
-                <p>{record.patientId || "No disponible"}</p>
-                <p>{record.residentsYear || "No disponible"}º año</p>
+                <div className="text-sm font-normal leading-none space-y-2">
+                  <p>{record.resident?.user?.name || "No disponible"}</p>
+                  <p>{record.teacher?.user?.name || "No disponible"}</p>
+                  <p>{format(record.date, "d '/' MMM '/' yyyy ' a las ' HH:mm", { locale: es })}</p>
+                  <p>{record.patientId || "No disponible"}</p>
+                  <p>{record.residentsYear || "No disponible"}º año</p>
+                </div>
               </div>
-            </div>
   
             {statusLabel[record.status] === "Corregido" ? (
-              <Badge variant="success" className="capitalize absolute top-5 sm:top-23 right-5 sm:right-20">
+              <Badge variant="success" className="capitalize top-5 sm:top-26 right-5 sm:right-20">
                 {statusLabel[record.status] || "Estado desconocido"}
               </Badge>
             ) : (
-              <Badge variant="yellow" className="capitalize absolute top-5 sm:top-23 right-5 sm:right-20">
+              <Badge variant="yellow" className="capitalize top-5 sm:top-26 right-5 sm:right-20">
                 {statusLabel[record.status] || "Estado desconocido"}
               </Badge>
             )}
+            </div>
             
             <hr className="my-4" />
             <h2 className="font-semibold mb-4 text-lg mt-2">Pasos de la cirugía</h2>
@@ -147,8 +185,8 @@ export default function PastRecord({ record }: { record: IRecord }) {
                       <div className="flex flex-row justify-between px-1">
                         {osat.scale.map((scaleItem, idx) => (
                           <div key={idx} className={`flex flex-col items-center w-full my-1
-                            ${scaleItem.punctuation === osat.obtained && record.status === "corrected" ? "bg-blue-100 rounded-lg" : ""}`}
-                            id={scaleItem.punctuation === osat.obtained && record.status === "corrected" ? "focus" : ""}>
+                            ${scaleItem.punctuation === osat.obtained && (record.status !== "pending") ? "bg-blue-100 rounded-lg" : ""}`}
+                            id={scaleItem.punctuation === osat.obtained && record.status !== "pending" ? "focus" : ""}>
                             <p>{scaleItem.punctuation}</p>
                           </div>
                         ))}

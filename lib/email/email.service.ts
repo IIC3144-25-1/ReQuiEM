@@ -1,7 +1,12 @@
-import sgMail from '@sendgrid/mail';
-import { EmailStrategyFactory } from './email-factory.strategy';
-import { EmailPayload } from './events/email.event';
-import { EmailTypesEnum } from './types/email-types.enum';
+import sgMail from "@sendgrid/mail";
+import { EmailStrategyFactory } from "./email-factory.strategy";
+import { EmailPayload } from "./events/email.event";
+import { EmailTypesEnum } from "./types/email-types.enum";
+import {
+  NewRoleAssignedData,
+  RecordPendingReviewData,
+  RecordCorrectedData,
+} from "./types/email-data.types";
 
 export class EmailService {
   private strategyFactory: EmailStrategyFactory;
@@ -10,9 +15,11 @@ export class EmailService {
     // Initialize SendGrid with API key
     const apiKey = process.env.SENDGRID_API_KEY;
     if (!apiKey) {
-      throw new Error('SENDGRID_API_KEY is not defined in environment variables');
+      throw new Error(
+        "SENDGRID_API_KEY is not defined in environment variables"
+      );
     }
-    
+
     sgMail.setApiKey(apiKey);
     this.strategyFactory = new EmailStrategyFactory();
   }
@@ -22,25 +29,28 @@ export class EmailService {
     const strategy = this.strategyFactory.create(payload.type);
 
     // Use test email in development
-    const recipientEmail = 
-      process.env.ENV === 'production' 
-        ? payload.to 
+    const recipientEmail =
+      process.env.ENV === "production"
+        ? payload.to
         : process.env.TEST_EMAIL || payload.to;
 
     console.log(
-      `Attempting to send email of type ${payload.type} to ${recipientEmail} from ${payload.from || process.env.FROM_EMAIL}`
+      `Attempting to send email of type ${
+        payload.type
+      } to ${recipientEmail} from ${payload.from || process.env.FROM_EMAIL}`
     );
 
     try {
       const formattedData = strategy.formatData(payload.payload);
       const templateId = strategy.getTemplateId();
-      
-      const validFromEmail = payload.from || process.env.FROM_EMAIL || 'no-reply@example.com';
+
+      const validFromEmail =
+        payload.from || process.env.FROM_EMAIL || "no-reply@example.com";
       const msg = {
         to: recipientEmail,
         from: {
-            email: validFromEmail,
-            name:  'Requiem'
+          email: validFromEmail,
+          name: "Requiem",
         },
         templateId: templateId,
         dynamic_template_data: formattedData,
@@ -53,7 +63,7 @@ export class EmailService {
         console.error(`Error sending email: ${error.message}`, error);
         throw error;
       } else {
-        console.error('Error sending email:', error);
+        console.error("Error sending email:", error);
         throw new Error(String(error));
       }
     }
@@ -66,6 +76,42 @@ export class EmailService {
       to,
       type: EmailTypesEnum.NEW_USER_WELCOME,
       payload: userData,
+    });
+  }
+
+  async sendNewRoleAssignedEmail(
+    to: string,
+    data: NewRoleAssignedData
+  ): Promise<void> {
+    await this.sendEmail({
+      to,
+      type:
+        data.role === "resident"
+          ? EmailTypesEnum.NEW_RESIDENT_ASSIGNED
+          : EmailTypesEnum.NEW_TEACHER_ASSIGNED,
+      payload: data,
+    });
+  }
+
+  async sendRecordPendingReviewEmail(
+    to: string,
+    data: RecordPendingReviewData
+  ): Promise<void> {
+    await this.sendEmail({
+      to,
+      type: EmailTypesEnum.RECORD_PENDING_REVIEW,
+      payload: data,
+    });
+  }
+
+  async sendRecordCorrectedEmail(
+    to: string,
+    data: RecordCorrectedData
+  ): Promise<void> {
+    await this.sendEmail({
+      to,
+      type: EmailTypesEnum.RECORD_CORRECTED,
+      payload: data,
     });
   }
 }

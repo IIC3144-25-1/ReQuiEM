@@ -4,8 +4,9 @@ import { saveAs } from "file-saver";
 import ExcelJS from "exceljs";
 import { Button } from "@/components/ui/button";
 import { DownloadRecords } from "./DownloadRecords";
+import { Download } from "lucide-react";
 
-export function DownloadRecordsButton({ side }: { side: "resident" | "teacher" }) {
+export function DownloadRecordsButton({ side, className }: { side: "resident" | "teacher"; className: string }) {
   const headers = [
     { key: "_id", label: "ID" },
     { key: "date", label: "Fecha" },
@@ -114,7 +115,8 @@ export function DownloadRecordsButton({ side }: { side: "resident" | "teacher" }
   };
 
   return (
-    <Button onClick={handleDownload} className="fixed bottom-10 right-10">
+    <Button onClick={handleDownload} className={className}>
+      <Download/>
       Descargar Registros
     </Button>
   );
