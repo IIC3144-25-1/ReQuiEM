@@ -2,6 +2,8 @@ import dbConnect from "@/lib/dbConnect";
 import { Record } from "@/models/Record";
 import { format } from "date-fns";
 import StepsCompletedChart from "./StepsCompletedChart";
+import { Suspense } from "react";
+import { ChartSkeleton } from "./ChartSkeleton";
 
 export default async function StepsCompletedInTime({ residentId }: { residentId: string }) {
   await dbConnect();
@@ -59,5 +61,9 @@ export default async function StepsCompletedInTime({ residentId }: { residentId:
   data.sort((a, b) => a.month.localeCompare(b.month));
 
   // Pasa todos los datos y las cirugías al cliente
-  return <StepsCompletedChart data={data} surgeries={surgeries} />;
+  return (
+  <Suspense fallback={<ChartSkeleton />}>
+    <StepsCompletedChart data={data} surgeries={surgeries} />;
+  </Suspense>
+  );
 }

@@ -1,9 +1,7 @@
 import { getUserResident } from "@/actions/resident/getByCurrentUser";
-import { ChartSkeleton } from "@/components/charts/ChartSkeleton";
 import { RecordsCompleted } from "@/components/charts/RecordsCompletedByResident";
 import ScaleSummary from "@/components/charts/ScaleSummary";
 import { TotalTypesOfSurgeryForResident } from "@/components/charts/TotalTipesOfSurgeryForResident";
-import { Suspense } from "react";
 import { DownloadRecordsButton } from "@/components/records/DownloadRecordsButton";
 import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
 import { Head } from "@/components/head/Head";
@@ -32,24 +30,16 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 w-full">
         <div className="col-span-1 md:col-span-2">
-          <Suspense fallback={<ChartSkeleton />}>
-            <RecordsCompleted residentId={resident._id.toString()} />
-          </Suspense>
+          <RecordsCompleted residentId={resident._id.toString()} />
         </div>
         <div className="col-span-1">
-          <Suspense fallback={<ChartSkeleton />}>
-            <TotalTypesOfSurgeryForResident residentId={resident._id.toString()} />
-          </Suspense>
+          <TotalTypesOfSurgeryForResident residentId={resident._id.toString()} />
         </div>
         <div className="col-span-1">
-          <Suspense fallback={<ChartSkeleton />}>
-            <ScaleSummary residentId={resident._id.toString()} />
-          </Suspense>
+          <ScaleSummary residentId={resident._id.toString()} />
         </div>
         <div className="col-span-1 md:col-span-2">
-          <Suspense fallback={<ChartSkeleton />}>
-            <StepsCompletedInTime residentId={resident._id.toString()} />
-          </Suspense>
+          <StepsCompletedInTime residentId={resident._id.toString()} />
         </div>
       </div>
 
