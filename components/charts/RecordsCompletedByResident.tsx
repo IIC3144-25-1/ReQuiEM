@@ -3,6 +3,8 @@ import dbConnect from "@/lib/dbConnect";
 import { Record } from "@/models/Record";
 import { format, startOfWeek } from "date-fns";
 import RecordsCompletedClient from "./RecordsCompletedClient";
+import { Suspense } from "react";
+import { ChartSkeleton } from "./ChartSkeleton";
 
 
 export async function RecordsCompleted({ residentId }: { residentId: string }) {
@@ -40,10 +42,12 @@ export async function RecordsCompleted({ residentId }: { residentId: string }) {
       .sort((a, b) => a.period.localeCompare(b.period));
 
   return (
-    <RecordsCompletedClient
-      weeklyData={toArray(weekMap)}
-      monthlyData={toArray(monthMap)}
-      yearlyData={toArray(yearMap)}
-    />
+    <Suspense fallback={<ChartSkeleton />}>
+      <RecordsCompletedClient
+        weeklyData={toArray(weekMap)}
+        monthlyData={toArray(monthMap)}
+        yearlyData={toArray(yearMap)}
+      />
+    </Suspense>
   );
 }
