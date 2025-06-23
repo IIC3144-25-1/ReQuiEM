@@ -2,13 +2,23 @@
 
 import { useState } from "react";
 import RecordCard from "@/components/cards/record-card";
-import Pagination from "../pagination/Pagination";
+// import Pagination from "../pagination/Pagination";
 // import { RecordsFilters } from "@/components/filters/RecordsFilters";
 import { RecordsFilterInput, RecordsFilterSelect } from "@/components/filters/RecordsFilters";
 import { Head } from "../head/Head";
 import { format } from "date-fns";
 import { isIResident, isISurgery, isIUser } from "@/utils/validation";
 import Link from "next/link";
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "@/components/ui/pagination"
 
 interface RecordType {
   _id: string;
@@ -62,6 +72,17 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
     return <div className="leading-none text-center pt-10">No tienes registros todavía</div>;
   }
 
+  function getPages(current: number, total: number) {
+    // Puedes ajustar esto a gusto (este ejemplo muestra máximo 5 números + ... si hay muchas páginas)
+    if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+
+    if (current <= 3) return [1, 2, 3, 4, "...", total];
+    if (current >= total - 2) return [1, "...", total - 3, total - 2, total - 1, total];
+    return [1, "...", current - 1, current, current + 1, "...", total];
+  }
+
+  const pages = getPages(currentPage, totalPages);
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Head
@@ -104,11 +125,53 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
           </Link>
         ))}
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+
+      <Pagination className="mt-8">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={e => {
+                e.preventDefault();
+                setCurrentPage(p => Math.max(1, p - 1));
+              }}
+              aria-disabled={currentPage === 1}
+              tabIndex={currentPage === 1 ? -1 : 0}
+            />
+          </PaginationItem>
+          {pages.map((p, i) =>
+            p === "..." ? (
+              <PaginationItem key={`ellipsis-${i}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            ) : (
+              <PaginationItem key={p}>
+                <PaginationLink
+                  href="#"
+                  isActive={Number(p) === currentPage}
+                  onClick={e => {
+                    e.preventDefault();
+                    setCurrentPage(Number(p));
+                  }}
+                >
+                  {p}
+                </PaginationLink>
+              </PaginationItem>
+            )
+          )}
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={e => {
+                e.preventDefault();
+                setCurrentPage(p => Math.min(totalPages, p + 1));
+              }}
+              aria-disabled={currentPage === totalPages}
+              tabIndex={currentPage === totalPages ? -1 : 0}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }
