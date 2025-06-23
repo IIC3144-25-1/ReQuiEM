@@ -3,6 +3,8 @@ import dbConnect from "@/lib/dbConnect";
 import { Record } from "@/models/Record";
 import { SurgeryPieChart } from "./SurgeryPieChart";
 import { Surgery } from "@/models/Surgery";
+import { Suspense } from "react";
+import { ChartSkeleton } from "./ChartSkeleton";
 
 export async function TotalTypesOfSurgeryForResident({ residentId }: { residentId: string }) {
   await dbConnect();
@@ -26,5 +28,9 @@ export async function TotalTypesOfSurgeryForResident({ residentId }: { residentI
         value,
     }));
 
-    return <SurgeryPieChart data={data} />;
+    return (
+    <Suspense fallback={<ChartSkeleton />}>
+        <SurgeryPieChart data={data} />;
+    </Suspense>
+    );
 }

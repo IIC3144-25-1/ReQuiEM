@@ -1,14 +1,15 @@
-import { NextResponse, NextRequest } from 'next/server';
+import NextAuth from "next-auth"
+import authConfig from "./auth.config"
+ 
+export const { auth: middleware } = NextAuth(authConfig)
 
-export function middleware(request: NextRequest) {
-
-  // Store current request url in a custom header, which you can read later
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-pathname', request.nextUrl.pathname);
-  return NextResponse.next({
-    request: {
-      // Apply new request headers
-      headers: requestHeaders,
-    }
-  });
+export const config = {
+  matcher: [
+    "/dashboard/:path*",   // protect everything under /dashboard
+    "/admin/:path*",
+    "/profile/:path*",
+    "/resident/:path*",
+    "/area/:path*",
+    "/teacher/:path*",
+  ],
 }
