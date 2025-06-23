@@ -3,6 +3,8 @@ import dbConnect from "@/lib/dbConnect";
 import { Record } from "@/models/Record";
 import { format } from "date-fns";
 import ScaleSummaryChart from "./ScaleSummaryChart";
+import { Suspense } from "react";
+import { ChartSkeleton } from "./ChartSkeleton";
 
 export default async function ScaleSummary({ residentId }: { residentId: string }) {
   await dbConnect();
@@ -43,9 +45,11 @@ export default async function ScaleSummary({ residentId }: { residentId: string 
   });
 
   return (
-    <ScaleSummaryChart
-      surgeries={surgeries}
-      data={tableData}
-    />
+    <Suspense fallback={<ChartSkeleton />}>
+      <ScaleSummaryChart
+        surgeries={surgeries}
+        data={tableData}
+      />
+    </Suspense>
   );
 }

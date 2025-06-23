@@ -7,7 +7,6 @@ import ResidentSelect from "./residentSelect";
 import { RecordsCompleted } from "@/components/charts/RecordsCompletedByResident";
 import { TotalTypesOfSurgeryForResident } from "@/components/charts/TotalTipesOfSurgeryForResident";
 import { Head } from "@/components/head/Head";
-import { ChartSkeleton } from "@/components/charts/ChartSkeleton";
 import { Suspense } from "react";
 import Loading from "@/app/loading";
 import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
@@ -61,24 +60,16 @@ export default async function TeacherDashboardPage({
             <Suspense fallback={<Loading />}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full">
                     <div className="col-span-1 md:col-span-2">
-                        <Suspense fallback={<ChartSkeleton />}>
-                            <RecordsCompleted residentId={defaultResidentId} />
-                        </Suspense>
+                        <RecordsCompleted residentId={defaultResidentId} />
                     </div>
                     <div className="col-span-1">
-                        <Suspense fallback={<ChartSkeleton />}>
-                            <TotalTypesOfSurgeryForResident residentId={defaultResidentId} />
-                        </Suspense>
+                        <TotalTypesOfSurgeryForResident residentId={defaultResidentId} />
                     </div>
                     <div className="col-span-1">
-                        <Suspense fallback={<ChartSkeleton />}>
-                            <ScaleSummary residentId={defaultResidentId} />
-                        </Suspense>
+                        <ScaleSummary residentId={defaultResidentId} />
                     </div>
                     <div className="col-span-1 md:col-span-2">
-                        <Suspense fallback={<ChartSkeleton />}>
-                            <StepsCompletedInTime residentId={defaultResidentId} />
-                        </Suspense>
+                        <StepsCompletedInTime residentId={defaultResidentId} />
                     </div>
                 </div>
             </Suspense>
