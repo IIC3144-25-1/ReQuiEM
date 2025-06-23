@@ -2,12 +2,18 @@ import dbConnect from "@/lib/dbConnect";
 import { Record } from "@/models/Record";
 import { format } from "date-fns";
 import StepsCompletedChart from "./StepsCompletedChart";
+import { Suspense } from "react";
+import { ChartSkeleton } from "./ChartSkeleton";
 
 export default async function StepsCompletedInTime({ residentId }: { residentId: string }) {
   await dbConnect();
   const records = await Record.find({ resident: residentId })
     .populate({ path: "surgery", select: "name" })
     .lean();
+
+  if (records.length === 0) {
+        return <div></div>;
+    }
 
   // Creamos un array con { month, percent, surgery }
   type DataRow = { month: string; percent: number; surgery: string };
@@ -55,5 +61,9 @@ export default async function StepsCompletedInTime({ residentId }: { residentId:
   data.sort((a, b) => a.month.localeCompare(b.month));
 
   // Pasa todos los datos y las cirugías al cliente
-  return <StepsCompletedChart data={data} surgeries={surgeries} />;
+  return (
+  <Suspense fallback={<ChartSkeleton />}>
+    <StepsCompletedChart data={data} surgeries={surgeries} />;
+  </Suspense>
+  );
 }

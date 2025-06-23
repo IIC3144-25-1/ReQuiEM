@@ -1,10 +1,11 @@
 'use server'
 
-import { User, IUser } from "@/models/User"
 import { Teacher } from "@/models/Teacher"
 import { Resident } from "@/models/Resident"
+import { Area } from "@/models/Area"
+import { User } from "@/models/User"
 import dbConnect from "@/lib/dbConnect"
-import { auth } from "@/auth"
+import { getCurrentUser } from "./getUser"
 
 export type RoleInfo = {
   isAdmin: boolean
@@ -13,32 +14,51 @@ export type RoleInfo = {
 
 export async function getRole(): Promise<RoleInfo | null> {
   await dbConnect()
-  const session = await auth()
-
-  // Si no hay usuario autenticado
-  if (!session?.user?.email) return null
-
-  // Obtener usuario de la DB
-  const user = await User
-    .findOne({ email: session.user.email })
-    .lean<IUser>()
-    .exec()
-
+  const user = await getCurrentUser()
   if (!user) return null
 
-  // ¿Es administrador?
   const isAdmin = Boolean(user.admin)
-
-  // Comprobamos si existe un Teacher o un Resident vinculado a este user._id
   const [isTeacher, isResident] = await Promise.all([
     Teacher.exists({ user: user._id, deleted: false }),
     Resident.exists({ user: user._id, deleted: false })
   ])
 
-  // Determinar rol (solo docente o residente; si no, null)
   let role: 'teacher' | 'resident' | null = null
   if (isTeacher) role = 'teacher'
   else if (isResident) role = 'resident'
 
   return { isAdmin, role }
+}
+
+
+export async function getRoleAndArea(userId: string) {
+  await dbConnect();
+  const user = await User.findById(userId)
+  if (!user) return null;
+
+  const isAdmin = Boolean(user.admin);
+  let role = await Resident.findOne({ user: user._id });
+  let strRole: "Residente" | "Profesor" | null = null;
+
+  if (!role) {
+    role = await Teacher.findOne({ user: user._id });
+    if (role) strRole = "Profesor";
+  } else {
+    strRole = "Residente";
+  }
+
+  if (!role) return { isAdmin, strRole: null, area: null };
+
+  const area = await Area.findOne({
+    $or: [
+      { residents: { $in: [role._id] } },
+      { teachers: { $in: [role._id] } }
+    ]
+  });
+
+  return {
+    isAdmin: isAdmin,
+    strRole: strRole,
+    area: area?.name || "",
+  };
 }

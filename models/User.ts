@@ -1,10 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { TailwindColor } from "@/utils/colors";
 
 export interface IUser extends Document {
     _id: mongoose.Types.ObjectId;
     name?: string;
     email: string;
-    image?: string;
+    image?: TailwindColor;
     emailVerified?: Date | null;
     rut?: string;
     phone?: string;
@@ -19,7 +20,7 @@ const UserSchema = new Schema<IUser>(
     {
       name: { type: String, trim: true },
       email: { type: String, required: true, unique: true, trim: true },
-      image: { type: String },
+      image: { type: String, default: "gary" },
       emailVerified: { type: Date, default: null },
       rut: { type: String, trim: true },
       phone: { type: String, trim: true },
