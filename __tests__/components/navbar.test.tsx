@@ -15,7 +15,7 @@ describe("Navbar", () => {
   const defaultProps = {
     logo: {
       alt: "Test Logo",
-      title: "ReQuiEM Test",
+      title: "SurgerySkills Test",
     },
     menu: [
       { title: "Dashboard", url: "/dashboard" },
@@ -38,7 +38,7 @@ describe("Navbar", () => {
 
   // it("renders logo correctly", async () => {
   //   render(await Navbar(defaultProps));
-  //   expect(screen.getAllByText("ReQuiEM Test")[0]).toBeInTheDocument();
+  //   expect(screen.getAllByText("SurgerySkills Test")[0]).toBeInTheDocument();
   // });
 
   // it("renders main menu items", async () => {
@@ -84,8 +84,8 @@ describe("Navbar", () => {
   // // Test corregido para props por defecto
   // it("renders with default props when no props provided", async () => {
   //   render(await Navbar({}));
-  //   // Usamos getAllByText para manejar múltiples elementos "ReQuiEM"
-  //   const logoTexts = screen.getAllByText("ReQuiEM");
+  //   // Usamos getAllByText para manejar múltiples elementos "SurgerySkills"
+  //   const logoTexts = screen.getAllByText("SurgerySkills");
   //   expect(logoTexts.length).toBeGreaterThan(0);
   //   expect(logoTexts[0]).toBeInTheDocument();
 

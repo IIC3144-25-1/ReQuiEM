@@ -78,7 +78,7 @@ export async function createTeacher(formData: FormData): Promise<ITeacher> {
       role: "teacher",
       assignedBy: {
         name: session.user.name || "Administrador",
-        email: session.user.email || "admin@requiem.cl",
+        email: session.user.email || "admin@surgeryskills.cl",
       },
     });
   } catch (error) {

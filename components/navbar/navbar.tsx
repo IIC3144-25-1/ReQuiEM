@@ -3,7 +3,7 @@ import { getCurrentUser } from "@/actions/user/getUser"
 import { getRole, RoleInfo } from "@/actions/user/getRole"
 import { NavbarClient } from "./NavbarClient"
 
-const defaultLogo = { alt: "logo", title: "ReQuiEM" }
+const defaultLogo = { alt: "logo", title: "SurgerySkills" }
 const defaultAuth = { login: { title: "Iniciar Sesión", url: "/login" } }
 
 export const Navbar = async () => {
