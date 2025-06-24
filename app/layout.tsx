@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Navbar } from "@/components/navbar/navbar";
 import Script from "next/script";
+import PWAInstallPrompt from "@/components/pwa/PWAInstallPrompt";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,6 +65,7 @@ export default async function RootLayout({
           <Navbar />
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {children}
+            <PWAInstallPrompt />
           </div>
           <Toaster />
         </ErrorBoundary>
