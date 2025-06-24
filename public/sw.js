@@ -1,7 +1,5 @@
-const CACHE_NAME = "ReQuiEM-v1";
+const CACHE_NAME = "SurgerySkills-v1";
 const URLS_TO_CACHE = [
-  '/',
-  '/login/',
   '/dashboard/',
   '/admin/',
   '/admin/areas/',
@@ -56,33 +54,29 @@ self.addEventListener('activate', event => {
 
 self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Si no hay respuesta en el cache, hacemos la solicitud a la red
-        const fetchPromise = fetch(event.request).then(
-          (networkResponse) => {
-            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-              return networkResponse;
-            }
-            
-            console.log("Service Worker: Fetching from network", event.request.url);
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-            });
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (
+          !networkResponse ||
+          networkResponse.status !== 200 ||
+          networkResponse.type !== "basic"
+        ) {
+          return networkResponse;
+        }
 
-            return networkResponse;
-          }
-        ).catch(() => {
-          return response;
+        const responseClone = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseClone);
         });
 
-        // Si hay una respuesta en el cache, la devolvemos
-        return response || fetchPromise;
-    })
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });
+
 
 self.addEventListener("activate", (event) => {
   const cacheWhitelist = [CACHE_NAME];

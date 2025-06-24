@@ -12,7 +12,7 @@ export class NewRoleAssignedStrategy implements EmailStrategy {
       userEmail: data.user.email,
       role: data.role === "resident" ? "Residente" : "Profesor",
       assignedByName: data.assignedBy.name,
-      platformName: "ReQuiEM",
+      platformName: "SurgerySkills",
       platformDescription: "Sistema de Registro Quirúrgico Electrónico Médico",
       universityName: "Universidad Católica de Chile",
       supportEmail: "equipo6.iic3144@gmail.com ",
