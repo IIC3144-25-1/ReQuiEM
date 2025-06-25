@@ -11,6 +11,9 @@ import { Suspense } from "react";
 import Loading from "@/app/loading";
 import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
 import ScaleSummary from "@/components/charts/ScaleSummary";
+import { IRecord, Record } from "@/models/Record";
+import { Surgery } from "@/models/Surgery";
+import { DownloadRecordsButton } from "@/components/records/DownloadRecordsButton";
 
 export default async function TeacherDashboardPage({
   searchParams,
@@ -43,33 +46,59 @@ export default async function TeacherDashboardPage({
     const residentId = (await searchParams)?.resident as string;
     const defaultResidentId = residentId || residents[0]?._id.toString();
 
-    return (
-        <div className="flex flex-col items-center justify-center h-full my-8 max-w-4xl mx-auto">
-            
+    await Surgery.init();
+    const records = await Record.find({ resident: defaultResidentId })
+                                .populate({ path: "surgery", select: "name" })
+                                .lean<IRecord[]>();
+
+    if (!records || records.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full max-w-4xl mx-auto">
             <Head
                 title="Dashboard"
                 description="Aquí puedes ver estadísticas y gráficos de los residentes que supervisas"
                 components={[
                     <div key="1" className="flex items-center gap-4 justify-center">
-                        <div  className="text-muted-foreground">Datos del residente: </div>
                         <ResidentSelect residents={residents} />
                     </div>
+                ]}
+            />
+            <div className="flex flex-col items-center justify-center h-full my-24">
+                <h1 className="text-2xl font-bold mb-4">No hay registros</h1>
+                <p className="text-gray-500">No hay registros para el residente seleccionado.</p>
+            </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex flex-col items-center justify-center h-full max-w-4xl mx-auto">
+            
+            <Head
+                title="Dashboard"
+                description="Aquí puedes ver estadísticas y gráficos de los residentes que supervisas"
+                components={[
+                    <DownloadRecordsButton
+                        side="teacher"
+                        key="1"
+                    />,
+                    <ResidentSelect key="2" residents={residents} />
                 ]}
             />
 
             <Suspense fallback={<Loading />}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full">
                     <div className="col-span-1 md:col-span-2">
-                        <RecordsCompleted residentId={defaultResidentId} />
+                        <RecordsCompleted records={records} />
                     </div>
                     <div className="col-span-1">
-                        <TotalTypesOfSurgeryForResident residentId={defaultResidentId} />
+                        <TotalTypesOfSurgeryForResident records={records} />
                     </div>
                     <div className="col-span-1">
-                        <ScaleSummary residentId={defaultResidentId} />
+                        <ScaleSummary records={records} />
                     </div>
                     <div className="col-span-1 md:col-span-2">
-                        <StepsCompletedInTime residentId={defaultResidentId} />
+                        <StepsCompletedInTime records={records} />
                     </div>
                 </div>
             </Suspense>
