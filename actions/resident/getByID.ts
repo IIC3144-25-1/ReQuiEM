@@ -2,6 +2,7 @@
 
 import { Resident, IResident } from '@/models/Resident'
 import dbConnect from '@/lib/dbConnect'
+import { User } from '@/models/User'
 
 /**
  * Obtiene un residente por su ID, incluyendo los datos de usuario y
@@ -15,7 +16,7 @@ export async function getResidentByID(residentId: string): Promise<IResident | n
   const resident = await Resident
     .findById(residentId)
     .where('deleted').equals(false) // Aseguramos que no esté eliminado
-    .populate('user')      // trae info del usuario
+    .populate({ path: 'user', model: User })      // trae info del usuario
     .lean<IResident>()
     .exec()
 

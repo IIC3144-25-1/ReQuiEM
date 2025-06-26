@@ -17,9 +17,8 @@ export default async function DashboardPage() {
     return <p className="text-gray-500">Residente no encontrado.</p>;
   }
 
-  await Surgery.find({});
   const records = await Record.find({ resident: resident._id })
-                                  .populate({ path: "surgery", select: "name" })
+                                  .populate({ path: "surgery", model: Surgery, select: "name" })
                                   .lean<IRecord[]>();
 
   if (!records || records.length === 0) {

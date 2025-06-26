@@ -6,6 +6,8 @@ import { Resident } from "@/models/Resident";
 import dbConnect from "@/lib/dbConnect";
 import { emailService } from "@/lib/email/email.service";
 import { auth } from "@/auth";
+import { User } from "@/models/User";
+import { Surgery } from "@/models/Surgery";
 
 export async function reviewRecord(formData: FormData) {
   await dbConnect();
@@ -26,14 +28,17 @@ export async function reviewRecord(formData: FormData) {
   }
 
   const teacher = await Teacher.findOne({ user: session.user.id }).populate(
-    "user"
+    {path: "user", model: User}
   );
   if (!teacher) {
     throw new Error("Teacher not found");
   }
 
   // Update record
-  const record = await Record.findById(recordId).populate("surgery");
+  const record = await Record.findById(recordId).populate({
+    path: "surgery",
+    model: Surgery
+  });
   if (!record) {
     throw new Error("Record not found");
   }
@@ -87,7 +92,10 @@ export async function reviewRecord(formData: FormData) {
   await record.save();
 
   // Get resident info for the email
-  const resident = await Resident.findById(record.resident).populate("user");
+  const resident = await Resident.findById(record.resident).populate({
+    path: "user",
+    model: User
+  });
   if (!resident?.user) {
     console.error("Could not find resident for email notification");
     return record._id.toString();
@@ -95,7 +103,6 @@ export async function reviewRecord(formData: FormData) {
   
   // Send email notification to resident
   try {
-    console.log(record, "recorddddd")
     await emailService.sendRecordCorrectedEmail(resident.user.email, {
       user: {
         id: resident.user._id.toString(),

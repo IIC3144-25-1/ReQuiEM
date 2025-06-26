@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/actions/user/getUser"
 import { Resident } from "@/models/Resident"
 import { Area } from "@/models/Area"
 import { ITeacher, Teacher } from "@/models/Teacher"
+import { User } from "@/models/User"
 
 
 export async function getTeachersByUser() {
@@ -21,8 +22,10 @@ export async function getTeachersByUser() {
     const areas = await Area.find({ residents: { $in: [resident._id] } })
         .populate({
             path: "teachers",
+            model: Teacher,
             populate: {
                 path: "user",
+                model: User,
                 select: "name",
             },
         });

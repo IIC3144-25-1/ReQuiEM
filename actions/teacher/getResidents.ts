@@ -3,6 +3,7 @@
 import { IResident } from "@/models/Resident";
 import dbConnect from "@/lib/dbConnect";
 import { Area } from "@/models/Area";
+import { Resident } from "@/models/Resident";
 
 export async function getTeacherResidents(teacherId: string): Promise<IResident[]> {
     await dbConnect();
@@ -10,6 +11,7 @@ export async function getTeacherResidents(teacherId: string): Promise<IResident[
     const area = await Area.findOne({ teachers: teacherId, deleted: false })
         .populate({
             path: 'residents',
+            model: Resident,
             populate: { path: 'user' }
         })
         .exec();

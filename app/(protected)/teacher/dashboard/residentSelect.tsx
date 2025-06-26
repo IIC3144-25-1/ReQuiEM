@@ -20,7 +20,7 @@ export default function ResidentSelect({ residents }: { residents: IResident[] }
   }, [router, searchParams, selectedId]);
 
   if (residents.length === 0) {
-    return <p className="text-gray-500">No residents available.</p>;
+    return <p>No residents available.</p>;
   }
 
   return (

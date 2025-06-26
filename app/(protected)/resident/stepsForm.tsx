@@ -82,7 +82,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
         </div>
         
         <div className="flex flex-col space-y-6 relative">
-            <div className="h-23/24 w-px border border-gray-800 bg-gray-800 absolute ml-[5px] top-31/64 -translate-y-1/2 z-0" />
+            <div className="h-23/24 w-px border border-foreground  absolute ml-[5px] top-31/64 -translate-y-1/2 z-0" />
           {fields.map((field, index) => (
             <FormField
               key={field.id}
@@ -94,7 +94,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="min-w-3 w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 z-10"
+                      className="min-w-3 w-3 h-3 rounded-lg bg-background border border-foreground outline-2 outline-gray-800 z-10"
                       check={false}
                     />
                   </FormControl>

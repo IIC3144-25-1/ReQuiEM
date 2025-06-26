@@ -30,7 +30,7 @@ export default async function TeacherDashboardPage({
         return (
             <div className="flex flex-col items-center justify-center h-full">
         <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-        <p className="text-gray-500">You must be logged in to view this page.</p>
+        <p>You must be logged in to view this page.</p>
         </div>
     );
     }
@@ -40,7 +40,7 @@ export default async function TeacherDashboardPage({
         return (
             <div className="flex flex-col items-center justify-center h-full">
                 <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-                <p className="text-gray-500">You must be a teacher to view this page.</p>
+                <p>You must be a teacher to view this page.</p>
             </div>
         );
     }
@@ -48,9 +48,8 @@ export default async function TeacherDashboardPage({
     const residentId = (await searchParams)?.resident as string;
     const defaultResidentId = residentId || residents[0]?._id.toString();
 
-    await Surgery.find({});
     const records = await Record.find({ resident: defaultResidentId })
-                                .populate({ path: "surgery", select: "name" })
+                                .populate({ path: "surgery", model: Surgery, select: "name" })
                                 .lean<IRecord[]>();
 
     if (!records || records.length === 0) {
@@ -67,7 +66,7 @@ export default async function TeacherDashboardPage({
             />
             <div className="flex flex-col items-center justify-center h-full my-24">
                 <h1 className="text-2xl font-bold mb-4">No hay registros</h1>
-                <p className="text-gray-500">No hay registros para el residente seleccionado.</p>
+                <p >No hay registros para el residente seleccionado.</p>
             </div>
             </div>
         );

@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/actions/user/getUser"
 import { Resident } from "@/models/Resident"
 import { Area } from "@/models/Area"
 import { Teacher } from "@/models/Teacher"
+import { User } from "@/models/User"
 
 export async function getArea() {
     await dbConnect()
@@ -22,15 +23,19 @@ export async function getArea() {
       .populate([
         {
           path: "teachers",
+          model: Teacher,
           populate: {
             path: "user",
+            model: User,
             select: "name email image",
           },
         },
         {
           path: "residents",
+          model: Resident,
           populate: {
             path: "user",
+            model: User,
             select: "name email image",
           },
         },
