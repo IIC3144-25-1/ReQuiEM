@@ -7,17 +7,18 @@ import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
 import { Head } from "@/components/head/Head";
 import { Surgery } from "@/models/Surgery";
 import { IRecord, Record } from "@/models/Record";
+import dbConnect from "@/lib/dbConnect";
 
 export default async function DashboardPage() {
+  await dbConnect();
   const resident = await getUserResident();
 
   if (!resident) {
     return <p className="text-gray-500">Residente no encontrado.</p>;
   }
 
-  await Surgery.init();
   const records = await Record.find({ resident: resident._id })
-                                  .populate({ path: "surgery", select: "name" })
+                                  .populate({ path: "surgery", model: Surgery, select: "name" })
                                   .lean<IRecord[]>();
 
   if (!records || records.length === 0) {

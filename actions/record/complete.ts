@@ -5,6 +5,7 @@ import dbConnect from "@/lib/dbConnect";
 import { Teacher } from "@/models/Teacher";
 import { Resident } from "@/models/Resident";
 import { emailService } from "@/lib/email/email.service";
+import { User } from "@/models/User";
 
 export async function completeRecord(formData: FormData) {
   await dbConnect();
@@ -32,10 +33,14 @@ export async function completeRecord(formData: FormData) {
 
   // Send email notification to teacher
   try {
-    const teacherDoc = await Teacher.findById(doc.teacher._id).populate("user");
-    const residentDoc = await Resident.findById(doc.resident._id).populate(
-      "user"
-    );
+    const teacherDoc = await Teacher.findById(doc.teacher._id).populate({
+      path: "user",
+      model: User
+    });
+    const residentDoc = await Resident.findById(doc.resident._id).populate({
+      path: "user",
+      model: User
+    });
     if (!teacherDoc?.user || !residentDoc?.user) {
       console.error(
         "Could not find teacher or resident for email notification"

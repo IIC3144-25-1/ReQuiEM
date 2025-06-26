@@ -3,6 +3,8 @@
 import { Teacher, ITeacher } from '@/models/Teacher'
 import dbConnect from '@/lib/dbConnect'
 import { Types } from 'mongoose'
+import { Area } from '@/models/Area'
+import { User } from '@/models/User'
 
 export async function getTeacherByID(id: string): Promise<ITeacher | null> {
   await dbConnect()
@@ -12,8 +14,8 @@ export async function getTeacherByID(id: string): Promise<ITeacher | null> {
   }
   const teacher = await Teacher.findById(id)
     .where('deleted').equals(false)
-    .populate('user')
-    .populate('area')
+    .populate({ path: 'user', model: User })
+    .populate({ path: 'area', model: Area })
     .lean()
     .exec()
 
@@ -29,8 +31,8 @@ export async function getTeacherByUserID(userId: string): Promise<ITeacher | nul
   
   const teacher = await Teacher.findOne({ user: userId })
     .where('deleted').equals(false)
-    .populate('user')
-    .populate('area')
+    .populate({ path: 'user', model: User })
+    .populate({ path: 'area', model: Area })
     .lean()
     .exec()
 

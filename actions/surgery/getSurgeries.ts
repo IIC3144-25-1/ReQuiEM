@@ -15,7 +15,10 @@ export async function getSurgeries(): Promise<ISurgery[]> {
     const surgeries = await Surgery
         .find({deleted: false})
         .sort({ createdAt: -1 })
-        .populate('area')
+        .populate({
+            path: "area",
+            model: Area
+        })
         .lean<ISurgery[]>()
         .exec()
 
