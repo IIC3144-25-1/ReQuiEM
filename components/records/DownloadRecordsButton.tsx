@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DownloadRecords } from "./DownloadRecords";
 import { Download } from "lucide-react";
 
-export function DownloadRecordsButton({ side, className }: { side: "resident" | "teacher"; className: string }) {
+export function DownloadRecordsButton({ side }: { side: "resident" | "teacher"  }) {
   const headers = [
     { key: "_id", label: "ID" },
     { key: "date", label: "Fecha" },
@@ -115,7 +115,7 @@ export function DownloadRecordsButton({ side, className }: { side: "resident" | 
   };
 
   return (
-    <Button onClick={handleDownload} className={className}>
+    <Button onClick={handleDownload} variant='outline'>
       <Download/>
       Descargar Registros
     </Button>
