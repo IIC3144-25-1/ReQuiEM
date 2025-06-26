@@ -1,20 +1,12 @@
 // components/charts/RecordsCompleted.tsx
-import dbConnect from "@/lib/dbConnect";
-import { Record } from "@/models/Record";
+import { IRecord} from "@/models/Record";
 import { format, startOfWeek } from "date-fns";
 import RecordsCompletedClient from "./RecordsCompletedClient";
 import { Suspense } from "react";
 import { ChartSkeleton } from "./ChartSkeleton";
 
 
-export async function RecordsCompleted({ residentId }: { residentId: string }) {
-  await dbConnect();
-  const records = await Record.find({ resident: residentId }).lean();
-
-  if (records.length === 0) {
-    return <div></div>;
-  }
-
+export async function RecordsCompleted({ records }: { records: IRecord[] }) {
   const weekMap: Record<string, number> = {};
   const monthMap: Record<string, number> = {};
   const yearMap: Record<string, number> = {};

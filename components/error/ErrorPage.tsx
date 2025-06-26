@@ -39,12 +39,12 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         <CardContent className="space-y-4">
           <div>
             <h3 className="font-medium">Mensaje:</h3>
-            <p className="text-sm text-gray-700 break-words">{errorMessage}</p>
+            <p className="text-sm break-words">{errorMessage}</p>
           </div>
           {errorStack && (
             <div>
               <h4 className="font-medium">Stack trace:</h4>
-              <pre className="bg-gray-100 rounded p-2 overflow-auto text-xs text-gray-600 max-h-100">
+              <pre className=" rounded p-2 overflow-auto text-xs  max-h-100">
                 {errorStack}
               </pre>
             </div>

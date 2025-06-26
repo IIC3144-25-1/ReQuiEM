@@ -56,7 +56,7 @@ export function LoginForm({
             <Button
               type="submit"
               variant="outline"
-              className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
+              className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-background hover:bg-gray-50 text-sm"
             >
               <Image
                 src={GOOGLE_LOGO}
@@ -72,7 +72,7 @@ export function LoginForm({
             <Button
               type="submit"
               variant="outline"
-              className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
+              className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-background hover:bg-gray-50 text-sm"
             >
               <Image
                 src={MICROSOFT_LOGO}

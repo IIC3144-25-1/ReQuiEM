@@ -2,6 +2,9 @@
 
 import { Record, IRecord} from '@/models/Record'
 import dbConnect from '@/lib/dbConnect'
+import { Surgery } from '@/models/Surgery';
+import { Resident } from '@/models/Resident';
+import { User } from '@/models/User';
 
 /**
  * Obtiene un registro por su ID
@@ -15,15 +18,16 @@ export async function getRecordByID(recordId: string): Promise<IRecord | null> {
     .findById(recordId)
     .populate({
       path: 'resident',
-      populate: { path: 'user' }
+      model: Resident,
+      populate: { path: 'user', model: User }
     })
     .populate({
       path: 'teacher',
-      populate: { path: 'user' }
+      populate: { path: 'user', model: User }
     })
     .populate({
-      path: 'surgery',
-      populate: { path: 'name' }
+      path: 'surgery', 
+      model: Surgery,
     })
     .lean<IRecord>()
     .exec();

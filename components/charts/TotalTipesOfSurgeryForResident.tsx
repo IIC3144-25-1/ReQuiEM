@@ -1,21 +1,10 @@
 
-import dbConnect from "@/lib/dbConnect";
-import { Record } from "@/models/Record";
+import { IRecord } from "@/models/Record";
 import { SurgeryPieChart } from "./SurgeryPieChart";
-import { Surgery } from "@/models/Surgery";
 import { Suspense } from "react";
 import { ChartSkeleton } from "./ChartSkeleton";
 
-export async function TotalTypesOfSurgeryForResident({ residentId }: { residentId: string }) {
-  await dbConnect();
-
-    await Surgery.init(); // Ensure Surgery model is initialized
-    const records = await Record.find({ resident: residentId }).populate('surgery').lean();
-
-    if (records.length === 0) {
-        return <div></div>;
-    }
-
+export async function TotalTypesOfSurgeryForResident({ records }: { records: IRecord[] }) {
     const surgeryCount: Record<string, number> = {};
 
     for (const record of records) {
@@ -30,7 +19,7 @@ export async function TotalTypesOfSurgeryForResident({ residentId }: { residentI
 
     return (
     <Suspense fallback={<ChartSkeleton />}>
-        <SurgeryPieChart data={data} />;
+        <SurgeryPieChart data={data} />
     </Suspense>
     );
 }

@@ -5,16 +5,33 @@ import { TotalTypesOfSurgeryForResident } from "@/components/charts/TotalTipesOf
 import { DownloadRecordsButton } from "@/components/records/DownloadRecordsButton";
 import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
 import { Head } from "@/components/head/Head";
+import { Surgery } from "@/models/Surgery";
+import { IRecord, Record } from "@/models/Record";
+import dbConnect from "@/lib/dbConnect";
 
 export default async function DashboardPage() {
+  await dbConnect();
   const resident = await getUserResident();
 
   if (!resident) {
-    return <p className="text-gray-500">No resident data found.</p>;
+    return <p className="text-gray-500">Residente no encontrado.</p>;
+  }
+
+  const records = await Record.find({ resident: resident._id })
+                                  .populate({ path: "surgery", model: Surgery, select: "name" })
+                                  .lean<IRecord[]>();
+
+  if (!records || records.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <h1 className="text-2xl font-bold mb-4">No hay registros</h1>
+        <p className="text-gray-500">Crear un nuevo registro y podras ver estadísticas aquí.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col gap-8 items-center justify-center h-full my-8 max-w-4xl mx-auto">
+    <div className="flex flex-col gap-8 items-center justify-center h-full max-w-4xl mx-auto">
       <Head
         title="Dashboard"
         description="Aquí puedes ver estadísticas y gráficos de tu desempeño como residente"
@@ -22,7 +39,6 @@ export default async function DashboardPage() {
           <DownloadRecordsButton
             side="resident"
             key="1"
-            className=""
           />
         ]}
       />
@@ -30,16 +46,16 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 w-full">
         <div className="col-span-1 md:col-span-2">
-          <RecordsCompleted residentId={resident._id.toString()} />
+          <RecordsCompleted records={records} />
         </div>
         <div className="col-span-1">
-          <TotalTypesOfSurgeryForResident residentId={resident._id.toString()} />
+          <TotalTypesOfSurgeryForResident records={records} />
         </div>
         <div className="col-span-1">
-          <ScaleSummary residentId={resident._id.toString()} />
+          <ScaleSummary records={records} />
         </div>
         <div className="col-span-1 md:col-span-2">
-          <StepsCompletedInTime residentId={resident._id.toString()} />
+          <StepsCompletedInTime records={records} />
         </div>
       </div>
 

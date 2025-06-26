@@ -3,12 +3,12 @@
 import dbConnect from "@/lib/dbConnect"
 import { Record } from "@/models/Record"
 import { StepsRecordForm } from "../../stepsForm"
-
+import { Surgery } from "@/models/Surgery"
 
 export default async function EditRecord(props: {params: Promise<{id: string}>}) {
     await dbConnect()
     const params = await props.params;
-    const record = await Record.findById(params.id).populate('surgery')
+    const record = await Record.findById(params.id).populate({path: 'surgery', model: Surgery})
 
 
     if (!record){

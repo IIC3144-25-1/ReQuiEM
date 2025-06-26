@@ -4,10 +4,10 @@ import { Record, IRecord } from '@/models/Record'
 import { Resident } from '@/models/Resident'
 import { Teacher, ITeacher } from '@/models/Teacher'
 import { IUser } from '@/models/User'
-import { ISurgery } from '@/models/Surgery'
+import { ISurgery, Surgery } from '@/models/Surgery'
 import dbConnect from '@/lib/dbConnect'
 import { getCurrentUser } from '../user/getUser'
-import '@/models/Surgery'
+import { User } from '@/models/User'
 
 /**
  * Obtiene los registros de un residente por su ID.
@@ -31,21 +31,26 @@ async function getRecordsByResident(userId: object) {
     // console.log("resident", resident)
     const records = await Record.find({ resident: resident?._id })
         .populate({ 
-            path: 'teacher', 
+            path: 'teacher',
+            model: Teacher,
             populate: {
                 path: 'user',
+                model: User,
                 select: 'name'
             }
         })
         .populate({
             path: 'resident',
+            model: Resident,
             populate: {
                 path: 'user',
+                model: User,
                 select: 'name'
             }
         })
         .populate({
             path: 'surgery',
+            model: Surgery,
             select: 'name',
         })
         .sort({ updatedAt: -1 })
@@ -67,13 +72,16 @@ async function getRecordsByTeacher(userId: object) {
     })
         .populate({
             path: 'resident',
+            model: Resident,
             populate: {
                 path: 'user',
+                model: User,   
                 select: 'name'
             }
         })
         .populate({
             path: 'surgery',
+            model: Surgery,
             select: 'name',
         })
         .sort({ createdAt: -1 })

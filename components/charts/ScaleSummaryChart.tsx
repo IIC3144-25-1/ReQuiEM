@@ -1,5 +1,5 @@
 // app/components/ScaleSummaryChart.tsx
-"use client";
+"use client"
 
 import { useState } from "react";
 import {
@@ -26,10 +26,8 @@ export default function ScaleSummaryChart({
 }) {
   const [selectedSurgery, setSelectedSurgery] = useState(surgeries[0] || "");
 
-  // Solo los 5 últimos registros de la cirugía seleccionada
   const rows = data
-    .filter((r) => r.surgery === selectedSurgery)
-    .slice(-5);
+    .filter((r) => r.surgery === selectedSurgery);
 
   return (
     <Card className="h-full min-h-[350px]">
@@ -37,7 +35,7 @@ export default function ScaleSummaryChart({
         <CardTitle>Últimas escalas resumen</CardTitle>
         <div className="flex items-center justify-between w-full">
           <CardDescription>
-            Cirugía: <b>{selectedSurgery || "–"}</b>
+            Cirugía:
           </CardDescription>
           <Select
             value={selectedSurgery}
@@ -64,7 +62,7 @@ export default function ScaleSummaryChart({
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="p-4">
         <div className="w-full overflow-x-auto">
           <table className="w-full table-fixed text-left">
             <colgroup>
