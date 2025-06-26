@@ -39,7 +39,7 @@ export default function Unauthorized() {
           <Button
             variant="outline"
             className="w-full sm:w-auto"
-            onClick={() => router.back()}
+            onClick={() => router.push('/')}
           >
             Volver
           </Button>
