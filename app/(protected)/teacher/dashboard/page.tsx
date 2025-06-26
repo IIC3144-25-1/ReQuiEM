@@ -14,6 +14,7 @@ import ScaleSummary from "@/components/charts/ScaleSummary";
 import { IRecord, Record } from "@/models/Record";
 import { Surgery } from "@/models/Surgery";
 import { DownloadRecordsButton } from "@/components/records/DownloadRecordsButton";
+import dbConnect from "@/lib/dbConnect";
 
 export default async function TeacherDashboardPage({
   searchParams,
@@ -22,6 +23,7 @@ export default async function TeacherDashboardPage({
     resident: string
   } > ;
 }) {
+    await dbConnect();
     const user = await getCurrentUser();
 
     if (!user) {
@@ -46,7 +48,7 @@ export default async function TeacherDashboardPage({
     const residentId = (await searchParams)?.resident as string;
     const defaultResidentId = residentId || residents[0]?._id.toString();
 
-    await Surgery.init();
+    await Surgery.find({});
     const records = await Record.find({ resident: defaultResidentId })
                                 .populate({ path: "surgery", select: "name" })
                                 .lean<IRecord[]>();

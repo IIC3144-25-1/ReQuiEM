@@ -83,7 +83,7 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Head
         title="Registros de Residentes"
         description="Aquí puedes ver los registros de los residentes de tu área"

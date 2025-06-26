@@ -33,6 +33,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { ModeToggle } from "./ToggleTheme"
 
 interface MenuItem {
   title: string
@@ -70,7 +71,7 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-4 items-center">
             {user ? (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -87,6 +88,7 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
                 <a href={auth.login.url}>{auth.login.title}</a>
               </Button>
             )}
+            <ModeToggle />
           </div>
         </nav>
 
@@ -104,10 +106,13 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
               </SheetTrigger>
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
-                  <SheetTitle>
+                  <SheetTitle className="flex items-center gap-4">
+                    <SheetClose asChild>
                     <Link href="/" className="flex items-center gap-2">
                       <span className="text-lg font-semibold tracking-tighter">{logo.title}</span>
                     </Link>
+                    </SheetClose>
+                    <ModeToggle />
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">

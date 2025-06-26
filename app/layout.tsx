@@ -6,6 +6,7 @@ import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Navbar } from "@/components/navbar/navbar";
 import Script from "next/script";
 import PWAInstallPrompt from "@/components/pwa/PWAInstallPrompt";
+import { ThemeProvider } from "@/components/ui/theme-provider"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,23 +55,30 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/Icon.ico" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ErrorBoundary>
-          <Navbar />
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {children}
-            <PWAInstallPrompt />
-          </div>
-          <Toaster />
-        </ErrorBoundary>
-        <Script src="/service-worker.js" strategy="afterInteractive" />
-      </body>
-    </html>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ErrorBoundary>
+            <Navbar />
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              {children}
+              <PWAInstallPrompt />
+            </div>
+            <Toaster />
+          </ErrorBoundary>
+          <Script src="/service-worker.js" strategy="afterInteractive" />
+      </ThemeProvider>
+    </body>
+  </html>
   );
 }

@@ -38,7 +38,7 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
 
   if (!records || records.length === 0) {
     return (
-      <div className="min-h-screen bg-white flex flex-col relative">
+      <div className="min-h-screen flex flex-col relative">
         <div className="leading-none text-center pt-10">No tienes registros todavía</div>
         <Link href="/resident/new-record">
           <Button className="fixed bottom-20 right-20" >
@@ -87,7 +87,7 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
   const pages = getPages(currentPage, totalPages);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col relative">
+    <div className="min-h-screen bg-background flex flex-col relative">
       <Head
         title="Tus Registros"
         description="Aquí puedes ver y crear nuevos registros"
