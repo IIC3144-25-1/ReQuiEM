@@ -65,7 +65,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
 
         try {
             await completeRecord(formData);
-            toast.info('Registro guardado correctamente')
+            toast.success('Registro guardado correctamente')
             router.push("/resident/records")
         } catch (e) {
             console.error("Error surgery:", e)

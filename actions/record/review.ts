@@ -5,9 +5,9 @@ import { Teacher } from "@/models/Teacher";
 import { Resident } from "@/models/Resident";
 import dbConnect from "@/lib/dbConnect";
 import { emailService } from "@/lib/email/email.service";
-import { auth } from "@/auth";
 import { User } from "@/models/User";
 import { Surgery } from "@/models/Surgery";
+import { getCurrentUser } from "../user/getUser";
 
 export async function reviewRecord(formData: FormData) {
   await dbConnect();
@@ -22,12 +22,13 @@ export async function reviewRecord(formData: FormData) {
   }
 
   // Get current user (teacher) for the email
-  const session = await auth();
-  if (!session?.user) {
-    throw new Error("Unauthorized");
+  const user = await getCurrentUser();
+
+  if (!user) {
+    throw new Error("User not authenticated");
   }
 
-  const teacher = await Teacher.findOne({ user: session.user.id }).populate(
+  const teacher = await Teacher.findOne({ user: user._id }).populate(
     {path: "user", model: User}
   );
   if (!teacher) {
