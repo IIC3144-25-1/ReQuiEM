@@ -111,7 +111,7 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
         ]}
       />
       
-      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:h-125 content-start">
         {pageRecords.map((r) => (
           <Link key={r._id.toString()} href={`/teacher/records/${r._id}`}>
             <RecordCard
