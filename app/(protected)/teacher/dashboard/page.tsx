@@ -73,7 +73,7 @@ export default async function TeacherDashboardPage({
     }
 
     return (
-        <div className="flex flex-col items-center justify-center h-full max-w-4xl mx-auto">
+        <div className="flex flex-col items-center justify-center h-full max-w-4xl mx-auto mb-20">
             
             <Head
                 title="Dashboard"

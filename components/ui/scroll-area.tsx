@@ -73,7 +73,7 @@ function ScrollArea({
       <ScrollBar />
       <ScrollAreaPrimitive.Corner />
       <div
-        className="absolute w-5 sm:w-0 right-0 top-0 h-full bg-linear-to-r to-blue-50 pointer-events-nonel"
+        className="absolute w-5 sm:w-0 right-0 top-0 h-full bg-linear-to-r to-primary/10 pointer-events-nonel"
         style={{
           width: `${fadeWidth}px`,
           minWidth: 0,

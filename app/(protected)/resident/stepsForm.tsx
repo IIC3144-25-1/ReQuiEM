@@ -94,7 +94,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="min-w-3 w-3 h-3 rounded-lg bg-background border border-foreground outline-2 outline-gray-800 z-10"
+                      className="min-w-3 w-3 h-3 rounded-lg bg-background border border-primary-foreground outline-2 outline-primary z-10"
                       check={false}
                     />
                   </FormControl>
