@@ -11,7 +11,7 @@ import { Head } from "@/components/head/Head";
 export default function Area({area} : {area: IArea}) {
   const router = useRouter();
   return (
-    <div>
+    <div className="mb-16">
       <Head
         title={area.name}
         description={area.description}
