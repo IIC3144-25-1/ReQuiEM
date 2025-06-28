@@ -3,64 +3,116 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Info, X } from 'lucide-react';
 
 // Type definition for BeforeInstallPromptEvent
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
-  readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed', platform: string }>;
+  readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
   prompt(): Promise<void>;
+}
+
+function isIOS(): boolean {
+  if (typeof window === 'undefined') return false;
+  return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
 }
 
 export default function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showInstallButton, setShowInstallButton] = useState(false);
+  const [canInstall, setCanInstall] = useState(false);
+  const [showIOSModal, setShowIOSModal] = useState(false);
+  const ios = isIOS();
 
   useEffect(() => {
+    if (ios) return;
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setShowInstallButton(true);
+      setCanInstall(true);
     };
-
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
+  }, [ios]);
 
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-
-    deferredPrompt.prompt();
-    const result = await deferredPrompt.userChoice;
-
-    if (result.outcome === 'accepted') {
-      console.log('PWA instalada');
-    } else {
-      console.log('Instalación cancelada');
+  const handleInstall = async () => {
+    if (ios) {
+      // en iOS abrimos el modal
+      setShowIOSModal(true);
+    } else if (deferredPrompt) {
+      // en Android/PC
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      console.log('Install result:', choice.outcome);
+      setDeferredPrompt(null);
+      setCanInstall(false);
     }
-
-    setDeferredPrompt(null);
-    setShowInstallButton(false);
   };
 
   return (
-    <AnimatePresence>
-      {showInstallButton && (
-        <motion.div
-          className="fixed bottom-6 right-6 z-50"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 40 }}
-          transition={{ duration: 0.3 }}
+    <>
+      <motion.div
+        className="fixed bottom-6 right-6 z-50"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Button
+          onClick={handleInstall}
+          className="shadow-xl"
+          variant="default"
         >
-          <Button
-            onClick={handleInstallClick}
-            className="shadow-xl"
-            variant="default"
+          📲 Instalar App
+        </Button>
+      </motion.div>
+
+      <AnimatePresence>
+        {showIOSModal && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            📲 Instalar App
-          </Button>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            <motion.div
+              className="bg-white dark:bg-background rounded-lg shadow-lg p-6 max-w-sm mx-4 relative"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+            >
+              {/* botón cerrar */}
+              <button
+                onClick={() => setShowIOSModal(false)}
+                className="absolute top-3 right-3 p-1 rounded-full hover:bg-muted"
+              >
+                <X size={20} />
+              </button>
+
+              {/* encabezado con icono y título */}
+              <div className="flex items-center gap-2 mb-4">
+                <Info className="text-blue-500 shrink-0" size={24} />
+                <h3 className="text-lg font-semibold">
+                  Instala la app en tu iPhone
+                </h3>
+              </div>
+
+              {/* lista numerada */}
+              <ol className="list-decimal list-inside text-sm text-muted-foreground mb-6 space-y-1">
+                <li>Toca el botón <b>Compartir</b> (ícono ⬆️)</li>
+                <li>Selecciona <b>“Agregar a pantalla de inicio”</b></li>
+              </ol>
+
+              {/* botón de cierre */}
+              <Button
+                variant="outline"
+                onClick={() => setShowIOSModal(false)}
+                className="w-full"
+              >
+                Entendido
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
