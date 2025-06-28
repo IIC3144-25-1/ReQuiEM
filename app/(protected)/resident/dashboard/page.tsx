@@ -44,7 +44,7 @@ export default async function DashboardPage() {
       />
 
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full mb-8">
         <div className="col-span-1 md:col-span-2">
           <RecordsCompleted records={records} />
         </div>

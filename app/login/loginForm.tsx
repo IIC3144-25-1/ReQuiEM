@@ -82,6 +82,9 @@ export function LoginForm({
               />
               Iniciar sesión con Microsoft
             </Button>
+            <p className="text-xs text-gray-500 mt-1 text-center">
+              Solo cuentas personales de Microsoft (no institucionales).
+            </p>
           </form>
         </CardContent>
       </Card>

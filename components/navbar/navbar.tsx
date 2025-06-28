@@ -42,7 +42,7 @@ export const Navbar = async () => {
 
   if (isAdmin || role === "teacher" || role === "resident") {
     menuToRender.push({
-      title: "Area",
+      title: "Área",
       url: "/area",
     })
   }

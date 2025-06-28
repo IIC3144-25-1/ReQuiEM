@@ -12,11 +12,11 @@ export default async function ProfilePage() {
     redirect("/");
   }
   const role = await getRoleAndArea(user._id.toString())
-  if (!user || !role || !role.area) return <div>No autorizado</div>;
+  if (!user) return <div>No autorizado</div>;
   
   return (
     <div className="space-y-6 flex flex-col sm:w-1/2 mx-auto mt-10">
-      <Profile user={user} role={role}/>
+      {role && role.area && <Profile user={user} role={role} />}
       <div className="flex mt-10 space-x-2 justify-center">
         <form action={logout} className="w-1/2 sm:w-1/3">
           <Button type="submit" variant="outline" className="w-full">

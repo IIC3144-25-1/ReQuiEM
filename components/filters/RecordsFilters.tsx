@@ -10,7 +10,7 @@ export function RecordsFilterInput({ search, setSearch, searchPlaceholder } :
       placeholder={searchPlaceholder}
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full "
+      className="w-full text-sm"
     />
   );
 }
@@ -21,7 +21,7 @@ export function RecordsFilterSelect({ statusFilter, setStatusFilter, statusLabel
   
   return (
     <Select onValueChange={setStatusFilter} value={statusFilter}>
-      <SelectTrigger className="w-full min-w-40">
+      <SelectTrigger className="w-full min-w-40 text-sm">
         <span>{statusLabels[statusFilter] || "Filtrar por estado"}</span>
       </SelectTrigger>
       <SelectContent>

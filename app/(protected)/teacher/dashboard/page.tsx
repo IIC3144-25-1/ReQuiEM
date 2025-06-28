@@ -88,7 +88,7 @@ export default async function TeacherDashboardPage({
             />
 
             <Suspense fallback={<Loading />}>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full mb-8">
                     <div className="col-span-1 md:col-span-2">
                         <RecordsCompleted records={records} />
                     </div>

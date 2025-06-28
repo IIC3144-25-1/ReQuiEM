@@ -126,7 +126,7 @@ export default function TeacherRecordsClient({ records }: { records: RecordType[
         ))}
       </div>
 
-      <Pagination className="mt-8">
+      <Pagination className="mt-8 mb-16">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious

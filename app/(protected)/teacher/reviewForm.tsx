@@ -227,7 +227,11 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
                 max={10}
                 min={4}
                 step={1}
-                labels={["bajo espectativas", "acuerdo a espectativas", "sobre espectativas"]}
+                labels={[
+                  "Desempeño menor al esperado para su año y conocimientos",
+                  "Desempeño acorde a lo esperado para su año y conocimientos",
+                  "Desempeño superior a lo esperado para su año y conocimientos"
+                ]}
                 defaultValue={[field.value]}
                 onValueChange={(vals) => {
                   field.onChange(vals[0]);

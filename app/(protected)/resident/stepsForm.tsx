@@ -119,7 +119,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
                         max={10}
                         min={4}
                         step={1}
-                        labels={["bajo espectativas", "acuerdo a espectativas", "sobre espectativas"]}
+                        labels={["bajo expectativas", "acuerdo a expectativas", "sobre expectativas"]}
                         defaultValue={[field.value]}
                         onValueChange={(vals) => {
                               field.onChange(vals[0]);

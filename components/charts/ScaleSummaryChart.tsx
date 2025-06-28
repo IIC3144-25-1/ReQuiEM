@@ -33,7 +33,14 @@ export default function ScaleSummaryChart({
   return (
     <Card className="h-full min-h-[350px]">
       <CardHeader>
-        <CardTitle>Últimas escalas resumen</CardTitle>
+        <CardTitle>Últimos resultados de escalas resumen</CardTitle>
+        <CardDescription>
+          <b>A</b>: Mayor <b>dependencia</b> en la cirugía.
+        </CardDescription>
+          
+        <CardDescription>
+          <b>E</b>: Mayor <b>independencia</b> en la cirugía.
+        </CardDescription>
         <div className="flex items-center justify-between w-full">
           <CardDescription>
             Cirugía:
@@ -74,7 +81,7 @@ export default function ScaleSummaryChart({
               <thead>
                 <tr>
                   <th className="pb-2">Fecha</th>
-                  <th className="pb-2">Escala</th>
+                  <th className="pb-2">Escala (A-E)</th>
                 </tr>
               </thead>
               <tbody>
