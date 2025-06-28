@@ -20,7 +20,7 @@ export default function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [canInstall, setCanInstall] = useState(false);
   const [showIOSModal, setShowIOSModal] = useState(false);
-  const ios = isIOS();
+  let ios = isIOS();
 
   useEffect(() => {
     let ios = isIOS();
