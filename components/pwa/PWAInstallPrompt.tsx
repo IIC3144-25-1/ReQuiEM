@@ -20,10 +20,9 @@ export default function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [canInstall, setCanInstall] = useState(false);
   const [showIOSModal, setShowIOSModal] = useState(false);
-  let ios = isIOS();
+  const ios = isIOS();
 
   useEffect(() => {
-    let ios = isIOS();
     if (ios) return;
     const handler = (e: Event) => {
       console.log('beforeinstallprompt event fired');
@@ -37,7 +36,6 @@ export default function PWAInstallPrompt() {
   }, [ios]);
 
   const handleInstall = async () => {
-    let ios = isIOS();
     console.log('Install button clicked');
     console.log('Deferred prompt:', deferredPrompt);
     console.log('Can install:', canInstall);
