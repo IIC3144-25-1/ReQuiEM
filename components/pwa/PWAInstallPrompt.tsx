@@ -36,10 +36,8 @@ export default function PWAInstallPrompt() {
 
   const handleInstall = async () => {
     if (ios) {
-      // en iOS abrimos el modal
       setShowIOSModal(true);
     } else if (deferredPrompt) {
-      // en Android/PC
       deferredPrompt.prompt();
       const choice = await deferredPrompt.userChoice;
       console.log('Install result:', choice.outcome);
@@ -79,7 +77,6 @@ export default function PWAInstallPrompt() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
             >
-              {/* botón cerrar */}
               <button
                 onClick={() => setShowIOSModal(false)}
                 className="absolute top-3 right-3 p-1 rounded-full hover:bg-muted"
@@ -87,7 +84,6 @@ export default function PWAInstallPrompt() {
                 <X size={20} />
               </button>
 
-              {/* encabezado con icono y título */}
               <div className="flex items-center gap-2 mb-4">
                 <Info className="text-blue-500 shrink-0" size={24} />
                 <h3 className="text-lg font-semibold">
@@ -95,13 +91,11 @@ export default function PWAInstallPrompt() {
                 </h3>
               </div>
 
-              {/* lista numerada */}
               <ol className="list-decimal list-inside text-sm text-muted-foreground mb-6 space-y-1">
                 <li>Toca el botón <b>Compartir</b> (ícono ⬆️)</li>
                 <li>Selecciona <b>“Agregar a pantalla de inicio”</b></li>
               </ol>
 
-              {/* botón de cierre */}
               <Button
                 variant="outline"
                 onClick={() => setShowIOSModal(false)}
