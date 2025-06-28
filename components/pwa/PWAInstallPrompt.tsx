@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Info, X } from 'lucide-react';
 
-// Type definition for BeforeInstallPromptEvent
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
@@ -24,17 +23,25 @@ export default function PWAInstallPrompt() {
   const ios = isIOS();
 
   useEffect(() => {
+    let ios = isIOS();
     if (ios) return;
     const handler = (e: Event) => {
+      console.log('beforeinstallprompt event fired');
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setCanInstall(true);
     };
+    console.log('Adding beforeinstallprompt event listener');
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, [ios]);
 
   const handleInstall = async () => {
+    let ios = isIOS();
+    console.log('Install button clicked');
+    console.log('Deferred prompt:', deferredPrompt);
+    console.log('Can install:', canInstall);
+    console.log('iOS:', ios);
     if (ios) {
       setShowIOSModal(true);
     } else if (deferredPrompt) {
