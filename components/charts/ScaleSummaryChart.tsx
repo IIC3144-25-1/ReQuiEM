@@ -34,13 +34,6 @@ export default function ScaleSummaryChart({
     <Card className="h-full min-h-[350px]">
       <CardHeader>
         <CardTitle>Últimos resultados de escalas resumen</CardTitle>
-        <CardDescription>
-          <b>A</b>: Mayor <b>dependencia</b> en la cirugía.
-        </CardDescription>
-          
-        <CardDescription>
-          <b>E</b>: Mayor <b>independencia</b> en la cirugía.
-        </CardDescription>
         <div className="flex items-center justify-between w-full">
           <CardDescription>
             Cirugía:
@@ -72,7 +65,7 @@ export default function ScaleSummaryChart({
 
       <CardContent className="p-4">
         <div className="w-full overflow-x-auto">
-          <ScrollArea className="h-70 w-full" scrollToLabelId="focus">
+          <ScrollArea className="h-60 w-full" scrollToLabelId="focus">
             <table className="w-full table-fixed text-left">
               <colgroup>
                 <col className="w-1/2" />

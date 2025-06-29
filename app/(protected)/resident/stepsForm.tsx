@@ -151,7 +151,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
           )}
         />
         
-        <Button type="submit" className="ml-auto w-1/2">Guardar registro</Button>
+        <Button type="submit" className="ml-auto w-1/2" disabled={form.formState.isSubmitting}>Guardar registro</Button>
       </form>
     </Form>
   )
