@@ -65,7 +65,7 @@ export default function ScaleSummaryChart({
 
       <CardContent className="p-4">
         <div className="w-full overflow-x-auto">
-          <ScrollArea className=" w-full" scrollToLabelId="focus">
+          <ScrollArea className="h-60 w-full" scrollToLabelId="focus">
             <table className="w-full table-fixed text-left">
               <colgroup>
                 <col className="w-1/2" />
