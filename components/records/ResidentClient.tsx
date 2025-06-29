@@ -137,7 +137,7 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
 
       {/* PAGINACIÓN */}
       {totalPages > 1 && (
-        <Pagination className="mt-8 mb-16">
+        <Pagination className="mt-8 mb-30">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

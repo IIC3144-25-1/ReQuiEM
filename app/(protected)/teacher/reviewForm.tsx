@@ -8,7 +8,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from "@/components/ui/select"
 import { Label } from "@radix-ui/react-label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -131,11 +131,13 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
           <div className="mr-4 font-semibold flex flex-col">
             <Label>Cirugía:</Label>
             <Label>Residente:</Label>
+            <Label>Paciente:</Label>
             <Label>Fecha:</Label>
           </div>
           <div className="flex flex-col">
             <Label>{record.surgery.name}</Label>
             <Label>{record.resident.user.name}</Label>
+            <Label>{record.patientId}</Label>
             <Label>{format(record.date, "d '/' MMM '/' yyyy ' a las ' HH:mm", { locale: es })}</Label>
           </div>
         </div>
@@ -222,6 +224,7 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
           render={({ field }) => (
           <FormItem className="flex flex-col items-start space-x-3 space-y-0 rounded-md">
             <FormLabel className="text-lg font-semibold mb-2 mt-4">Juicio Global</FormLabel>
+            <FormDescription className="mb-2">Califica cómo crees que fue el desempeño del residente</FormDescription>
             <FormControl>
               <Slider
                 max={10}
@@ -292,7 +295,7 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
           )}
         />
         
-        <Button type="submit" className="ml-auto w-1/2">Guardar Corrección</Button>
+        <Button type="submit" className="ml-auto w-1/2" disabled={form.formState.isSubmitting}>Guardar Corrección</Button>
       </form>
     </Form>
   )
