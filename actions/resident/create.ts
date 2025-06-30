@@ -23,32 +23,35 @@ export async function createResident(formData: FormData): Promise<IResident> {
   // 2.1) Conexión a BD
   await dbConnect();
 
-  // 2.2) Extraer email del form
-  const email = formData.get("email")?.toString();
+  // --- extraemos name además de email y areaId
+  const name = formData.get("name")?.toString()?.trim();
+  const email = formData.get("email")?.toString()?.trim();
+  const areaId = formData.get("areaId")?.toString();
+
   if (!email) {
     throw new Error("Email is required to create or link User");
   }
-
+  if (!areaId) {
+    throw new Error("Area is required to create or link User");
+  }
+  
   // 2.3) Buscar User existente por email
   let user = await User.findOne({ email }).exec();
 
   if (!user) {
-    // 2.4) Si no existe, crear nuevo User
+    // 2.4) Si no existe, creamos nuevo User (createUser lee name del formData)
     user = await createUser(formData);
     if (!user || !user._id) {
       throw new Error("Failed to create new User");
     }
+  } else if (name && user.name !== name) {
+    // 2.4b) Si ya existe pero el nombre cambió, lo actualizamos
+    user.name = name;
+    await user.save();
   }
 
   // 2.5) Obtener el userId para asignar al Resident
   const userId = user._id.toString();
-
-  // 2.6) Recopilar el area
-  const areaId = formData.get("areaId")?.toString();
-
-  if (!areaId) {
-    throw new Error("Area is required to create or link User");
-  }
 
   // 2.8) Raw payload para Resident
   const raw: ResidentRaw = {
@@ -61,7 +64,6 @@ export async function createResident(formData: FormData): Promise<IResident> {
 
   // 4) Crear documento Mongoose
   const resident = await Resident.create(data);
-
 
   // Añadimos nuevo residente al area
   await addResidentToArea(areaId, resident._id.toString());
@@ -76,20 +78,20 @@ export async function createResident(formData: FormData): Promise<IResident> {
   try {
     await emailService.sendNewRoleAssignedEmail(email, {
       user: {
-        id: user._id.toString(),
-        name: user.name || email.split("@")[0],
+        id:    user._id.toString(),
+        name:  user.name || email.split("@")[0],
         email: user.email,
         image: user.image,
       },
       role: "resident",
       assignedBy: {
-        name: session.user.name || "Administrador",
+        name:  session.user.name || "Administrador",
         email: session.user.email || "admin@surgeryskills.cl",
       },
     });
   } catch (error) {
     console.error("Error sending resident assignment email:", error);
-    // Don't throw the error, as the resident was created successfully
+    // No disparamos error porque el residente ya fue creado
   }
 
   // 5) Devolver POJO serializable

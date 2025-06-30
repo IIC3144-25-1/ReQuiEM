@@ -27,6 +27,7 @@ import { getResidentByID } from '@/actions/resident/getByID'
 
 // Esquema Zod para validar email y lista de profesores
 const residentFormSchema = z.object({
+  name:  z.string().min(1, 'El nombre es requerido'),
   email: z.string().email('Email inválido'),
   area: z.string().min(1, 'El area es requerida'),
 })
@@ -39,7 +40,7 @@ export function ResidentForm({ id, areas}: Props) {
   const [loading, setLoading] = useState(true)
   const form = useForm<ResidentFormValues>({
     resolver: zodResolver(residentFormSchema),
-    defaultValues: { email: '', area: '' },
+    defaultValues: { name: '', email: '', area: '' },
   })
 
   // Cargar datos iniciales: lista de profesores y, si hay ID, datos del residente
@@ -50,6 +51,7 @@ export function ResidentForm({ id, areas}: Props) {
         if (id && id !== 'new') {
           const resident = await getResidentByID(id)
           form.reset({
+            name: resident?.user.name || '',
             email: resident?.user.email || '',
             area: resident?.area?.toString() || '',
           })
@@ -68,6 +70,7 @@ export function ResidentForm({ id, areas}: Props) {
   async function onSubmit(values: ResidentFormValues) {
     try {
       const formData = new FormData()
+      formData.append('name', values.name)
       formData.append('email', values.email);
       formData.append('areaId', values.area);
 
@@ -95,6 +98,19 @@ export function ResidentForm({ id, areas}: Props) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nombre del Residente</FormLabel>
+              <FormControl>
+                <Input placeholder="Juan Pérez" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {/* Email del residente */}
         <FormField
           control={form.control}
