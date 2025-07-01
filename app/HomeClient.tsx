@@ -17,7 +17,7 @@ export const HomeClient: React.FC<HomeClientProps> = ({ user }) => {
       </h1>
 
       <p className="text-gray-700 text-lg md:text-xl max-w-xl mb-8">
-        Una plataforma para registrar procedimientos quirúrgicos y facilitar la retroalimentación entre doctores e internos de medicina.
+        Una plataforma para registrar procedimientos quirúrgicos y facilitar la retroalimentación entre doctores y residentes de especialidades quirúrgicas.
       </p>
 
       <div className="flex flex-row items-center justify-center gap-4 mt-6">
