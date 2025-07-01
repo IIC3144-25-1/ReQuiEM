@@ -28,9 +28,10 @@ export async function reviewRecord(formData: FormData) {
     throw new Error("User not authenticated");
   }
 
-  const teacher = await Teacher.findOne({ user: user._id }).populate(
-    {path: "user", model: User}
-  );
+  const teacher = await Teacher.findOne({ user: user._id }).populate({
+    path: "user",
+    model: User,
+  });
   if (!teacher) {
     throw new Error("Teacher not found");
   }
@@ -38,7 +39,7 @@ export async function reviewRecord(formData: FormData) {
   // Update record
   const record = await Record.findById(recordId).populate({
     path: "surgery",
-    model: Surgery
+    model: Surgery,
   });
   if (!record) {
     throw new Error("Record not found");
@@ -95,13 +96,13 @@ export async function reviewRecord(formData: FormData) {
   // Get resident info for the email
   const resident = await Resident.findById(record.resident).populate({
     path: "user",
-    model: User
+    model: User,
   });
   if (!resident?.user) {
     console.error("Could not find resident for email notification");
     return record._id.toString();
   }
-  
+
   // Send email notification to resident
   try {
     await emailService.sendRecordCorrectedEmail(resident.user.email, {
@@ -113,7 +114,7 @@ export async function reviewRecord(formData: FormData) {
       },
       record: {
         id: record._id.toString(),
-        title: record.surgery.name.toString(), // You might want to populate this
+        title: record.surgery.name,
         teacherName: teacher.user.name || "Profesor",
         teacherEmail: teacher.user.email,
         correctedAt: new Date().toISOString(),
