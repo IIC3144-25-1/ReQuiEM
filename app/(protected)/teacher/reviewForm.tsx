@@ -8,7 +8,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from "@/components/ui/select"
 import { Label } from "@radix-ui/react-label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -49,7 +49,7 @@ export const sumaryScalesList = [
 export const scoreList = {
   'a': 'No realizado',
   'b': 'Realizado parcialmente, requiere corrección',
-  'c': 'Realizado completo, de forma independiente',
+  'c': 'Realizado completo de forma independiente',
   'n/a': 'No aplica'
 }
 
@@ -131,18 +131,20 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
           <div className="mr-4 font-semibold flex flex-col">
             <Label>Cirugía:</Label>
             <Label>Residente:</Label>
+            <Label>Paciente:</Label>
             <Label>Fecha:</Label>
           </div>
           <div className="flex flex-col">
             <Label>{record.surgery.name}</Label>
             <Label>{record.resident.user.name}</Label>
+            <Label>{record.patientId}</Label>
             <Label>{format(record.date, "d '/' MMM '/' yyyy ' a las ' HH:mm", { locale: es })}</Label>
           </div>
         </div>
 
         <FormLabel className="text-lg font-semibold mt-4">Pasos Realizados por el Residente</FormLabel>
         <div className="flex flex-col space-y-6 relative mt-0">
-          <div className="h-23/24 w-px border border-gray-800 bg-gray-800 absolute ml-[5px] top-31/64 -translate-y-1/2 z-0"></div>
+          <div className="h-23/24 w-px border border-primary bg-primary absolute ml-[5px] top-31/64 -translate-y-1/2 z-0"></div>
           {stepFields.map((field, index) => (
             <FormField
               key={field.id}
@@ -150,17 +152,20 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
               name={`steps.${index}.teacherDone`}
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-2 space-y-0 rounded-md">
+
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={value => {
-                        field.onChange(value);
-                        if (value === true) handleValueChange("c", index)
-                        else if (value === false) handleValueChange("a", index)
-                      }}
-                      className="min-w-3 w-3 h-3 rounded-lg bg-gray-100 border border-white outline-2 outline-gray-800 z-10"
-                      check={false}
-                    />
+                    {/* <div className="border h-3  p-0"> */}
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={value => {
+                          field.onChange(value);
+                          if (value === true) handleValueChange("c", index)
+                          else if (value === false) handleValueChange("a", index)
+                        }}
+                        className="min-w-3 w-3 h-3 rounded-lg bg-background border border-primary-foreground outline-2 outline-primary z-10"
+                        check={false}
+                      />
+                    {/* </div> */}
                   </FormControl>
                   <Select onValueChange={value => handleValueChange(value, index)} disabled={!field.value}>
                     <SelectTrigger className="min-w-[30px] max-h-[30px] p-0 -mt-2 flex justify-center items-center" arrow={false}>
@@ -219,12 +224,17 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
           render={({ field }) => (
           <FormItem className="flex flex-col items-start space-x-3 space-y-0 rounded-md">
             <FormLabel className="text-lg font-semibold mb-2 mt-4">Juicio Global</FormLabel>
+            <FormDescription className="mb-2">Califica cómo crees que fue el desempeño del residente</FormDescription>
             <FormControl>
               <Slider
                 max={10}
                 min={4}
                 step={1}
-                labels={["bajo espectativas", "acuerdo a espectativas", "sobre espectativas"]}
+                labels={[
+                  "Desempeño menor al esperado para su año y conocimientos",
+                  "Desempeño acorde a lo esperado para su año y conocimientos",
+                  "Desempeño superior a lo esperado para su año y conocimientos"
+                ]}
                 defaultValue={[field.value]}
                 onValueChange={(vals) => {
                   field.onChange(vals[0]);
@@ -252,7 +262,7 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
                   {sumaryScalesList.map((scale) => (
                     <FormItem key={scale.value} className="flex items-start space-x-3 space-y-0">
                       <FormControl>
-                        <RadioGroupItem value={scale.value} className="border-gray-700" />
+                        <RadioGroupItem value={scale.value} className="border-primary/70" />
                       </FormControl>
                       <FormLabel className="font-normal flex items-start">
                         <p className="font-bold mr-1">{scale.value}</p>
@@ -285,7 +295,7 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
           )}
         />
         
-        <Button type="submit" className="ml-auto w-1/2">Guardar Corrección</Button>
+        <Button type="submit" className="ml-auto w-1/2" disabled={form.formState.isSubmitting}>Guardar Corrección</Button>
       </form>
     </Form>
   )

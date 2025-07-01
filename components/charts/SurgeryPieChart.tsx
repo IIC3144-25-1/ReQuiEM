@@ -42,8 +42,8 @@ export function SurgeryPieChart({ data }: { data: { name: string; value: number 
   return (
     <Card className="flex flex-col h-full min-h-[350px]">
       <CardHeader className="items-center">
-        <CardTitle>Cirugias realizadas</CardTitle>
-        <CardDescription>Cirugías por tipo y total</CardDescription>
+        <CardTitle>Cantidad de cirugías realizadas</CardTitle>
+        <CardDescription>Para las distintas cirugías y el total</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
         <ChartContainer

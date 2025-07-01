@@ -16,6 +16,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 export default function ScaleSummaryChart({
   surgeries,
@@ -32,7 +33,7 @@ export default function ScaleSummaryChart({
   return (
     <Card className="h-full min-h-[350px]">
       <CardHeader>
-        <CardTitle>Últimas escalas resumen</CardTitle>
+        <CardTitle>Últimos resultados de escalas resumen</CardTitle>
         <div className="flex items-center justify-between w-full">
           <CardDescription>
             Cirugía:
@@ -64,33 +65,36 @@ export default function ScaleSummaryChart({
 
       <CardContent className="p-4">
         <div className="w-full overflow-x-auto">
-          <table className="w-full table-fixed text-left">
-            <colgroup>
-              <col className="w-1/2" />
-              <col className="w-1/2" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th className="pb-2">Fecha</th>
-                <th className="pb-2">Escala</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row, idx) => (
-                <tr key={idx} className="border-t">
-                  <td className="py-2">{row.date}</td>
-                  <td className="py-2">{row.scale}</td>
-                </tr>
-              ))}
-              {rows.length === 0 && (
+          <ScrollArea className="h-60 w-full" scrollToLabelId="focus">
+            <table className="w-full table-fixed text-left">
+              <colgroup>
+                <col className="w-1/2" />
+                <col className="w-1/2" />
+              </colgroup>
+              <thead>
                 <tr>
-                  <td colSpan={2} className="py-2 text-center italic">
-                    No hay registros disponibles
-                  </td>
+                  <th className="pb-2">Fecha</th>
+                  <th className="pb-2">Escala (A-E)</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {rows.map((row, idx) => (
+                  <tr key={idx} className="border-t">
+                    <td className="py-2">{row.date}</td>
+                    <td className="py-2">{row.scale}</td>
+                  </tr>
+                ))}
+                {rows.length === 0 && (
+                  <tr>
+                    <td colSpan={2} className="py-2 text-center italic">
+                      No hay registros disponibles
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
         </div>
       </CardContent>
     </Card>

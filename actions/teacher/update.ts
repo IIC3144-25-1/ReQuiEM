@@ -13,6 +13,8 @@ const updateTeacherSchema = z.object({
   user: z.string().min(1, 'User ID is required'),
   email: z.string().email('Email inválido'),
   area: z.string().min(1, 'Área es requerida'),
+  name: z.string().min(1, 'Nombre es requerido'),
+  admin: z.boolean(),
 })
 
 // Función para actualizar un profesor y su usuario
@@ -24,13 +26,19 @@ export async function updateTeacher(formData: FormData): Promise<ITeacher> {
     _id: formData.get('_id')?.toString() || '',
     user: formData.get('user')?.toString() || '',
     email: formData.get('email')?.toString() || '',
+    name: formData.get('name')?.toString() || '',
     area: formData.get('area')?.toString() || '',
+    admin: formData.get('admin') === 'true',
   }
 
   const data = updateTeacherSchema.parse(raw)
 
   // Actualizar el email del usuario
-  await User.findByIdAndUpdate(data.user, { email: data.email })
+  await User.findByIdAndUpdate(
+    data.user,
+    { name: data.name, email: data.email, admin: data.admin },
+    { new: true }
+  )
 
   // Actualizar el Teacher (user y área)
   const updatedTeacher = await Teacher.findByIdAndUpdate(

@@ -34,6 +34,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { ModeToggle } from "./ToggleTheme"
+import PWAInstallPrompt from "../pwa/PWAInstallPrompt"
 
 interface MenuItem {
   title: string
@@ -105,6 +106,7 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
                 </Button>
               </SheetTrigger>
               <SheetContent className="overflow-y-auto">
+                {/* <SheetContent className="relative flex h-full flex-col overflow-y-auto"> */}
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-4">
                     <SheetClose asChild>
@@ -137,6 +139,9 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
                       </SheetClose>
                     )}
                   </div>
+                </div>
+                <div className="pt-4 p-4 mt-auto">
+                  <PWAInstallPrompt />
                 </div>
               </SheetContent>
             </Sheet>

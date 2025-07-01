@@ -120,15 +120,15 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
           </Link>
         ]}
       />
-      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:h-125 content-start">
         {pageRecords.map((r) => (
           <Link key={r._id.toString()} href={`/resident/records/${r._id}`}>
             <RecordCard
-              surgery={isISurgery(r.surgery) ? r.surgery.name : r.surgery.toString()}
+              surgery={isISurgery(r.surgery) ? r.surgery.name : "Sin cirugía"}
               date={format(new Date(r.date), "dd/MM/yy")}
               time={format(new Date(r.date), "HH:mm")}
               counterpartRole="Profesor"
-              counterpart={isITeacher(r.teacher) && isIUser(r.teacher.user) ? (r.teacher.user.name || "") : r.teacher.toString()}
+              counterpart={isITeacher(r.teacher) && isIUser(r.teacher.user) ? (r.teacher.user.name || "") : "Sin profesor"}
               dot={r.status === "corrected"}
             />
           </Link>
@@ -137,7 +137,7 @@ export default function ResidentRecordsClient({ records }: { records: RecordType
 
       {/* PAGINACIÓN */}
       {totalPages > 1 && (
-        <Pagination className="mt-8 mb-4">
+        <Pagination className="mt-8 mb-30">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

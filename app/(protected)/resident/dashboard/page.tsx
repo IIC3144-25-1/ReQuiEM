@@ -31,7 +31,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8 items-center justify-center h-full max-w-4xl mx-auto">
+    <div className="flex flex-col gap-8 items-center justify-center h-full max-w-4xl mx-auto mb-20">
       <Head
         title="Dashboard"
         description="Aquí puedes ver estadísticas y gráficos de tu desempeño como residente"
@@ -44,7 +44,7 @@ export default async function DashboardPage() {
       />
 
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full mb-8">
         <div className="col-span-1 md:col-span-2">
           <RecordsCompleted records={records} />
         </div>

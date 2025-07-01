@@ -94,7 +94,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="min-w-3 w-3 h-3 rounded-lg bg-background border border-foreground outline-2 outline-gray-800 z-10"
+                      className="min-w-3 w-3 h-3 rounded-lg bg-background border border-primary-foreground outline-2 outline-primary z-10"
                       check={false}
                     />
                   </FormControl>
@@ -119,7 +119,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
                         max={10}
                         min={4}
                         step={1}
-                        labels={["bajo espectativas", "acuerdo a espectativas", "sobre espectativas"]}
+                        labels={["bajo expectativas", "acuerdo a expectativas", "sobre expectativas"]}
                         defaultValue={[field.value]}
                         onValueChange={(vals) => {
                               field.onChange(vals[0]);
@@ -151,7 +151,7 @@ export function StepsRecordForm({record} : {record: IRecord}) {
           )}
         />
         
-        <Button type="submit" className="ml-auto w-1/2">Guardar registro</Button>
+        <Button type="submit" className="ml-auto w-1/2" disabled={form.formState.isSubmitting}>Guardar registro</Button>
       </form>
     </Form>
   )

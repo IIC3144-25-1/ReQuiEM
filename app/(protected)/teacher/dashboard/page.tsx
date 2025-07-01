@@ -73,7 +73,7 @@ export default async function TeacherDashboardPage({
     }
 
     return (
-        <div className="flex flex-col items-center justify-center h-full max-w-4xl mx-auto">
+        <div className="flex flex-col items-center justify-center h-full max-w-4xl mx-auto mb-20">
             
             <Head
                 title="Dashboard"
@@ -88,7 +88,7 @@ export default async function TeacherDashboardPage({
             />
 
             <Suspense fallback={<Loading />}>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full mb-8">
                     <div className="col-span-1 md:col-span-2">
                         <RecordsCompleted records={records} />
                     </div>
