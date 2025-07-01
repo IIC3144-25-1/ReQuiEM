@@ -8,7 +8,7 @@ export default async function Home() {
       </h1>
 
       <p className=" text-lg md:text-xl max-w-xl">
-        Una plataforma para registrar procedimientos quirúrgicos y facilitar la retroalimentación entre doctores e internos de medicina.
+        Una plataforma para registrar procedimientos quirúrgicos y facilitar la retroalimentación entre doctores y residentes de especialidades quirúrgicas.
       </p>
     </main>
   )
