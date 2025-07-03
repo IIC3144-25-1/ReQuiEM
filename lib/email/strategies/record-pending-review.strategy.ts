@@ -13,7 +13,7 @@ export class RecordPendingReviewStrategy implements EmailStrategy {
       recordTitle: data.record.title,
       studentName: data.record.studentName,
       recordDate: new Date(data.record.createdAt).toLocaleDateString("es-CL"),
-      platformName: "SurgerySkills",
+      platformName: "SurgiSkills",
       platformDescription: "Sistema de Registro y evaluación de cirugía",
       universityName: "Universidad Católica de Chile",
       recordURL: `${process.env.NEXT_PUBLIC_APP_URL}`,

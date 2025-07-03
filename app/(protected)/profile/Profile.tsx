@@ -32,9 +32,11 @@ export default async function Profile({user, role} : {user: IUser; role :{ isAdm
             </div>
           </div>
         </div>
-        <div className="flex">
-          <p className="font-semibold mr-1">{role.strRole}</p> del área <p className="font-semibold ml-1">{role.area}</p>
-        </div>
+        {role && role.area && role.strRole && (
+          <div className="flex">
+            <p className="font-semibold mr-1">{role.strRole}</p> del área <p className="font-semibold ml-1">{role.area}</p>
+          </div>
+        )}
       </div>
     </div>
   )

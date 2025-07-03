@@ -86,7 +86,7 @@ export async function createResident(formData: FormData): Promise<IResident> {
       role: "resident",
       assignedBy: {
         name:  session.user.name || "Administrador",
-        email: session.user.email || "admin@surgeryskills.cl",
+        email: session.user.email || "admin@SurgiSkills.cl",
       },
     });
   } catch (error) {
