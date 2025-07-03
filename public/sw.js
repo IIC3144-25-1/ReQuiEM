@@ -1,4 +1,4 @@
-const CACHE_NAME = "SurgerySkills-v1";
+const CACHE_NAME = "SurgiSkills-v1";
 const URLS_TO_CACHE = [
   '/dashboard/',
   '/admin/',

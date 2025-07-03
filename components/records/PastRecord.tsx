@@ -26,10 +26,10 @@ const statusLabel = {
 
 export default function PastRecord({ record, side }: { record: IRecord; side: string }) {
     return (
-      <div className="flex flex-col min-h-screen w-full justify-center mx-auto sm:p-4 sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
+      <div className="flex flex-col min-h-screen w-full justify-center mx-auto p-0 sm:p-4 sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
   
         <Card className="relative">
-          <CardHeader>
+          <CardHeader className="px-3 sm:px-6">
             <Head
               title={record.surgery?.name || "Cirugía no especificada"}
               description={`Registro de cirugía realizada por ${record.resident?.user?.name}`}
@@ -64,7 +64,7 @@ export default function PastRecord({ record, side }: { record: IRecord; side: st
               }
             />
           </CardHeader>
-          <CardContent >
+          <CardContent className="px-3 sm:px-6">
     
             <hr className="my-4 mb-4" />
             <div className="flex flex-row justify-between items-start mb-4 sm:mr-10">
@@ -88,11 +88,11 @@ export default function PastRecord({ record, side }: { record: IRecord; side: st
                 
             
               {statusLabel[record.status] === "Corregido" ? (
-                <Badge variant="success" className="absolute md:static capitalize top-10 sm:top-2 right-10 sm:right-25">
+                <Badge variant="success" className="absolute md:static capitalize top-5 sm:top-2 right-5 sm:right-25">
                   {statusLabel[record.status] || "Estado desconocido"}
                 </Badge>
               ) : (
-                <Badge variant="yellow" className="absolute md:static capitalize top-10 sm:top-2 right-10 sm:right-25">
+                <Badge variant="yellow" className="absolute md:static capitalize top-5 sm:top-2 right-5 sm:right-25">
                   {statusLabel[record.status] || "Estado desconocido"}
                 </Badge>
               )}

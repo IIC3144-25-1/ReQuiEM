@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartConfig } from "@/components/ui/chart";
-import { ResponsiveContainer, LineChart, Line, XAxis, CartesianGrid, LabelList } from "recharts";
+import { ResponsiveContainer, LineChart, Line, XAxis, CartesianGrid, YAxis } from "recharts";
 import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import {
   Select,
@@ -13,10 +13,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+
 const chartConfig = {
   percent: {
-    label: "Porcentaje completado:",
+    label: "Porcentaje completado: ",
     color: "var(--chart-4)",
+
   }
 } satisfies ChartConfig;
 
@@ -24,7 +26,7 @@ export default function StepsCompletedChart({
   data,
   surgeries,
 }: {
-  data: { month: string; percent: number; surgery: string }[];
+  data: { date: string; percent: number; surgery: string }[];
   surgeries: string[];
 }) {
   const [selectedSurgery, setSelectedSurgery] = useState(surgeries[0] || "");
@@ -38,7 +40,7 @@ export default function StepsCompletedChart({
         <CardTitle>Porcentaje de pasos completados</CardTitle>
         <div className="flex items-center justify-between">
           <CardDescription>
-            Para la cirugía <b>{selectedSurgery}</b> por mes
+            Para la cirugía <b>{selectedSurgery}</b>
           </CardDescription>
           <Select value={selectedSurgery} onValueChange={setSelectedSurgery}>
             <SelectTrigger
@@ -63,12 +65,18 @@ export default function StepsCompletedChart({
             <LineChart data={filteredData} margin={{ top: 30, right: 30, left: 30 }}>
               <CartesianGrid vertical={false} />
               <XAxis
-                dataKey="month"
+                dataKey="date"
                 tickFormatter={(value) => {
-                  const [year, month] = value.split("-");
-                  return `${month}/${year}`;
+                  const [, month, day] = value.split("-");
+                  return `${day}/${month}`;
                 }}
                 tick={{ fontSize: 12 }}
+              />
+              <YAxis
+                domain={[0, 100]}
+                tickFormatter={(value: number) => `${value}%`}
+                tick={{ fontSize: 12 }}
+                allowDecimals={false}
               />
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />
               <Line
@@ -78,13 +86,13 @@ export default function StepsCompletedChart({
                 strokeWidth={3}
                 dot={{ r: 3, fill: "var(--color-percent)" }}
               >
-                <LabelList
+                {/* <LabelList
                   position="top"
                   offset={12}
                   className="fill-foreground"
                   fontSize={12}
                   formatter={(value: number) => `${value}%`}
-                />
+                /> */}
               </Line>
             </LineChart>
           </ResponsiveContainer>
