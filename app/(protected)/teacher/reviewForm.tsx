@@ -67,9 +67,9 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
       })),
       osats: record.osats.map((o) => ({
         item: o.item,
-        obtained: o.obtained || 0,
+        obtained: o.obtained || 1,
       })),
-      teacherJudgment: record.teacherJudgment || 0,
+      teacherJudgment: record.teacherJudgment || 5,
       summaryScale: record.summaryScale || 'A',
       feedback: record.feedback || '',
     },
@@ -224,16 +224,16 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
           render={({ field }) => (
           <FormItem className="flex flex-col items-start space-x-3 space-y-0 rounded-md">
             <FormLabel className="text-lg font-semibold mb-2 mt-4">Juicio Global</FormLabel>
-            <FormDescription className="mb-2">Califica cómo crees que fue el desempeño del residente</FormDescription>
+            <FormDescription className="mb-2">Califica cómo crees que fue el desempeño del residente considerando su año de residencia y conocimientos actuales</FormDescription>
             <FormControl>
               <Slider
                 max={10}
                 min={4}
                 step={1}
                 labels={[
-                  "Desempeño menor al esperado para su año y conocimientos",
-                  "Desempeño acorde a lo esperado para su año y conocimientos",
-                  "Desempeño superior a lo esperado para su año y conocimientos"
+                  "Bajo espectativas",
+                  "Acuerdo a espectativas",
+                  "Sobre espectativas"
                 ]}
                 defaultValue={[field.value]}
                 onValueChange={(vals) => {

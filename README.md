@@ -1,4 +1,4 @@
-# 🚀 SurgerySkills
+# 🚀 SurgiSkills
 
 ## 🌐 Deploys
 

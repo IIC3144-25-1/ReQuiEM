@@ -16,7 +16,7 @@ export default async function ProfilePage() {
   
   return (
     <div className="space-y-6 flex flex-col sm:w-1/2 mx-auto mt-10">
-      {role && role.area && <Profile user={user} role={role} />}
+      <Profile user={user} role={role || { isAdmin: false, strRole: null, area: "" }} />
       <div className="flex mt-10 space-x-2 justify-center">
         <form action={logout} className="w-1/2 sm:w-1/3">
           <Button type="submit" variant="outline" className="w-full">
