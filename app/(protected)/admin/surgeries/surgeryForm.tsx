@@ -357,7 +357,23 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
                         item: "",
                         scale: [
                             {
-                                punctuation: "",
+                                punctuation: "1",
+                                description: "",
+                            },
+                            {
+                                punctuation: "2",
+                                description: "",
+                            },
+                            {
+                                punctuation: "3",
+                                description: "",
+                            },
+                            {
+                                punctuation: "4",
+                                description: "",
+                            },
+                            {
+                                punctuation: "5",
                                 description: "",
                             },
                         ],
