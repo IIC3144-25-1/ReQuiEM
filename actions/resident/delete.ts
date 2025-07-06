@@ -4,6 +4,7 @@ import { Resident } from "@/models/Resident";
 import dbConnect from "@/lib/dbConnect";
 import { Types } from "mongoose";
 import { deleteResidentFromArea } from "../area/deleteResident";
+import { revalidatePath } from "next/cache";
 
 export async function deleteResident(id: string) {
   await dbConnect();
@@ -27,5 +28,5 @@ export async function deleteResident(id: string) {
     throw new Error("Residente no encontrado");
   }
 
-  return { success: true, message: "Residente eliminado correctamente" };
+  revalidatePath("/admin/residents");
 }

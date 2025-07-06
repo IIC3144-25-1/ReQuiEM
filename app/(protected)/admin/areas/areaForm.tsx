@@ -95,7 +95,7 @@ export function AreaForm({area}: {area?: IArea}) {
             </FormItem>
           )}
         />
-        <Button type="submit">Guardar</Button>
+        <Button type="submit" isLoading={form.formState.isSubmitting}>Guardar</Button>
       </form>
     </Form>
   )
