@@ -215,7 +215,7 @@ export function TeacherForm({ id }: Props) {
               Cancelar
             </Button>
           </Link>
-          <Button type="submit">
+          <Button type="submit" isLoading={form.formState.isSubmitting}>
             {teacher?._id ? 'Actualizar Profesor' : 'Crear Profesor'}
           </Button>
         </div>
