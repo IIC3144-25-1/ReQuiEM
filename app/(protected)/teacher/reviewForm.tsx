@@ -295,7 +295,7 @@ export function ReviewRecordForm({record} : {record: IRecord}) {
           )}
         />
         
-        <Button type="submit" className="ml-auto w-1/2" disabled={form.formState.isSubmitting}>Guardar Corrección</Button>
+        <Button type="submit" className="ml-auto w-1/2" isLoading={form.formState.isSubmitting}>Guardar Corrección</Button>
       </form>
     </Form>
   )
