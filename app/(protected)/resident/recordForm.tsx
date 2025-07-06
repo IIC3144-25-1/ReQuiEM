@@ -266,7 +266,7 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
                     )}
                 />
 
-                <Button type="submit" className="ml-auto w-1/2" disabled={form.formState.isSubmitting}>
+                <Button type="submit" className="ml-auto w-1/2" isLoading={form.formState.isSubmitting}>
                     Siguiente
                 </Button>
             </form>

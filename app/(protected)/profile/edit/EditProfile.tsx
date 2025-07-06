@@ -222,7 +222,7 @@ export default function EditProfile({user} : {user: IUser}) {
           )}
         />
 
-        <Button type="submit" className="w-1/2 flex ml-auto mt-4">
+        <Button type="submit" className="w-1/2 flex ml-auto mt-4" isLoading={form.formState.isSubmitting}>
           Guardar Cambios
         </Button>
       </form>

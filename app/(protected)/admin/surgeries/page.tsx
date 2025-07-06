@@ -12,29 +12,13 @@ import { getSurgeries } from "@/actions/surgery/getSurgeries";
 import { deleteSurgery } from "@/actions/surgery/deleteSurgery";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Edit, Trash2Icon } from "lucide-react";
-import { revalidatePath } from "next/cache";
+import { Edit } from "lucide-react";
 import { ISurgery } from "@/models/Surgery";
 import { Head } from "@/components/head/Head";
+import { Delete } from "@/components/tables/Delete";
   
 export default async function Page() {
     const surgeries = await getSurgeries();
-
-    // No la vamos a llamar porque eliminar una cirugía puede romper toda la página
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const handleDelete = async (data: FormData) => {
-        const confirmed = window.confirm("¿Estás seguro de que deseas eliminar esta cirugía? Esta acción no se puede deshacer.")
-        if (confirmed) {
-            const surgeryId = data.get("surgeryId") as string
-            await deleteSurgery(surgeryId);
-            // Revalidate the page to show the updated list of surgeries
-            // This is a workaround for the lack of revalidation in server actions
-
-            revalidatePath("/admin/surgeries");
-        }
-        
-    }
-
     return (
         <>
         <Head title="Panel de cirugías" description="Aquí puedes ver, editar y crear nuevas cirugías"
@@ -66,12 +50,12 @@ export default async function Page() {
                                     <Edit />
                                 </Button>
                             </Link>
-                            <form>
-                                <input name="surgeryId" className="hidden" value={surgery._id.toString()} readOnly/>
-                                <Button size='icon' variant='outline' className="mr-2 hover:border-destructive" type="submit">
-                                    <Trash2Icon />
-                                </Button>
-                            </form> 
+                            <Delete 
+                                itemId={surgery._id.toString()} 
+                                deleteAction={deleteSurgery} 
+                                title="Eliminar cirugía"
+                                description="¿Estás seguro de que deseas eliminar esta cirugía? Esta acción no se puede deshacer."
+                            />
                         </TableCell>
                     </TableRow>
                 ))

@@ -357,7 +357,23 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
                         item: "",
                         scale: [
                             {
-                                punctuation: "",
+                                punctuation: "1",
+                                description: "",
+                            },
+                            {
+                                punctuation: "2",
+                                description: "",
+                            },
+                            {
+                                punctuation: "3",
+                                description: "",
+                            },
+                            {
+                                punctuation: "4",
+                                description: "",
+                            },
+                            {
+                                punctuation: "5",
                                 description: "",
                             },
                         ],
@@ -370,7 +386,7 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
 
             <div className="flex justify-end space-x-2">
                 <Button type="button" variant="outline" onClick={() => router.push("/admin/surgeries")}>Cancelar</Button>
-                <Button type="submit" disabled={form.formState.isSubmitting}>Guardar</Button>
+                <Button type="submit" isLoading={form.formState.isSubmitting}>Guardar</Button>
             </div>
         </form>
     </Form>

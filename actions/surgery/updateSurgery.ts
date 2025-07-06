@@ -32,12 +32,37 @@ export async function updateSurgery(formData: FormData): Promise<ISurgery> {
         const m = key.match(/^osats\.(\d+)\./)
         if (m) osatIdxs.add(Number(m[1]))
     }
-    const osats = Array.from(osatIdxs)
-        .sort((a, b) => a - b)
-        .map((i) => ({
-        item:      String(formData.get(`osats.${i}.item`) ?? ''),
-        scale: JSON.parse(String(formData.get(`osats.${i}.scale`))) ?? '',
-        }))
+      const osats = Array.from(osatIdxs)
+    .sort((a, b) => a - b)
+    .map((i) => {
+      const item = String(formData.get(`osats.${i}.item`) ?? '')
+      const rawScale = JSON.parse(String(formData.get(`osats.${i}.scale`))) ?? []
+
+      // Normalize the scale
+      const scaleMap = new Map<number, string>()
+      const punctuations: number[] = []
+
+      for (const entry of rawScale) {
+        const p = Number(entry.punctuation)
+        if (!Number.isNaN(p)) {
+          scaleMap.set(p, entry.description ?? '')
+          punctuations.push(p)
+        }
+      }
+
+      const min = Math.min(...punctuations)
+      const max = Math.max(...punctuations)
+
+      const completeScale = []
+      for (let p = min; p <= max; p++) {
+        completeScale.push({
+          punctuation: String(p),
+          description: scaleMap.get(p) ?? '',
+        })
+      }
+
+      return { item, scale: completeScale }
+    })
 
     // --- 4) Rehydrate into the shape your Zod schema expects ---
     const raw = { name, description, area, steps, osats }

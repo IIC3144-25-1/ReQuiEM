@@ -164,7 +164,7 @@ export function ResidentForm({ id, areas}: Props) {
         />
 
         <div className="flex justify-end">
-          <Button type="submit">
+          <Button type="submit" isLoading={form.formState.isSubmitting}>
             {id && id !== 'new' ? 'Actualizar Residente' : 'Crear Residente'}
           </Button>
         </div>
