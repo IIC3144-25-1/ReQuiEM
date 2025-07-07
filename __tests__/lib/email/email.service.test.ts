@@ -83,7 +83,7 @@ describe("EmailService", () => {
         to: "test-recipient@example.com", // Uses TEST_EMAIL in development
         from: {
           email: "test@example.com",
-          name: "Requiem",
+          name: "SurgiSkills",
         },
         templateId: "test-template-id",
         dynamic_template_data: { formattedData: "test" },
@@ -123,7 +123,7 @@ describe("EmailService", () => {
         expect.objectContaining({
           from: {
             email: "custom@example.com",
-            name: "Requiem",
+            name: "SurgiSkills",
           },
         })
       );
@@ -145,7 +145,7 @@ describe("EmailService", () => {
         expect.objectContaining({
           from: {
             email: "no-reply@example.com",
-            name: "Requiem",
+            name: "SurgiSkills",
           },
         })
       );

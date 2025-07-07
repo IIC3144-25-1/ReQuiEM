@@ -1,9 +1,9 @@
-import { getServerSession } from "next-auth";
 import {
   createUser,
   updateUser,
   deleteUser,
   getUsers,
+  getUserById,
 } from "@/actions/user-actions";
 
 // Mock next-auth
@@ -11,381 +11,310 @@ jest.mock("next-auth", () => ({
   getServerSession: jest.fn(),
 }));
 
-// Mock the auth config
+// Mock auth options
 jest.mock("@/lib/auth", () => ({
   authOptions: {},
 }));
 
-// Mock the User model
+// Mock database connection
+jest.mock("@/lib/dbConnect", () => ({
+  connectDB: jest.fn(),
+}));
+
+// Mock User model
 jest.mock("@/models/User", () => ({
   User: {
-    create: jest.fn(),
     findOne: jest.fn(),
-    findById: jest.fn(),
+    create: jest.fn(),
     findByIdAndUpdate: jest.fn(),
     findByIdAndDelete: jest.fn(),
     find: jest.fn(),
+    findById: jest.fn(),
   },
 }));
 
-// Mock database connection
-jest.mock("@/lib/dbConnect", () => ({
-  default: jest.fn().mockResolvedValue(true),
-}));
+const mockGetServerSession = require("next-auth").getServerSession;
+const mockConnectDB = require("@/lib/dbConnect").connectDB;
+const mockUser = require("@/models/User").User;
 
-const mockGetServerSession = getServerSession as jest.MockedFunction<
-  typeof getServerSession
->;
-const { User } = require("@/models/User");
-
-describe.skip("User Actions", () => {
+describe("User Actions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockConnectDB.mockResolvedValue(true);
   });
 
-  const mockAdminSession = {
-    user: {
-      id: "admin-id",
-      email: "admin@example.com",
-      role: "admin",
-    },
-  };
-
-  const mockTeacherSession = {
-    user: {
-      id: "teacher-id",
-      email: "teacher@example.com",
-      role: "teacher",
-    },
-  };
-
-  const mockResidentSession = {
-    user: {
-      id: "resident-id",
-      email: "resident@example.com",
-      role: "resident",
-    },
-  };
-
   describe("createUser", () => {
-    it("should create user when authenticated as admin", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
+    const userData = {
+      name: "Test User",
+      email: "test@example.com",
+      role: "resident" as const,
+      rut: "12345678-9",
+    };
 
-      const userData = {
-        name: "New User",
-        email: "newuser@example.com",
-        role: "resident" as const,
-        rut: "12.345.678-5",
-      };
+    it("should create user successfully with admin session", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin" },
+      });
+      mockUser.findOne.mockResolvedValue(null);
+      mockUser.create.mockResolvedValue({ _id: "user123", ...userData });
 
       const result = await createUser(userData);
 
       expect(result.success).toBe(true);
-      expect(result.data).toHaveProperty("_id");
-      expect(result.data?.name).toBe(userData.name);
-      expect(result.data?.email).toBe(userData.email);
-
-      // Verify user was created in database
-      const createdUser = await User.findOne({ email: userData.email });
-      expect(createdUser).toBeTruthy();
+      expect(result.data).toBeTruthy();
+      expect(mockUser.create).toHaveBeenCalledWith({
+        ...userData,
+        isActive: true,
+      });
     });
 
-    it("should fail when not authenticated", async () => {
-      mockGetServerSession.mockResolvedValue(null);
-
-      const userData = {
-        name: "New User",
-        email: "newuser@example.com",
-        role: "resident" as const,
-        rut: "12.345.678-5",
-      };
-
-      const result = await createUser(userData);
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBe("No autorizado");
-    });
-
-    it("should fail when authenticated as non-admin", async () => {
-      mockGetServerSession.mockResolvedValue(mockTeacherSession);
-
-      const userData = {
-        name: "New User",
-        email: "newuser@example.com",
-        role: "resident" as const,
-        rut: "12.345.678-5",
-      };
-
-      const result = await createUser(userData);
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBe("No autorizado");
-    });
-
-    it("should fail with invalid data", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
-
-      const invalidUserData = {
-        name: "",
-        email: "invalid-email",
-        role: "invalid-role" as any,
-        rut: "invalid-rut",
-      };
-
-      const result = await createUser(invalidUserData);
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBeDefined();
-    });
-
-    it("should fail when email already exists", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
-
-      // Create a user first
-      await User.create({
-        name: "Existing User",
-        email: "existing@example.com",
-        role: "resident",
-        rut: "12.345.678-5",
+    it("should reject creation without admin session", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "resident" },
       });
 
-      const userData = {
-        name: "New User",
-        email: "existing@example.com", // Same email
-        role: "teacher" as const,
-        rut: "98.765.432-1",
-      };
+      const result = await createUser(userData);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("No autorizado");
+      expect(mockUser.create).not.toHaveBeenCalled();
+    });
+
+    it("should reject creation with no session", async () => {
+      mockGetServerSession.mockResolvedValue(null);
 
       const result = await createUser(userData);
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain("ya existe");
+      expect(result.error).toBe("No autorizado");
+    });
+
+    it("should reject creation if user already exists", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin" },
+      });
+      mockUser.findOne.mockResolvedValue({ _id: "existing" });
+
+      const result = await createUser(userData);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("Usuario con este email o RUT ya existe");
     });
   });
 
   describe("updateUser", () => {
-    let existingUser: any;
+    const updateData = {
+      name: "Updated Name",
+      email: "updated@example.com",
+    };
 
-    beforeEach(async () => {
-      existingUser = await User.create({
-        name: "Existing User",
-        email: "existing@example.com",
-        role: "resident",
-        rut: "12.345.678-5",
+    it("should allow admin to update any user", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin", id: "admin123" },
       });
-    });
+      mockUser.findByIdAndUpdate.mockResolvedValue({
+        _id: "user123",
+        ...updateData,
+      });
 
-    it("should update user when authenticated as admin", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
-
-      const updateData = {
-        name: "Updated Name",
-        email: "updated@example.com",
-      };
-
-      const result = await updateUser(existingUser._id.toString(), updateData);
+      const result = await updateUser("user123", updateData);
 
       expect(result.success).toBe(true);
-      expect(result.data?.name).toBe(updateData.name);
-      expect(result.data?.email).toBe(updateData.email);
-
-      // Verify user was updated in database
-      const updatedUser = await User.findById(existingUser._id);
-      expect(updatedUser?.name).toBe(updateData.name);
-      expect(updatedUser?.email).toBe(updateData.email);
+      expect(result.data).toBeTruthy();
     });
 
     it("should allow user to update their own profile", async () => {
-      const userSession = {
-        user: {
-          id: existingUser._id.toString(),
-          email: existingUser.email,
-          role: "resident",
-        },
-      };
-      mockGetServerSession.mockResolvedValue(userSession);
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "resident", id: "user123" },
+      });
+      mockUser.findByIdAndUpdate.mockResolvedValue({
+        _id: "user123",
+        ...updateData,
+      });
 
-      const updateData = {
-        name: "Self Updated Name",
-      };
-
-      const result = await updateUser(existingUser._id.toString(), updateData);
+      const result = await updateUser("user123", updateData);
 
       expect(result.success).toBe(true);
-      expect(result.data?.name).toBe(updateData.name);
     });
 
-    it("should fail when user tries to update another user", async () => {
-      mockGetServerSession.mockResolvedValue(mockResidentSession);
+    it("should reject user updating another user's profile", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "resident", id: "user123" },
+      });
 
-      const updateData = {
-        name: "Unauthorized Update",
-      };
-
-      const result = await updateUser(existingUser._id.toString(), updateData);
+      const result = await updateUser("user456", updateData);
 
       expect(result.success).toBe(false);
       expect(result.error).toBe("No autorizado");
     });
 
-    it("should fail when user not found", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
+    it("should handle user not found", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin" },
+      });
+      mockUser.findByIdAndUpdate.mockResolvedValue(null);
 
-      const fakeId = "507f1f77bcf86cd799439011";
-      const updateData = {
-        name: "Updated Name",
-      };
-
-      const result = await updateUser(fakeId, updateData);
+      const result = await updateUser("nonexistent", updateData);
 
       expect(result.success).toBe(false);
       expect(result.error).toBe("Usuario no encontrado");
-    });
-
-    it("should fail with invalid update data", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
-
-      const invalidUpdateData = {
-        email: "invalid-email",
-        role: "invalid-role",
-      };
-
-      const result = await updateUser(
-        existingUser._id.toString(),
-        invalidUpdateData
-      );
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBeDefined();
     });
   });
 
   describe("deleteUser", () => {
-    let existingUser: any;
-
-    beforeEach(async () => {
-      existingUser = await User.create({
-        name: "User to Delete",
-        email: "delete@example.com",
-        role: "resident",
-        rut: "12.345.678-5",
+    it("should allow admin to delete user", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin" },
       });
-    });
+      mockUser.findByIdAndDelete.mockResolvedValue({ _id: "user123" });
 
-    it("should delete user when authenticated as admin", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
-
-      const result = await deleteUser(existingUser._id.toString());
+      const result = await deleteUser("user123");
 
       expect(result.success).toBe(true);
-
-      // Verify user was deleted from database
-      const deletedUser = await User.findById(existingUser._id);
-      expect(deletedUser).toBeNull();
     });
 
-    it("should fail when not authenticated as admin", async () => {
-      mockGetServerSession.mockResolvedValue(mockTeacherSession);
+    it("should reject non-admin deletion", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "resident" },
+      });
 
-      const result = await deleteUser(existingUser._id.toString());
+      const result = await deleteUser("user123");
 
       expect(result.success).toBe(false);
       expect(result.error).toBe("No autorizado");
-
-      // Verify user was not deleted
-      const user = await User.findById(existingUser._id);
-      expect(user).toBeTruthy();
     });
 
-    it("should fail when user not found", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
+    it("should handle user not found", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin" },
+      });
+      mockUser.findByIdAndDelete.mockResolvedValue(null);
 
-      const fakeId = "507f1f77bcf86cd799439011";
-      const result = await deleteUser(fakeId);
+      const result = await deleteUser("nonexistent");
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("Usuario no encontrado");
+    });
+  });
+
+  describe("getUsers", () => {
+    it("should allow admin to get all users", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin" },
+      });
+      mockUser.find.mockReturnValue({
+        sort: jest.fn().mockResolvedValue([{ _id: "user1" }, { _id: "user2" }]),
+      });
+
+      const result = await getUsers();
+
+      expect(result.success).toBe(true);
+      expect(result.data).toHaveLength(2);
+    });
+
+    it("should allow teacher to get users", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "teacher" },
+      });
+      mockUser.find.mockReturnValue({
+        sort: jest.fn().mockResolvedValue([]),
+      });
+
+      const result = await getUsers();
+
+      expect(result.success).toBe(true);
+    });
+
+    it("should reject resident access", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "resident" },
+      });
+
+      const result = await getUsers();
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("No autorizado");
+    });
+
+    it("should filter by role", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin" },
+      });
+      mockUser.find.mockReturnValue({
+        sort: jest.fn().mockResolvedValue([]),
+      });
+
+      await getUsers({ role: "teacher" });
+
+      expect(mockUser.find).toHaveBeenCalledWith({ role: "teacher" });
+    });
+
+    it("should filter by isActive", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin" },
+      });
+      mockUser.find.mockReturnValue({
+        sort: jest.fn().mockResolvedValue([]),
+      });
+
+      await getUsers({ isActive: true });
+
+      expect(mockUser.find).toHaveBeenCalledWith({ isActive: true });
+    });
+  });
+
+  describe("getUserById", () => {
+    it("should allow admin to get any user", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin", id: "admin123" },
+      });
+      mockUser.findById.mockResolvedValue({ _id: "user123" });
+
+      const result = await getUserById("user123");
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBeTruthy();
+    });
+
+    it("should allow user to get their own profile", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "resident", id: "user123" },
+      });
+      mockUser.findById.mockResolvedValue({ _id: "user123" });
+
+      const result = await getUserById("user123");
+
+      expect(result.success).toBe(true);
+    });
+
+    it("should reject user getting another user's profile", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "resident", id: "user123" },
+      });
+      mockUser.findById.mockResolvedValue({ _id: "user456" });
+
+      const result = await getUserById("user456");
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("No autorizado");
+    });
+
+    it("should handle user not found", async () => {
+      mockGetServerSession.mockResolvedValue({
+        user: { role: "admin" },
+      });
+      mockUser.findById.mockResolvedValue(null);
+
+      const result = await getUserById("nonexistent");
 
       expect(result.success).toBe(false);
       expect(result.error).toBe("Usuario no encontrado");
     });
 
-    it("should fail with invalid user ID", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
-
-      const result = await deleteUser("invalid-id");
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBeDefined();
-    });
-  });
-
-  describe("getUsers", () => {
-    beforeEach(async () => {
-      await User.create([
-        {
-          name: "Resident 1",
-          email: "resident1@example.com",
-          role: "resident",
-          rut: "12.345.678-5",
-          isActive: true,
-        },
-        {
-          name: "Resident 2",
-          email: "resident2@example.com",
-          role: "resident",
-          rut: "98.765.432-1",
-          isActive: false,
-        },
-        {
-          name: "Teacher 1",
-          email: "teacher1@example.com",
-          role: "teacher",
-          rut: "11.111.111-1",
-          isActive: true,
-        },
-      ]);
-    });
-
-    it("should get all users when authenticated as admin", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
-
-      const result = await getUsers();
-
-      expect(result.success).toBe(true);
-      expect(result.data).toHaveLength(3);
-    });
-
-    it("should filter users by role", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
-
-      const result = await getUsers({ role: "resident" });
-
-      expect(result.success).toBe(true);
-      expect(result.data).toHaveLength(2);
-      expect(result.data?.every((user) => user.role === "resident")).toBe(true);
-    });
-
-    it("should filter users by active status", async () => {
-      mockGetServerSession.mockResolvedValue(mockAdminSession);
-
-      const result = await getUsers({ isActive: true });
-
-      expect(result.success).toBe(true);
-      expect(result.data).toHaveLength(2);
-      expect(result.data?.every((user) => user.isActive === true)).toBe(true);
-    });
-
-    it("should fail when not authenticated", async () => {
+    it("should reject access without session", async () => {
       mockGetServerSession.mockResolvedValue(null);
 
-      const result = await getUsers();
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBe("No autorizado");
-    });
-
-    it("should fail when authenticated as resident", async () => {
-      mockGetServerSession.mockResolvedValue(mockResidentSession);
-
-      const result = await getUsers();
+      const result = await getUserById("user123");
 
       expect(result.success).toBe(false);
       expect(result.error).toBe("No autorizado");

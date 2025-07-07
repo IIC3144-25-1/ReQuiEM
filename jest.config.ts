@@ -52,12 +52,19 @@ const config: Config = {
   ],
   moduleDirectories: ["node_modules", "<rootDir>"],
   transformIgnorePatterns: [
-    "node_modules/(?!(next-auth|@auth|@next|@babel|@jest))",
+    "node_modules/(?!(next-auth|@auth|@next|@babel|@jest|mongodb|mongoose|bson))",
   ],
   testTimeout: 30000,
   maxWorkers: "50%",
   clearMocks: true,
   restoreMocks: true,
+  extensionsToTreatAsEsm: [".ts", ".tsx"],
+  preset: "ts-jest/presets/default-esm",
+  globals: {
+    "ts-jest": {
+      useESM: true,
+    },
+  },
 };
 
 export default config;
