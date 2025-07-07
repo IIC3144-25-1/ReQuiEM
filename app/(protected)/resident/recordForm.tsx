@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { createRecord } from "@/actions/record/create"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -18,19 +18,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { cn } from "@/lib/utils"
-import { formatRut, validateRut } from "@/utils/rut"
 import { ISurgery } from "@/models/Surgery"
 import { ITeacher } from "@/models/Teacher"
 import { IResident } from "@/models/Resident"
-// import { Loader2Icon } from "lucide-react";
 // import { toast } from "sonner"
 
 const recordSchema = z.object({
     resident: z.string().min(1, "Resident is required"),
     teacher: z.string().min(1, "Seleccione un profesor"),
-    patientId: z.string().min(1, "Se requiere RUT del paciente").refine((rut) => validateRut(rut), {
-        message: "El RUT ingresado no es válido",
-    }),
+    patientId: z.string().min(1, "Se requiere ID del paciente"),
     date: z.date().refine((date) => date <= new Date(), {
         message: "La fecha seleccionada aún no ha pasado"
     }),
@@ -40,12 +36,7 @@ const recordSchema = z.object({
 
 export default function RecordForm({surgeries, teachers, resident}: {surgeries: ISurgery[], teachers: ITeacher[], resident: IResident}) {
     const router = useRouter()
-    const now = new Date();
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    const roundedMinutes = Math.floor(now.getMinutes() / 5) * 5;
-    const [hour, setHour] = useState(pad(now.getHours()));
-    const [minute, setMinute] = useState(pad(roundedMinutes));
-    // const [loading, setLoading] = useState(false);
+    const [time, setTime] = useState(format(new Date(), "HH:mm"))
 
     const form = useForm<z.infer<typeof recordSchema>>({
         resolver: zodResolver(recordSchema),
@@ -60,15 +51,11 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
     })
 
     async function onSubmit(data: z.infer<typeof recordSchema>) {
-        // setLoading(true);
         // console.log("DATA:", data)
         const fullDate = new Date(data.date);
-        if (hour !== "") {
-            fullDate.setHours(parseInt(hour, 10));
-        }
-        if (minute !== "") {
-            fullDate.setMinutes(parseInt(minute, 10));
-        }
+        const [hours, minutes] = time.split(":").map(Number);
+        fullDate.setHours(hours);
+        fullDate.setMinutes(minutes);
         fullDate.setSeconds(0);
 
         const formData = new FormData()
@@ -85,8 +72,6 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
             // console.log("DATA:", data)
         } catch (error) {
             console.error("Error creating record:", error)
-        } finally {
-            // setLoading(false);
         }
     }
 
@@ -156,17 +141,17 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
                     name="patientId"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>RUT del Paciente</FormLabel>
+                            <FormLabel>Iniciales del Paciente</FormLabel>
                             <FormControl>
                                 <Input
-                                    placeholder="11.222.333-4"
+                                    placeholder="IDP"
                                     {...field}
-                                    onChange={(e) => {
-                                        const formattedRut = formatRut(e.target.value); // Formatea el RUT
-                                        field.onChange(formattedRut); // Actualiza el valor en el formulario
-                                    }}
+                                    onChange={(e) => { field.onChange(e.target.value) }}
                                 />
                             </FormControl>
+                            <FormDescription className="text-xs">
+                                Utiliza las iniciales del paciente, por ejemplo: &quot;JPP&quot; para Juan Pérez Pérez. De esta forma se asegura la privacidad del paciente.
+                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -210,39 +195,14 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
                                     />
                                 </PopoverContent>
                             </Popover>
-                            <Select value={hour} onValueChange={setHour}>
-                                <SelectTrigger className="w-[45px]" arrow={false}>
-                                    <SelectValue placeholder="14" />
-                                </SelectTrigger>
-                                <SelectContent className="h-[200px] w-[45px]">
-                                    {Array.from({ length: 24 }, (_, i) => (
-                                        <SelectItem
-                                            check={false}
-                                            key={i}
-                                            value={(i).toString().padStart(2, "0")}
-                                        >
-                                            {(i).toString().padStart(2, "0")}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <span>:</span>
-                            <Select value={minute} onValueChange={setMinute}>
-                                <SelectTrigger className="w-[45px]" arrow={false}>
-                                    <SelectValue placeholder="45" />
-                                </SelectTrigger>
-                                <SelectContent className="h-[200px] w-[45px]">
-                                    {Array.from({ length: 12 }, (_, i) => (
-                                        <SelectItem
-                                            check={false}
-                                            key={i*5}
-                                            value={(i*5).toString().padStart(2, "0")}
-                                        >
-                                            {(i*5).toString().padStart(2, "0")}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Input
+                                type="time"
+                                id="time-picker"
+                                step="60"
+                                value={time}
+                                onChange={(e) => setTime(e.target.value)}
+                                className="w-18 bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                            />
                         </div>
                     </FormItem>
                     )}
@@ -306,7 +266,7 @@ export default function RecordForm({surgeries, teachers, resident}: {surgeries: 
                     )}
                 />
 
-                <Button type="submit" className="ml-auto w-1/2" disabled={form.formState.isSubmitting}>
+                <Button type="submit" className="ml-auto w-1/2" isLoading={form.formState.isSubmitting}>
                     Siguiente
                 </Button>
             </form>

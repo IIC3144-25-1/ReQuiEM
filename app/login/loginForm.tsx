@@ -23,7 +23,7 @@ export function LoginForm({
     "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg";
 
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || null;
+  const callbackUrl = searchParams.get("callbackUrl") || "/after-login";
 
   const handleLoginWithGoogle = async () => {
     await loginWithGoogle({ redirectTo: callbackUrl });
@@ -59,8 +59,7 @@ export function LoginForm({
               data-testid="google-signin-button"
               type="submit"
               variant="outline"
-              className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
-              aria-label="Iniciar sesión con Google"
+              className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-background hover:bg-gray-50 text-sm"
             >
               <Image
                 src={GOOGLE_LOGO}
@@ -77,8 +76,7 @@ export function LoginForm({
               data-testid="microsoft-signin-button"
               type="submit"
               variant="outline"
-              className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
-              aria-label="Iniciar sesión con Microsoft"
+              className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-background hover:bg-gray-50 text-sm"
             >
               <Image
                 src={MICROSOFT_LOGO}
@@ -88,6 +86,9 @@ export function LoginForm({
               />
               Iniciar sesión con Microsoft
             </Button>
+            <p className="text-xs text-gray-500 mt-1 text-center">
+              Solo cuentas personales de Microsoft (no institucionales).
+            </p>
           </form>
         </CardContent>
       </Card>

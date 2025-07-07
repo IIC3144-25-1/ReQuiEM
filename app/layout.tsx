@@ -4,7 +4,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Navbar } from "@/components/navbar/navbar";
-// import Script from "next/script";
+import Script from "next/script";
+import { ThemeProvider } from "@/components/ui/theme-provider"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,30 +19,30 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://surgiskills.cl"),
-  title: "ReQuiEM",
+  title: "SurgiSkills",
   description: "Evaluación Quirúrgica Médica: plataforma para el registro y retroalimentación de procedimientos médicos.",
   manifest: "/manifest.json",
   icons: {
     icon: "/Icon.ico",
   },
   openGraph: {
-    title: "ReQuiEM",
+    title: "SurgiSkills",
     description: "Plataforma para evaluación y seguimiento de procedimientos médicos.",
     url: "https://surgiskills.cl",
-    siteName: "ReQuiEM",
+    siteName: "SurgiSkills",
     images: [
       {
         url: "/Icon.ico",
         width: 1200,
         height: 630,
-        alt: "Logo de ReQuiEM",
+        alt: "Logo de SurgiSkills",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ReQuiEM",
+    title: "SurgiSkills",
     description: "Plataforma para evaluación y retroalimentación médica",
     images: ["/Icon.ico"],
   },
@@ -53,22 +54,29 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/Icon.ico" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ErrorBoundary>
-          <Navbar />
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {children}
-          </div>
-          <Toaster />
-        </ErrorBoundary>
-        {/* <Script src="/service-worker.js" strategy="afterInteractive" /> */}
-      </body>
-    </html>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ErrorBoundary>
+            <Navbar />
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              {children}
+            </div>
+            <Toaster />
+          </ErrorBoundary>
+          <Script src="/service-worker.js" strategy="afterInteractive" />
+      </ThemeProvider>
+    </body>
+  </html>
   );
 }

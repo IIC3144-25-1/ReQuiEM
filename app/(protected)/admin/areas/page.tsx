@@ -10,38 +10,27 @@ import {
 import { getAllAreas } from "@/actions/area/getAll";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Edit, Trash2Icon } from "lucide-react";
-import { revalidatePath } from "next/cache";
+import { Edit} from "lucide-react";
 import { deleteArea } from "@/actions/area/delete";
+import { Head } from "@/components/head/Head";
+import { Delete } from "@/components/tables/Delete";
   
 export default async function Page() {
     const areas = await getAllAreas();
 
-    const handleDelete = async (data: FormData) => {
-        'use server'
-        const areaId = data.get("areaId") as string
-        await deleteArea(areaId);
-        // Revalidate the page to show the updated list of surgeries
-        // This is a workaround for the lack of revalidation in server actions
-
-        revalidatePath("/admin/areas");
-    }
-
     return (
         <>
-        <div className="flex justify-between items-center py-4">
-            <div>
-                <h1 className="text-2xl font-bold">Bienvenido al panel de áreas</h1>
-                <p className="text-sm text-muted-foreground">Aquí puedes ver, editar y crear nuevas áreas</p>
-            </div>
-            <div className="my-4">
-                <Link href={"/admin/areas/new"}>
+        <Head
+            title="Panel de áreas"
+            description="Aquí puedes ver, editar y crear nuevas áreas"
+            components={[
+                <Link href={"/admin/areas/new"} key={"new-area-link"}>
                     <Button>
                         Crear nueva área
                     </Button>
                 </Link>
-            </div>
-        </div>
+            ]}
+        />
         <Table className="w-full">
             <TableHeader>
                 <TableRow>
@@ -61,12 +50,12 @@ export default async function Page() {
                                     <Edit />
                                 </Button>
                             </Link>
-                            <form action={handleDelete}>
-                                <input name="areaId" className="hidden" value={area._id.toString()} readOnly/>
-                                <Button size='icon' variant='outline' className="mr-2 hover:border-destructive" type="submit">
-                                    <Trash2Icon />
-                                </Button>
-                            </form> 
+                            <Delete 
+                                itemId={area._id.toString()} 
+                                deleteAction={deleteArea} 
+                                title="Eliminar área"
+                                description="¿Estás seguro de que deseas eliminar esta área? Esta acción no se puede deshacer."
+                            /> 
                         </TableCell>
                     </TableRow>
                 ))

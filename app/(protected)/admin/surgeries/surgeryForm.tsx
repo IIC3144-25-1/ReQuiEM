@@ -24,11 +24,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { createSurgery } from "@/actions/surgery/createSurgery"
 import { toast } from "sonner"
-import { Trash2Icon } from "lucide-react"
+import { PlusIcon, Trash2Icon } from "lucide-react"
 import { ISurgery } from "@/models/Surgery"
 import { useRouter } from "next/navigation"
 import { updateSurgery } from "@/actions/surgery/updateSurgery"
 import { IArea } from "@/models/Area"
+import { Textarea } from "@/components/ui/textarea"
 
 export const surgerySchema = z.object({
     name: z.string().min(1, "El nombre de la cirugía es requerido"),
@@ -58,7 +59,7 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
         defaultValues: {
             name: surgery?.name || "",
             description: surgery?.description || "",
-            area: surgery?.area.toString() || "",
+            area: surgery?.area._id.toString() || "",
             steps: surgery?.steps.map((step) => ({
                 name: step,
             })) || [{ name: "" }],
@@ -133,40 +134,48 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
     });
 
     return (
-      <div className="ml-4 pl-4 border-l space-y-3 py-2">
+      <div className="border-l space-y-3 py-2 pl-2">
         <FormLabel className="text-sm font-medium">Escala de Evaluación</FormLabel>
+        <div className="flex flex-row space-x-2 text-xs pl-2">
+            <FormLabel className="w-[60px]">Puntaje</FormLabel>
+            <FormLabel className="flex-1">Descripción (Opcional)</FormLabel>
+        </div>
         {fields.map((field, scaleIndex) => (
-          <div key={field.id} className="flex items-center space-x-2 p-2 border rounded-md">
+          <div key={field.id} className="flex items-start space-x-2 pl-2">
             <FormField
-            control={form.control}
-            name={`osats.${osatIndex}.scale.${scaleIndex}.punctuation`}
-            render={({ field }) => (
-                <FormItem className="w-[60px]">
-                <FormLabel className="text-xs">Puntaje</FormLabel>
-                <FormControl>
-                    <Input type="number" placeholder="5" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs"/>
-                </FormItem>
-            )}
+                control={form.control}
+                name={`osats.${osatIndex}.scale.${scaleIndex}.punctuation`}
+                render={({ field }) => (
+                    <FormItem className="w-[60px] flex items-center justify-center">
+                        <FormControl>
+                            <Input type="number" placeholder="5" {...field} className="w-full" />
+                        </FormControl>
+                        <FormMessage className="text-xs"/>
+                    </FormItem>
+                )}
             />
+
             <FormField
-            control={form.control}
-            name={`osats.${osatIndex}.scale.${scaleIndex}.description`}
-            render={({ field }) => (
-                <FormItem className="flex-1">
-                <FormLabel className="text-xs">Descripción</FormLabel>
-                <FormControl>
-                    <Input placeholder="Ej: Logrado" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs"/>
-                </FormItem>
-            )}
+                control={form.control}
+                name={`osats.${osatIndex}.scale.${scaleIndex}.description`}
+                render={({ field }) => (
+                    <FormItem className="flex-1 w-full">
+                        <FormControl>
+                            <Textarea
+                                {...field}
+                                className="w-full resize-y min-h-[32px]"
+                                rows={1}
+                            />
+                        </FormControl>
+                        <FormMessage className="text-xs"/>
+                    </FormItem>
+                )}
             />
+
             <Button
               type="button"
               size="icon"
-              variant="ghost"
+              variant="outline"
               className=""
               onClick={() => remove(scaleIndex)}
             >
@@ -174,13 +183,20 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
             </Button>
           </div>
         ))}
+
         <Button
+          className="ml-2"
           type="button"
-          variant="outline"
           size="sm"
-          onClick={() => append({ punctuation: "", description: "" })}
+          onClick={() => {
+            const maxPunctuation = fields.reduce((max, field) => {
+              const num = parseInt(field.punctuation, 10);
+              return !isNaN(num) && num > max ? num : max;
+            }, 0);
+            append({ punctuation: (maxPunctuation + 1).toString(), description: "" });
+          }}
         >
-          Añadir Puntuación a Escala
+            <PlusIcon className="h-4 w-4" />
         </Button>
       </div>
     );
@@ -248,119 +264,130 @@ export function SurgeryForm({surgery, areas}: {surgery?: ISurgery, areas: IArea[
             )}
             />
             {/* Steps */}
-            <div className="space-y-4">
-            <FormLabel>Pasos de la Cirugía</FormLabel>
-            <FormDescription>Describe los pasos principales que se realizarán durante la cirugía, en orden cronológico.</FormDescription>
-            {fields.map((field, index) => (
-                <div key={field.id} className="relative border rounded-xl p-4 space-y-4">
-                    <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">
-                    Paso N°{index + 1}
-                    </h2>
-                    <Button
-                        type="button"
-                        size={"icon"}
-                        variant="outline"
-                        className="top-2 right-2"
-                        onClick={() => remove(index)}
-                    >
-                        <Trash2Icon className="h-4 w-4" />
-                    </Button>
-                </div>
+            <div className="space-y-4 border rounded-xl p-4">
+                <FormLabel className="text-lg font-semibold">Pasos de la Cirugía</FormLabel>
+                <FormDescription>Describe los pasos principales que se realizarán durante la cirugía, en orden cronológico.</FormDescription>
+                {fields.map((field, index) => (
+                    <div key={field.id} className="flex flex-row space-x-4 items-start justify-between">
+                        <h2 className="font-semibold">{index + 1}º</h2>
 
-                {/* Step name */}
-                <FormField
-                    control={form.control}
-                    name={`steps.${index}.name`}
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Nombre del Paso</FormLabel>
-                        <FormControl>
-                        <Input placeholder="Paso" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                </div>
+                        {/* Step name */}
+                        <FormField
+                            control={form.control}
+                            name={`steps.${index}.name`}
+                            render={({ field }) => (
+                                <FormItem className="flex-1">
+                                    <FormControl>
+                                        <Textarea
+                                            placeholder="nombre del paso..."
+                                            {...field}
+                                            className="resize-y min-h-[40px] max-h-[200px]" // permite crecer verticalmente
+                                        />
+                                    </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <Button
+                            type="button"
+                            size={"icon"}
+                            variant="outline"
+                            className="top-2 right-2"
+                            onClick={() => remove(index)}
+                        >
+                            <Trash2Icon className="h-4 w-4" />
+                        </Button>
+                    </div>
 
-            ))}
+                ))}
+                <Button
+                    type="button"
+                    onClick={() =>
+                    append({
+                        name: "",})
+                    }
+                >
+                    <PlusIcon className="h-4 w-4" /> Añadir Paso
+                </Button>
             </div>
-            <Button
-                type="button"
-                variant="secondary"
-                onClick={() =>
-                append({
-                    name: "",})
-                }
-            >
-                Añadir Paso
-            </Button>
 
             {/* OSATS */}
-            <div className="space-y-4">
-            <FormLabel>Pauta general OSATS</FormLabel>
-            <FormDescription>Ingresa que se va a evaluar de manera general en la cirugía</FormDescription>
-            {osatFields.map((field, index) => (
-                <div key={field.id} className="relative border rounded-xl p-4 space-y-4">
-                    <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">
-                    Criterio OSAT N°{index + 1}
-                    </h2>
-                    <Button
-                        type="button"
-                        size={"icon"}
-                        variant="outline"
-                        className="top-2 right-2"
-                        onClick={() => osatRemove(index)}
-                    >
-                        <Trash2Icon className="h-4 w-4" />
-                    </Button>
-                </div>
+            <div className="space-y-4 border rounded-xl p-4">
+                <FormLabel className="text-lg font-semibold">Pauta general OSATS</FormLabel>
+                <FormDescription>Ingresa que se va a evaluar de manera general en la cirugía</FormDescription>
+                {osatFields.map((field, index) => (
+                    <div key={field.id} className="space-y-4 border-t-2 pt-2">
+                        <div className="flex items-center justify-between">
+                            <h2 className="font-semibold">{index + 1}º Criterio</h2>
+                            <Button
+                                type="button"
+                                size={"icon"}
+                                variant="outline"
+                                className="top-2 right-2"
+                                onClick={() => osatRemove(index)}
+                            >
+                                <Trash2Icon className="h-4 w-4" />
+                            </Button>
+                        </div>
 
-                {/* Step name */}
-                <FormField
-                    control={form.control}
-                    name={`osats.${index}.item`}
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Nombre de la Evaluación</FormLabel>
-                        <FormControl>
-                        <Input placeholder="Utiliza correctamente..." {...field} />
-                        </FormControl>
-                        <FormDescription>Que se busca evaluar</FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
+                        {/* Step name */}
+                        <FormField
+                            control={form.control}
+                            name={`osats.${index}.item`}
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Ítem a Evaluar</FormLabel>
+                                <FormControl>
+                                <Input placeholder="Utiliza correctamente..." {...field} />
+                                </FormControl>
+                                {/* <FormDescription>Que se busca evaluar</FormDescription> */}
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
 
-                {/* Nested Scale Array for this OSAT item */}
-                <OsatScaleArray osatIndex={index} />
-                </div>
-            ))}
+                        {/* Nested Scale Array for this OSAT item */}
+                        <OsatScaleArray osatIndex={index} />
+                    </div>
+                ))}
+                <Button
+                    type="button"
+                    onClick={() =>
+                    osatAppend({
+                        item: "",
+                        scale: [
+                            {
+                                punctuation: "1",
+                                description: "",
+                            },
+                            {
+                                punctuation: "2",
+                                description: "",
+                            },
+                            {
+                                punctuation: "3",
+                                description: "",
+                            },
+                            {
+                                punctuation: "4",
+                                description: "",
+                            },
+                            {
+                                punctuation: "5",
+                                description: "",
+                            },
+                        ],
+                    })
+                    }
+                >
+                    <PlusIcon className="h-4 w-4" /> Añadir Criterio
+                </Button>
             </div>
-            <Button
-                type="button"
-                variant="secondary"
-                onClick={() =>
-                osatAppend({
-                    item: "",
-                    scale: [
-                        {
-                            punctuation: "",
-                            description: "",
-                        },
-                    ],
-                })
-                }
-            >
-                Añadir Paso OSAT
-            </Button>
-            <div className="flex justify-end">
-            
-            
-            <Button type="submit" disabled={form.formState.isSubmitting}>Guardar</Button>
-        </div>
+
+            <div className="flex justify-end space-x-2">
+                <Button type="button" variant="outline" onClick={() => router.push("/admin/surgeries")}>Cancelar</Button>
+                <Button type="submit" isLoading={form.formState.isSubmitting}>Guardar</Button>
+            </div>
         </form>
     </Form>
   )

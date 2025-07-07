@@ -1,48 +1,61 @@
 import { getUserResident } from "@/actions/resident/getByCurrentUser";
-import { ChartSkeleton } from "@/components/charts/ChartSkeleton";
 import { RecordsCompleted } from "@/components/charts/RecordsCompletedByResident";
+import ScaleSummary from "@/components/charts/ScaleSummary";
 import { TotalTypesOfSurgeryForResident } from "@/components/charts/TotalTipesOfSurgeryForResident";
-import { Suspense } from "react";
 import { DownloadRecordsButton } from "@/components/records/DownloadRecordsButton";
 import StepsCompletedInTime from "@/components/charts/StepsCompletedInTime";
 import { Head } from "@/components/head/Head";
+import { Surgery } from "@/models/Surgery";
+import { IRecord, Record } from "@/models/Record";
+import dbConnect from "@/lib/dbConnect";
 
 export default async function DashboardPage() {
+  await dbConnect();
   const resident = await getUserResident();
 
   if (!resident) {
-    return <p className="text-gray-500">No resident data found.</p>;
+    return <p className="text-gray-500">Residente no encontrado.</p>;
+  }
+
+  const records = await Record.find({ resident: resident._id })
+                                  .populate({ path: "surgery", model: Surgery, select: "name" })
+                                  .lean<IRecord[]>();
+
+  if (!records || records.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <h1 className="text-2xl font-bold mb-4">No hay registros</h1>
+        <p className="text-gray-500">Crear un nuevo registro y podras ver estadísticas aquí.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col gap-8 items-center justify-center h-full my-8 max-w-4xl mx-auto">
+    <div className="flex flex-col gap-8 items-center justify-center h-full max-w-4xl mx-auto mb-20">
       <Head
         title="Dashboard"
+        description="Aquí puedes ver estadísticas y gráficos de tu desempeño como residente"
         components={[
           <DownloadRecordsButton
             side="resident"
             key="1"
-            className=""
           />
         ]}
       />
 
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full mb-8">
         <div className="col-span-1 md:col-span-2">
-          <Suspense fallback={<ChartSkeleton />}>
-            <RecordsCompleted residentId={resident._id.toString()} />
-          </Suspense>
+          <RecordsCompleted records={records} />
         </div>
         <div className="col-span-1">
-          <Suspense fallback={<ChartSkeleton />}>
-            <TotalTypesOfSurgeryForResident residentId={resident._id.toString()} />
-          </Suspense>
+          <TotalTypesOfSurgeryForResident records={records} />
+        </div>
+        <div className="col-span-1">
+          <ScaleSummary records={records} />
         </div>
         <div className="col-span-1 md:col-span-2">
-          <Suspense fallback={<ChartSkeleton />}>
-            <StepsCompletedInTime residentId={resident._id.toString()} />
-          </Suspense>
+          <StepsCompletedInTime records={records} />
         </div>
       </div>
 

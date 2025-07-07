@@ -1,29 +1,45 @@
-import dbConnect from "@/lib/dbConnect";
-import { Record } from "@/models/Record";
-import RecordsChart from "./RecordsChart";
+// components/charts/RecordsCompleted.tsx
+import { IRecord} from "@/models/Record";
 import { format, startOfWeek } from "date-fns";
+import RecordsCompletedClient from "./RecordsCompletedClient";
+import { Suspense } from "react";
+import { ChartSkeleton } from "./ChartSkeleton";
 
-export async function RecordsCompleted({residentId}: { residentId: string }) {
-    await dbConnect();
-    const records = await Record.find({ resident: residentId }).lean();
 
-    if (records.length === 0) {
-        return <div></div>;
-    }
+export async function RecordsCompleted({ records }: { records: IRecord[] }) {
+  const weekMap: Record<string, number> = {};
+  const monthMap: Record<string, number> = {};
+  const yearMap: Record<string, number> = {};
 
-    const weekMap: Record<string, number> = {};
-    records.forEach((rec) => {
-        const date = new Date(rec.createdAt);
-        const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-        const weekStr = format(weekStart, "yyyy-MM-dd");
-        weekMap[weekStr] = (weekMap[weekStr] || 0) + 1;
-    });
+  records.forEach((rec) => {
+    const date = new Date(rec.date);
 
-    const data = Object.entries(weekMap)
-        .map(([week, count]) => ({ week, count }))
-        .sort((a, b) => a.week.localeCompare(b.week));
+    // semanal
+    const weekStart = startOfWeek(date, { weekStartsOn: 1 });
+    const w = format(weekStart, "yyyy-MM-dd");
+    weekMap[w] = (weekMap[w] || 0) + 1;
 
-    return (
-        <RecordsChart data={data} />
-    );
-    }
+    // mensual
+    const m = format(date, "yyyy-MM");
+    monthMap[m] = (monthMap[m] || 0) + 1;
+
+    // anual
+    const y = format(date, "yyyy");
+    yearMap[y] = (yearMap[y] || 0) + 1;
+  });
+
+  const toArray = (map: Record<string, number>) =>
+    Object.entries(map)
+      .map(([period, count]) => ({ period, count }))
+      .sort((a, b) => a.period.localeCompare(b.period));
+
+  return (
+    <Suspense fallback={<ChartSkeleton />}>
+      <RecordsCompletedClient
+        weeklyData={toArray(weekMap)}
+        monthlyData={toArray(monthMap)}
+        yearlyData={toArray(yearMap)}
+      />
+    </Suspense>
+  );
+}

@@ -17,7 +17,7 @@ export class RecordCorrectedStrategy implements EmailStrategy {
         "es-CL"
       ),
       comments: data.record.comments || "Sin comentarios adicionales",
-      platformName: "ReQuiEM",
+      platformName: "SurgiSkills",
       platformDescription: "Sistema de Registro y evaluación de cirugía",
       universityName: "Universidad Católica de Chile",
       recordURL: `${process.env.NEXT_PUBLIC_APP_URL}`,

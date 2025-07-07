@@ -26,12 +26,12 @@ export async function createRecord(formData: FormData) {
   const dateObj = new Date(date as string);
   const surgery = await Surgery.findById(surgeryId);
 
-  const steps = surgery.steps.map((step: string) => ({
-      name: step,
-      residentDone: false,
-      teacherDone: false,
-      score: 'a',
-  }));
+  // const steps = surgery.steps.map((step: string) => ({
+  //     name: step,
+  //     residentDone: false,
+  //     teacherDone: false,
+  //     score: 'a',
+  // }));
 
   const osats = surgery.osats.map(
     (osat: {
@@ -55,7 +55,7 @@ export async function createRecord(formData: FormData) {
     surgery: surgeryId,
     status: "pending",
     residentsYear: Number(residentsYear),
-    steps: steps,
+    // steps: steps,
     osats: osats,
     residentJudgment: 4,
     teacherJudgment: 4,

@@ -100,7 +100,7 @@ describe("Navbar Component", () => {
 
   // it("renders logo correctly", async () => {
   //   render(await Navbar(defaultProps));
-  //   expect(screen.getAllByText("ReQuiEM Test")[0]).toBeInTheDocument();
+  //   expect(screen.getAllByText("SurgiSkills Test")[0]).toBeInTheDocument();
   // });
 
   // it("renders main menu items", async () => {
@@ -143,8 +143,8 @@ describe("Navbar Component", () => {
   // // Test corregido para props por defecto
   // it("renders with default props when no props provided", async () => {
   //   render(await Navbar({}));
-  //   // Usamos getAllByText para manejar múltiples elementos "ReQuiEM"
-  //   const logoTexts = screen.getAllByText("ReQuiEM");
+  //   // Usamos getAllByText para manejar múltiples elementos "SurgiSkills"
+  //   const logoTexts = screen.getAllByText("SurgiSkills");
   //   expect(logoTexts.length).toBeGreaterThan(0);
   //   expect(logoTexts[0]).toBeInTheDocument();
 

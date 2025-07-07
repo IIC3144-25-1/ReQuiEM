@@ -9,43 +9,34 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2Icon } from "lucide-react";
+import { Edit } from "lucide-react";
 import Link from "next/link";
-import { revalidatePath } from "next/cache";
 import { getAllTeachers } from "@/actions/teacher/getAll";
 import { deleteTeacher } from "@/actions/teacher/delete";
+import { Head } from "@/components/head/Head";
+import { Delete } from "@/components/tables/Delete";
 
 export default async function Page() {
   const teachers = await getAllTeachers();
 
-  const handleDelete = async (data: FormData) => {
-    'use server'
-    const teacherId = data.get("teacherId") as string;
-    await deleteTeacher(teacherId);
-    revalidatePath("/admin/teacher");
-  };
 
   return (
     <>
-      <div className="flex justify-between items-center py-4">
-        <div>
-          <h1 className="text-2xl font-bold">Panel de profesores</h1>
-          <p className="text-sm text-muted-foreground">Aquí puedes ver, editar y crear nuevos profesores</p>
-        </div>
-        <div className="my-4">
-          <Link href={"/admin/teacher/new"}>
+    <Head title="Panel de profesores" description="Aquí puedes ver, editar y crear nuevos profesores" 
+    components={[
+          <Link href={"/admin/teacher/new"} key={"new-teacher-link"}>
             <Button>
               Crear nuevo profesor
             </Button>
           </Link>
-        </div>
-      </div>
+      ]} />
+  
 
       <Table className="w-full">
         <TableHeader>
           <TableRow>
             <TableHead>Nombre</TableHead>
-            <TableHead>Email</TableHead>
+            <TableHead>Mail</TableHead>
             <TableHead>Área</TableHead>
             <TableHead>Acciones</TableHead>
           </TableRow>
@@ -62,12 +53,12 @@ export default async function Page() {
                     <Edit />
                   </Button>
                 </Link>
-                <form action={handleDelete}>
-                  <input name="teacherId" className="hidden" value={teacher._id.toString()} readOnly />
-                  <Button size="icon" variant="outline" className="mr-2 hover:border-destructive" type="submit">
-                    <Trash2Icon />
-                  </Button>
-                </form>
+                <Delete
+                  itemId={teacher._id.toString()}
+                  deleteAction={deleteTeacher}
+                  title="Eliminar profesor"
+                  description="¿Estás seguro de que deseas eliminar este profesor? Esta acción no se puede deshacer."
+                />
               </TableCell>
             </TableRow>
           ))}

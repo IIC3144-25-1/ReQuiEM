@@ -2,8 +2,21 @@
 
 import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
+import getInitials from "@/utils/initials"
+import { TailwindColor, colorMap, isTailwindColor } from "@/utils/colors"
 
 import { cn } from "@/lib/utils"
+
+function StrAvatar({ color="gray", name, className } : { color: TailwindColor, name: string, className?: string }) {
+  const tColor = isTailwindColor(color) ? color : 'gray'
+  return (
+    <Avatar
+      className={cn(colorMap[tColor], className)}
+    >
+      {getInitials(name)}
+    </Avatar>
+  )
+}
 
 function Avatar({
   className,
@@ -13,7 +26,7 @@ function Avatar({
     <AvatarPrimitive.Root
       data-slot="avatar"
       className={cn(
-        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
+        'relative flex size-8 shrink-0 overflow-hidden rounded-full items-center justify-center border',
         className
       )}
       {...props}
@@ -50,4 +63,4 @@ function AvatarFallback({
   )
 }
 
-export { Avatar, AvatarImage, AvatarFallback }
+export { StrAvatar, Avatar, AvatarImage, AvatarFallback }

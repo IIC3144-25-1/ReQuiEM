@@ -3,8 +3,8 @@ import { getCurrentUser } from "@/actions/user/getUser";
 import { getRole, RoleInfo } from "@/actions/user/getRole";
 import { NavbarClient } from "./NavbarClient";
 
-const defaultLogo = { alt: "logo", title: "ReQuiEM" };
-const defaultAuth = { login: { title: "Iniciar Sesión", url: "/login" } };
+const defaultLogo = { alt: "logo", title: "SurgiSkills" }
+const defaultAuth = { login: { title: "Iniciar Sesión", url: "/login" } }
 
 export const Navbar = async () => {
   const user = await getCurrentUser();
@@ -79,11 +79,23 @@ export const Navbar = async () => {
     });
   }
 
+  if (isAdmin || role === "teacher" || role === "resident") {
+    menuToRender.push({
+      title: "Área",
+      url: "/area",
+    })
+  }
+
   return (
     <NavbarClient
       logo={defaultLogo}
       auth={defaultAuth}
-      user={user && user.name ? { name: user.name } : null}
+      user={user && user.name && user.image ? { name: user.name, image: user.image }
+            : user && user.name ? { name: user.name, image: 'gray'}
+            : user && user.image ? { name: user.email, image: user.image}
+            : user ? {name: user.email, image: 'gray'}
+            : null
+          }
       menuToRender={menuToRender}
     />
   );

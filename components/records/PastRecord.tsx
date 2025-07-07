@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from "@/components/ui/table";
 import { Head } from "../head/Head";
@@ -26,13 +26,13 @@ const statusLabel = {
 
 export default function PastRecord({ record, side }: { record: IRecord; side: string }) {
     return (
-      <div className="flex flex-col min-h-screen w-full justify-center mx-auto sm:p-4 sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
+      <div className="flex flex-col min-h-screen w-full justify-center mx-auto p-0 sm:p-4 sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
   
-        <Card className="relative ">
-          {/* <CardHeader> */}
-            {/* <CardTitle className="text-2xl">{record.surgery?.name || "Cirugía no especificada"}</CardTitle> */}
+        <Card className="relative">
+          <CardHeader className="px-3 sm:px-6">
             <Head
               title={record.surgery?.name || "Cirugía no especificada"}
+              description={`Registro de cirugía realizada por ${record.resident?.user?.name}`}
               components={
                 side === "resident"
                   ? [
@@ -63,37 +63,42 @@ export default function PastRecord({ record, side }: { record: IRecord; side: st
                     ]
               }
             />
-          {/* </CardHeader> */}
+          </CardHeader>
           <CardContent className="px-3 sm:px-6">
-            
+    
             <hr className="my-4 mb-4" />
-            <div className="flex flex-row justify-center sm:justify-start">
-              <div className="text-sm leading-none space-y-2 font-semibold mr-2 sm:mr-6 text-right sm:text-left">
-                <p>Residente:</p>
-                <p>Profesor:</p>
-                <p>Fecha:</p>
-                <p>RUT del paciente:</p>
-                <p>Año del residente:</p>
-              </div>
+            <div className="flex flex-row justify-between items-start mb-4 sm:mr-10">
+              <div className="flex flex-row justify-center sm:justify-start">
+                <div className="text-sm leading-none space-y-2 font-semibold mr-2 sm:mr-6 text-right sm:text-left">
+                  <p>Residente:</p>
+                  <p>Profesor:</p>
+                  <p>Fecha:</p>
+                  <p>ID del paciente:</p>
+                  <p>Año del residente:</p>
+                </div>
 
-              <div className="text-sm font-normal leading-none space-y-2">
-                <p>{record.resident?.user?.name || "No disponible"}</p>
-                <p>{record.teacher?.user?.name || "No disponible"}</p>
-                <p>{format(record.date, "d '/' MMM '/' yyyy ' a las ' HH:mm", { locale: es })}</p>
-                <p>{record.patientId || "No disponible"}</p>
-                <p>{record.residentsYear || "No disponible"}º año</p>
+                <div className="text-sm font-normal leading-none space-y-2">
+                  <p>{record.resident?.user?.name || "No disponible"}</p>
+                  <p>{record.teacher?.user?.name || "No disponible"}</p>
+                  <p>{format(record.date, "d '/' MMM '/' yyyy ' a las ' HH:mm", { locale: es })}</p>
+                  <p>{record.patientId || "No disponible"}</p>
+                  <p>{record.residentsYear || "No disponible"}º año</p>
+                </div>
               </div>
+                
+            
+              {statusLabel[record.status] === "Corregido" ? (
+                <Badge variant="success" className="absolute md:static capitalize top-5 sm:top-2 right-5 sm:right-25">
+                  {statusLabel[record.status] || "Estado desconocido"}
+                </Badge>
+              ) : (
+                <Badge variant="yellow" className="absolute md:static capitalize top-5 sm:top-2 right-5 sm:right-25">
+                  {statusLabel[record.status] || "Estado desconocido"}
+                </Badge>
+              )}
+              
+
             </div>
-  
-            {statusLabel[record.status] === "Corregido" ? (
-              <Badge variant="success" className="capitalize absolute top-5 sm:top-26 right-5 sm:right-20">
-                {statusLabel[record.status] || "Estado desconocido"}
-              </Badge>
-            ) : (
-              <Badge variant="yellow" className="capitalize absolute top-5 sm:top-26 right-5 sm:right-20">
-                {statusLabel[record.status] || "Estado desconocido"}
-              </Badge>
-            )}
             
             <hr className="my-4" />
             <h2 className="font-semibold mb-4 text-lg mt-2">Pasos de la cirugía</h2>
@@ -101,15 +106,15 @@ export default function PastRecord({ record, side }: { record: IRecord; side: st
             <div className="flex flex-col space-y-6 relative mt-0">
               {record.steps && record.steps.length > 0 ? (
                 <>
-                  <div className="h-23/24 w-px border border-gray-800 bg-gray-800 absolute ml-[5px] top-31/64 -translate-y-1/2 z-0"></div>
+                  <div className="h-23/24 w-px border border-primary bg-primary absolute ml-[5px] top-31/64 -translate-y-1/2 z-0"></div>
                   {record.steps.map((step, index) => (
                     <div key={index} className="flex flex-row items-start space-x-3 space-y-0" >
-                      <div className={`mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-white outline-2 outline-gray-800 z-10
-                        ${ record.status === "pending" && step.residentDone === true ? "bg-gray-800"
+                      <div className={`mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-primary-foreground outline-2 outline-primary z-10
+                        ${ record.status === "pending" && step.residentDone === true ? "bg-primary"
                           : step.teacherDone === true && step.residentDone === true ? "bg-blue-800"
                           : step.teacherDone === true && step.residentDone === false ? "bg-green-600"
                           : step.teacherDone === false && step.residentDone === true ? "bg-red-600"
-                          : "bg-gray-100"}`
+                          : "bg-background"}`
                       } />
                       {record.status !== "pending" && (
                         <Tooltip>
@@ -134,19 +139,19 @@ export default function PastRecord({ record, side }: { record: IRecord; side: st
               <div className="flex flex-col sm:flex-row my-8 sm:space-x-6 space-y-6 sm:space-y-0">
                 <div className="flex flex-col justify-center space-y-2">
                   <div className="flex flex-row items-center space-x-3">
-                    <div className="mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-white outline-2 outline-gray-800 z-10 bg-blue-800 "/>
+                    <div className="mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-primary-foreground outline-2 outline-primary z-10 bg-blue-800 "/>
                     <p className="text-muted-foreground pt-1">el profesor y el residente marcaron que el residente realizó este paso</p>
                   </div>
                   <div className="flex flex-row items-center space-x-3">
-                    <div className="mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-white outline-2 outline-gray-800 z-10 bg-red-600"/>
+                    <div className="mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-primary-foreground outline-2 outline-primary z-10 bg-red-600"/>
                     <p className="text-muted-foreground pt-1">sólo el residente marcó que realizó este paso</p>
                   </div>
                   <div className="flex flex-row items-center space-x-3">
-                    <div className="mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-white outline-2 outline-gray-800 z-10 bg-green-600"/>
+                    <div className="mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-primary-foreground outline-2 outline-primary z-10 bg-green-600"/>
                     <p className="text-muted-foreground pt-1">sólo el profesor marcó que el residente realizó este paso</p>
                   </div>
                   <div className="flex flex-row items-center space-x-3">
-                    <div className="mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-white outline-2 outline-gray-800 z-10 bg-gray-100"/>
+                    <div className="mt-1 min-w-3 w-3 h-3 rounded-xl border-1 border-primary-foreground outline-2 outline-primary z-10 bg-background"/>
                     <p className="text-muted-foreground pt-1">ninguno marcó que el resident realizó este paso</p>
                   </div>
                 </div>
@@ -183,7 +188,7 @@ export default function PastRecord({ record, side }: { record: IRecord; side: st
                       <div className="flex flex-row justify-between px-1">
                         {osat.scale.map((scaleItem, idx) => (
                           <div key={idx} className={`flex flex-col items-center w-full my-1
-                            ${scaleItem.punctuation === osat.obtained && (record.status !== "pending") ? "bg-blue-100 rounded-lg" : ""}`}
+                            ${scaleItem.punctuation === osat.obtained && (record.status !== "pending") ? "bg-secondary border-foreground/10 border rounded-lg" : ""}`}
                             id={scaleItem.punctuation === osat.obtained && record.status !== "pending" ? "focus" : ""}>
                             <p>{scaleItem.punctuation}</p>
                           </div>

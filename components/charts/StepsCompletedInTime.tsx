@@ -1,20 +1,11 @@
-import dbConnect from "@/lib/dbConnect";
-import { Record } from "@/models/Record";
+import { IRecord } from "@/models/Record";
 import { format } from "date-fns";
 import StepsCompletedChart from "./StepsCompletedChart";
+import { Suspense } from "react";
+import { ChartSkeleton } from "./ChartSkeleton";
 
-export default async function StepsCompletedInTime({ residentId }: { residentId: string }) {
-  await dbConnect();
-  const records = await Record.find({ resident: residentId })
-    .populate({ path: "surgery", select: "name" })
-    .lean();
-
-  if (records.length === 0) {
-        return <div></div>;
-    }
-
-  // Creamos un array con { month, percent, surgery }
-  type DataRow = { month: string; percent: number; surgery: string };
+export default async function StepsCompletedInTime({ records }: { records: IRecord[] }) {
+  type DataRow = { date: string; percent: number; surgery: string };
   const data: DataRow[] = [];
 
   const validStatuses = ["corrected", "reviewed"];
@@ -22,42 +13,41 @@ export default async function StepsCompletedInTime({ residentId }: { residentId:
     (rec) => validStatuses.includes(rec.status)
   );
 
-  // Agrupamos por cirugía y mes
-  const surgeryMonthMap: Record<string, Record<string, { completed: number; total: number }>> = {};
-
   filteredRecords.forEach((rec) => {
     const surgeryName = rec.surgery?.name;
     if (!surgeryName) return;
     const date = new Date(rec.date);
-    const monthStr = format(date, "yyyy-MM");
-    if (!surgeryMonthMap[surgeryName]) surgeryMonthMap[surgeryName] = {};
-    if (!surgeryMonthMap[surgeryName][monthStr]) surgeryMonthMap[surgeryName][monthStr] = { completed: 0, total: 0 };
+    const dateStr = format(date, "yyyy-MM-dd");
 
     const steps = Array.isArray(rec.steps) ? rec.steps : [];
     const totalSteps = steps.length;
-    const completedSteps = steps.filter((s) => s.residentDone && s.teacherDone).length;
 
-    surgeryMonthMap[surgeryName][monthStr].completed += completedSteps;
-    surgeryMonthMap[surgeryName][monthStr].total += totalSteps;
-  });
+    // Un paso cuenta como 1 si residentDone && teacherDone && score !== 'b'
+    // Un paso cuenta como 0.5 si residentDone && teacherDone && score === 'b'
+    let completedSteps = 0;
+    steps.forEach((s) => {
+      if (s.residentDone && s.teacherDone) {
+        if (s.score === 'b') {
+          completedSteps += 0.5;
+        } else {
+          completedSteps += 1;
+        }
+      }
+    });
 
-  // Convertimos el map a un array plano
-  Object.entries(surgeryMonthMap).forEach(([surgery, months]) => {
-    Object.entries(months).forEach(([month, { completed, total }]) => {
-      data.push({
-        month,
-        percent: total > 0 ? Math.round((completed / total) * 100) : 0,
-        surgery,
-      });
+    data.push({
+      date: dateStr,
+      percent: totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0,
+      surgery: surgeryName,
     });
   });
 
-  // Extrae cirugías únicas para el select del cliente
-  const surgeries = Object.keys(surgeryMonthMap);
+  const surgeries = Array.from(new Set(data.map((row) => row.surgery)));
+  data.sort((a, b) => a.date.localeCompare(b.date));
 
-  // Ordena los datos por mes
-  data.sort((a, b) => a.month.localeCompare(b.month));
-
-  // Pasa todos los datos y las cirugías al cliente
-  return <StepsCompletedChart data={data} surgeries={surgeries} />;
+  return (
+    <Suspense fallback={<ChartSkeleton />}>
+      <StepsCompletedChart data={data} surgeries={surgeries} />
+    </Suspense>
+  );
 }

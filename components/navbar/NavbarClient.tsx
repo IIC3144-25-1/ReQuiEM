@@ -25,7 +25,16 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@/components/ui/sheet"
+import { StrAvatar } from "@/components/ui/avatar"
+import { TailwindColor } from "@/utils/colors"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { ModeToggle } from "./ToggleTheme"
+import PWAInstallPrompt from "../pwa/PWAInstallPrompt"
 
 interface MenuItem {
   title: string;
@@ -37,10 +46,10 @@ interface MenuItem {
 }
 
 interface NavbarClientProps {
-  logo: { alt: string; title: string };
-  auth: { login: { title: string; url: string } };
-  user: { name: string } | null;
-  menuToRender: MenuItem[];
+  logo: { alt: string; title: string }
+  auth: { login: { title: string; url: string } }
+  user: { name: string, image: TailwindColor } | null
+  menuToRender: MenuItem[]
 }
 
 export const NavbarClient: React.FC<NavbarClientProps> = ({
@@ -66,14 +75,24 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-4 items-center">
             {user ? (
-              <div className="text-md font-semibold">Hola {user.name}! 👋</div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link href="/profile" className="flex items-center space-x-2">
+                    <StrAvatar color={user.image} name={user.name} />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{user.name}</p>
+                </TooltipContent>
+              </Tooltip>
             ) : (
               <Button asChild variant="outline">
                 <a href={auth.login.url}>{auth.login.title}</a>
               </Button>
             )}
+            <ModeToggle />
           </div>
         </nav>
 
@@ -96,13 +115,17 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
                 </Button>
               </SheetTrigger>
               <SheetContent className="overflow-y-auto">
+                {/* <SheetContent className="relative flex h-full flex-col overflow-y-auto"> */}
                 <SheetHeader>
-                  <SheetTitle>
+                  <SheetTitle className="flex items-center gap-4">
+                    <SheetClose asChild>
                     <Link href="/" className="flex items-center gap-2">
                       <span className="text-lg font-semibold tracking-tighter">
                         {logo.title}
                       </span>
                     </Link>
+                    </SheetClose>
+                    <ModeToggle />
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">
@@ -113,17 +136,27 @@ export const NavbarClient: React.FC<NavbarClientProps> = ({
                   >
                     {menuToRender.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-3 mt-5">
                     {user ? (
-                      <div className="text-md font-semibold">
-                        Hola {user.name}! 👋
-                      </div>
+                      <SheetClose asChild>
+                      <Link href="/profile" className="flex items-center space-x-2">
+                        <StrAvatar color={user.image} name={user.name} />
+                        <p className="text-sm font-semibold">{user.name}</p>
+                      </Link>
+                      </SheetClose>
                     ) : (
-                      <Button asChild variant="outline">
-                        <a href={auth.login.url}>{auth.login.title}</a>
-                      </Button>
+                      <SheetClose asChild>
+                        <Button variant="outline" asChild className="w-full">
+                          <Link href={auth.login.url} className="w-full">
+                            {auth.login.title}
+                          </Link>
+                        </Button>
+                      </SheetClose>
                     )}
                   </div>
+                </div>
+                <div className="pt-4 p-4 mt-auto">
+                  <PWAInstallPrompt />
                 </div>
               </SheetContent>
             </Sheet>

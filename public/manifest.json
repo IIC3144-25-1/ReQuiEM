@@ -1,5 +1,5 @@
 {
-	"theme_color": "#51b6f5",
+	"theme_color": "#ffffff",
 	"background_color": "#ffffff",
 	"scope": "/",
     "start_url": "/",
@@ -21,6 +21,6 @@
 	"display": "standalone",
 	"dir": "auto",
 	"lang": "en",
-	"name": "ReQuiEM",
-	"short_name": "ReQuiEM"
+	"name": "SurgiSkills",
+	"short_name": "SurgiSkills"
 }

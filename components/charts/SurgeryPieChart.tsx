@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from "react"
-import { Label, Pie, PieChart, Cell, Legend} from "recharts"
+import { Label, Pie, PieChart, Cell } from "recharts"
 import {
   Card,
   CardContent,
@@ -27,6 +27,9 @@ export function SurgeryPieChart({ data }: { data: { name: string; value: number 
     "var(--chart-3)",
     "var(--chart-4)",
     "var(--chart-1)",
+    "var(--chart-2)",
+    "var(--chart-4)",
+    "var(--chart-3)",
   ]
 
   const chartConfig = {
@@ -40,10 +43,10 @@ export function SurgeryPieChart({ data }: { data: { name: string; value: number 
   } satisfies ChartConfig
 
   return (
-    <Card className="flex flex-col h-full min-h-[350px]">
+    <Card className="flex flex-col h-full">
       <CardHeader className="items-center">
-        <CardTitle>Cirugias realizadas</CardTitle>
-        <CardDescription>Cirugías por tipo y total</CardDescription>
+        <CardTitle>Cantidad de cirugías realizadas</CardTitle>
+        <CardDescription>Para las distintas cirugías y el total</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
         <ChartContainer
@@ -99,7 +102,6 @@ export function SurgeryPieChart({ data }: { data: { name: string; value: number 
                 }}
               />
             </Pie>
-            <Legend />
           </PieChart>
         </ChartContainer>
       </CardContent>
