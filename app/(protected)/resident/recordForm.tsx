@@ -26,7 +26,7 @@ import { IResident } from "@/models/Resident"
 const recordSchema = z.object({
     resident: z.string().min(1, "Resident is required"),
     teacher: z.string().min(1, "Seleccione un profesor"),
-    patientId: z.string().min(1, "Se requiere ID del paciente"),
+    patientId: z.string().min(1, "Se requiere ID del paciente").max(6, "El ID del paciente debe tener máximo 6 caracteres"),
     date: z.date().refine((date) => date <= new Date(), {
         message: "La fecha seleccionada aún no ha pasado"
     }),

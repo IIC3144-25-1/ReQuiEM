@@ -1,4 +1,4 @@
-import { Book, Trees, Ambulance, Stethoscope } from "lucide-react"
+import { Book, Trees, Ambulance, Stethoscope, Paperclip } from "lucide-react"
 import { getCurrentUser } from "@/actions/user/getUser"
 import { getRole, RoleInfo } from "@/actions/user/getRole"
 import { NavbarClient } from "./NavbarClient"
@@ -30,6 +30,7 @@ export const Navbar = async () => {
         { title: "Profesores", description: "Administra los profesores", icon: <Trees className="size-5 shrink-0" />, url: "/admin/teacher" },
         { title: "Cirugías", description: "Maneja las cirugías", icon: <Ambulance className="size-5 shrink-0" />, url: "/admin/surgeries" },
         { title: "Áreas", description: "Administra las áreas quirúrgicas", icon: <Stethoscope className="size-5 shrink-0" />, url: "/admin/areas" },
+        { title: "Registros", description: "Administra los registros de residentes", icon: <Paperclip className="size-5 shrink-0" />, url: "/admin/records" },
       ],
     })
   }
